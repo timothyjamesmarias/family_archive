@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+# Solid Queue's supervisor forks workers. On macOS, libpq's GSSAPI init
+# segfaults in the forked child, so disable it before any connection is made.
+ENV["PGGSSENCMODE"] ||= "disable" if RUBY_PLATFORM.include?("darwin")
+
+require_relative "../config/environment"
+require "solid_queue/cli"
+
+SolidQueue::Cli.start(ARGV)

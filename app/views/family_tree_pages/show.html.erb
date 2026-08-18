@@ -1,0 +1,6 @@
+<% content_for :title, "Family Tree - Marias Family Archive" %>
+<% content_for :head do %>
+  <%= vite_javascript_tag "family_tree.ts" %>
+  <%= vite_stylesheet_tag "family_tree" %>
+<% end %>
+<div id="family-tree-root" data-auth="<%= user_signed_in? %>"></div>

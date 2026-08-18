@@ -1,0 +1,17 @@
+<%# Dispatches artifact display by type. PHOTO → photo gallery; else → fallback.
+    Locals: artifact. %>
+<% if artifact.artifact_type == "PHOTO" %>
+  <% if artifact.files.any? %>
+    <div class="photo-gallery-list flex flex-col gap-8 w-full" data-photo-gallery="true">
+      <% artifact.files.each do |file| %>
+        <div class="photo-list-item relative w-full">
+          <%= render "annotated_photo", artifact: artifact, file: file %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+<% else %>
+  <div>
+    <p>No content for <%= artifact.title %></p>
+  </div>
+<% end %>

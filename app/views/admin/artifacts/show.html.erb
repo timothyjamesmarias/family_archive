@@ -1,0 +1,69 @@
+<% title = @artifact.title || "Untitled #{@artifact.type.display_name}" %>
+<% content_for :title, title %>
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-semibold text-slate-900"><%= title %></h1>
+  <div class="flex gap-2">
+    <%= link_to "View on site", "/#{@artifact.type.route_segment}/#{@artifact.slug}",
+          class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+    <%= link_to "Edit", edit_admin_artifact_path(@artifact), class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+    <%= button_to "Delete", admin_artifact_path(@artifact), method: :delete,
+          data: { turbo_confirm: "Delete this artifact and all of its files?" },
+          class: "rounded border border-red-300 px-4 py-2 text-sm text-red-700 hover:bg-red-50 cursor-pointer" %>
+  </div>
+</div>
+
+<dl class="rounded border border-slate-200 bg-white divide-y divide-slate-100 text-sm">
+  <div class="flex px-4 py-3">
+    <dt class="w-48 font-medium text-slate-500">Type</dt>
+    <dd class="text-slate-900"><%= @artifact.type.display_name %></dd>
+  </div>
+  <div class="flex px-4 py-3">
+    <dt class="w-48 font-medium text-slate-500">Slug</dt>
+    <dd class="text-slate-900"><%= @artifact.slug %></dd>
+  </div>
+  <div class="flex px-4 py-3">
+    <dt class="w-48 font-medium text-slate-500">Original date</dt>
+    <dd class="text-slate-900"><%= @artifact.original_date_string %></dd>
+  </div>
+  <div class="flex px-4 py-3">
+    <dt class="w-48 font-medium text-slate-500">Uploaded</dt>
+    <dd class="text-slate-900"><%= @artifact.uploaded_at.strftime("%Y-%m-%d %H:%M") %></dd>
+  </div>
+</dl>
+
+<h2 class="mt-8 mb-3 text-lg font-semibold text-slate-900">Files</h2>
+<div class="rounded border border-slate-200 bg-white divide-y divide-slate-100">
+  <% @artifact.files.each do |file| %>
+    <div class="flex items-center gap-4 px-4 py-3 text-sm">
+      <div class="w-20 h-20 shrink-0 bg-slate-100 rounded overflow-hidden flex items-center justify-center">
+        <% if file.thumbnail_path || file.image? %>
+          <img src="<%= asset_url_for(file.thumbnail_path || file.storage_path) %>" alt="" class="w-full h-full object-cover">
+        <% else %>
+          <span class="text-xs text-slate-400"><%= file.mime_type.split("/").last %></span>
+        <% end %>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-slate-900 truncate">#<%= file.file_sequence %> · <%= file.storage_path %></p>
+        <p class="text-slate-500">
+          <%= file.mime_type %> · <%= number_to_human_size(file.file_size) %>
+          <% if file.annotations.any? %> · <%= pluralize(file.annotations.size, "annotation") %><% end %>
+        </p>
+      </div>
+      <% if @artifact.files.size > 1 %>
+        <%= button_to "Delete", admin_artifact_file_path(@artifact, file.id), method: :delete,
+              data: { turbo_confirm: "Delete this file?" },
+              class: "text-red-700 underline cursor-pointer" %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
+
+<h3 class="mt-6 mb-2 text-sm font-semibold text-slate-700">Add files</h3>
+<%= form_with url: add_files_admin_artifact_path(@artifact), method: :post, multipart: true, class: "flex items-center gap-2" do %>
+  <%= file_field_tag "files[]", multiple: true, required: true, class: "text-sm" %>
+  <%= submit_tag "Add", class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer" %>
+<% end %>
+
+<div class="mt-6">
+  <%= link_to "← Back to artifacts", admin_artifacts_path, class: "text-slate-600 underline" %>
+</div>

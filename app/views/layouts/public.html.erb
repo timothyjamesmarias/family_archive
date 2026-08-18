@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= content_for(:title) || "Family Archive" %></title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <script>
+      (function () {
+        const theme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (theme === 'dark' || (!theme && prefersDark)) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+    <%= vite_client_tag %>
+    <%= vite_stylesheet_tag "public" %>
+    <%= vite_javascript_tag "public.ts" %>
+    <%= yield :head %>
+  </head>
+  <body class="bg-stone-100 dark:bg-stone-950 min-h-screen transition-colors flex flex-col font-sans">
+    <nav class="bg-stone-50 dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800">
+      <div class="container mx-auto px-4 py-5">
+        <div class="flex justify-between items-center">
+          <%= link_to "Family Archive", root_path,
+                class: "text-2xl font-serif font-semibold text-stone-900 dark:text-stone-50 hover:text-stone-700 dark:hover:text-stone-300 transition-colors" %>
+
+          <div class="hidden md:flex items-center space-x-6">
+            <% nav_link = "text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-50 font-medium transition-colors" %>
+            <%= link_to "Family Tree", family_tree_path, class: nav_link %>
+            <%= link_to "Artifacts", artifacts_hub_path, class: nav_link %>
+            <%= link_to "Articles", articles_path, class: nav_link %>
+            <% if user_signed_in? %>
+              <%= link_to "Dashboard", admin_root_path, class: nav_link %>
+            <% else %>
+              <%= link_to "Admin Login", new_user_session_path, class: nav_link %>
+            <% end %>
+            <%= render "shared/dark_mode_toggle" %>
+          </div>
+
+          <div class="md:hidden flex items-center space-x-2">
+            <%= render "shared/dark_mode_toggle" %>
+            <button
+              class="p-2 rounded-md text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-800 transition-colors"
+              onclick="window.mobileMenu.toggle()"
+              aria-label="Toggle menu"
+              id="mobile-menu-button"
+            >
+              <span class="block" id="hamburger-icon"><%= icon_tag "hamburger" %></span>
+              <span class="hidden" id="close-icon"><%= icon_tag "close" %></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="hidden md:hidden" id="mobile-menu">
+          <div class="px-2 pt-2 pb-3 space-y-1">
+            <% mobile_link = "block px-3 py-2 rounded-md text-base font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-50 transition-colors" %>
+            <%= link_to "Family Tree", family_tree_path, class: mobile_link %>
+            <%= link_to "Artifacts", artifacts_hub_path, class: mobile_link %>
+            <%= link_to "Articles", articles_path, class: mobile_link %>
+            <% if user_signed_in? %>
+              <%= link_to "Dashboard", admin_root_path, class: mobile_link %>
+            <% else %>
+              <%= link_to "Admin Login", new_user_session_path, class: mobile_link %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="container mx-auto px-4 py-12 flex-grow">
+      <%= render "layouts/flash" %>
+      <%= yield %>
+    </main>
+
+    <footer class="bg-stone-50 dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800">
+      <div class="container mx-auto px-4 py-8 text-center text-stone-600 dark:text-stone-400">
+        <p class="font-serif">© Marias Family Archive</p>
+      </div>
+    </footer>
+    <%= yield :scripts %>
+  </body>
+</html>

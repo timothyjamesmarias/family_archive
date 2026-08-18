@@ -1,0 +1,23 @@
+<% content_for :title, @article.title %>
+<div class="max-w-4xl mx-auto">
+  <a
+    href="<%= articles_path %>"
+    class="inline-flex items-center text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 mb-6"
+  >
+    <%= icon_tag "backArrow", css: "w-5 h-5 mr-2" %>
+    Back to Articles
+  </a>
+
+  <article class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8">
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4"><%= @article.title %></h1>
+      <% if @article.published_at %>
+        <p class="text-gray-500 dark:text-gray-400"><%= @article.published_at.strftime("%B %d, %Y") %></p>
+      <% end %>
+    </header>
+
+    <div class="prose prose-lg dark:prose-invert max-w-none prose-headings:text-gray-900 dark:prose-headings:text-white prose-p:text-gray-700 dark:prose-p:text-gray-300 prose-a:text-blue-600 dark:prose-a:text-blue-400 prose-strong:text-gray-900 dark:prose-strong:text-white prose-code:text-gray-900 dark:prose-code:text-white prose-pre:bg-gray-100 dark:prose-pre:bg-gray-900 prose-blockquote:border-gray-300 dark:prose-blockquote:border-gray-600 prose-blockquote:text-gray-700 dark:prose-blockquote:text-gray-400 prose-hr:border-gray-300 dark:prose-hr:border-gray-700 prose-table:text-gray-700 dark:prose-table:text-gray-300">
+      <%= article_html(@article) %>
+    </div>
+  </article>
+</div>

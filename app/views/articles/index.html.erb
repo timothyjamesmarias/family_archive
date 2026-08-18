@@ -1,0 +1,30 @@
+<% content_for :title, "Articles" %>
+<div class="max-w-6xl mx-auto">
+  <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-8">Articles</h1>
+  <% if @articles.empty? %>
+    <div class="text-center py-12">
+      <p class="text-gray-500 dark:text-gray-400 text-lg">No articles published yet.</p>
+    </div>
+  <% else %>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <% @articles.records.each do |article| %>
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          <a href="<%= article_path(article.slug) %>" class="block p-6">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              <%= article.title %>
+            </h2>
+            <% if article.published_at %>
+              <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+                <%= article.published_at.strftime("%B %d, %Y") %>
+              </p>
+            <% end %>
+            <% if article.excerpt %>
+              <p class="text-gray-600 dark:text-gray-300 line-clamp-3"><%= article.excerpt %></p>
+            <% end %>
+          </a>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+  <%= render "shared/pagination", page: @articles, base_url: articles_path %>
+</div>

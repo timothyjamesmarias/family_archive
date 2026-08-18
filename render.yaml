@@ -1,0 +1,88 @@
+databases:
+  - name: family-archive-db
+    plan: basic-256mb
+    databaseName: family_archive_production
+    user: family_archive
+    postgresMajorVersion: "17"
+
+services:
+  - type: web
+    name: family-archive
+    runtime: docker
+    plan: starter
+    healthCheckPath: /up
+    autoDeployTrigger: commit
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      # Signs sessions and Devise's confirmation/reset tokens. Generated once by
+      # Render and kept across deploys; changing it logs everyone out and
+      # invalidates outstanding email links.
+      - key: SECRET_KEY_BASE
+        generateValue: true
+      - key: RAILS_MAX_THREADS
+        value: "3"
+      - key: WEB_CONCURRENCY
+        value: "2"
+
+      # Solid Queue runs inside Puma so a deploy needs one paid service instead
+      # of two. Move to the worker below when job volume outgrows the web dyno.
+      - key: SOLID_QUEUE_IN_PUMA
+        value: "true"
+      - key: JOB_CONCURRENCY
+        value: "1"
+
+      # Rails merges DATABASE_URL over config/database.yml, so this supersedes
+      # the POSTGRES_* vars used in development. Render only exposes host/port
+      # for Key Value instances, not Postgres.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: family-archive-db
+          property: connectionString
+
+      # Set once a custom domain is attached. Until then Rails falls back to
+      # RENDER_EXTERNAL_HOSTNAME, which Render injects automatically.
+      - key: APP_HOST
+        sync: false
+
+      # Postmark Server API Token. Mail delivery stays off until this is set.
+      - key: POSTMARK_API_TOKEN
+        sync: false
+
+      # Must be a verified Sender Signature or a domain you have verified in
+      # Postmark, or sends are rejected.
+      - key: MAILER_SENDER
+        sync: false
+
+      # Seeds the admin account (bin/rails db:seed is run by the release step).
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+
+      # Absolute-URL prefix for stored artifact files when they are served from
+      # a bucket/CDN instead of the app (see Storage::Disk).
+      - key: ASSET_BASE_URL
+        sync: false
+
+  # Dedicated job worker. Enable this and set SOLID_QUEUE_IN_PUMA to false on
+  # the web service when jobs need their own resources.
+  #
+  # - type: worker
+  #   name: family-archive-jobs
+  #   runtime: docker
+  #   plan: starter
+  #   dockerCommand: ./bin/jobs
+  #   envVars:
+  #     - key: RAILS_ENV
+  #       value: production
+  #     # Must match the web service's value, or signed data will not verify.
+  #     - key: SECRET_KEY_BASE
+  #       fromService:
+  #         name: family-archive
+  #         type: web
+  #         envVarKey: SECRET_KEY_BASE
+  #     - key: DATABASE_URL
+  #       fromDatabase:
+  #         name: family-archive-db
+  #         property: connectionString

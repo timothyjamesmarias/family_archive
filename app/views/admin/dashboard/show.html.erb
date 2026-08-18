@@ -1,0 +1,37 @@
+<% content_for :title, "Admin - Family Archive" %>
+
+<h1 class="text-2xl font-bold text-slate-900">Overview</h1>
+
+<dl class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+  <% tiles = {
+    "Individuals" => [ @counts[:individuals], admin_individuals_path ],
+    "Families" => [ @counts[:families], admin_families_path ],
+    "Places" => [ @counts[:places], admin_places_path ],
+    "Artifacts" => [ @counts[:artifacts], admin_artifacts_path ],
+    "Articles" => [ @counts[:articles], admin_articles_path ],
+    "Users" => [ @counts[:users], admin_users_path ]
+  } %>
+  <% tiles.each do |label, (count, path)| %>
+    <a href="<%= path %>" class="rounded border border-slate-200 bg-white p-4 hover:border-slate-300">
+      <dt class="text-sm text-slate-600"><%= label %></dt>
+      <dd class="mt-1 text-2xl font-semibold text-slate-900"><%= count %></dd>
+    </a>
+  <% end %>
+</dl>
+
+<p class="mt-4 text-sm text-slate-600">
+  Articles: <%= @published_articles %> published, <%= @draft_articles %> draft<%= "s" unless @draft_articles == 1 %>.
+</p>
+
+<h2 class="mt-8 mb-3 text-lg font-semibold text-slate-900">Recent uploads</h2>
+<div class="rounded border border-slate-200 bg-white divide-y divide-slate-100 text-sm">
+  <% if @recent_artifacts.none? %>
+    <p class="px-4 py-3 text-slate-500">No artifacts uploaded yet.</p>
+  <% end %>
+  <% @recent_artifacts.each do |artifact| %>
+    <div class="flex items-center justify-between px-4 py-3">
+      <%= link_to artifact.title || "Untitled (#{artifact.slug})", admin_artifact_path(artifact), class: "text-slate-900 underline" %>
+      <span class="text-slate-500"><%= artifact.type.display_name %> · <%= artifact.uploaded_at.strftime("%Y-%m-%d") %></span>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,42 @@
+<% content_for :title, "Individuals" %>
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-semibold text-slate-900">Individuals</h1>
+  <%= link_to "New individual", new_admin_individual_path, class: "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700" %>
+</div>
+
+<%= form_with url: admin_individuals_path, method: :get, class: "mb-4 flex gap-2" do %>
+  <%= text_field_tag :q, params[:q], placeholder: "Search…", class: "w-64 rounded border border-slate-300 px-3 py-2 text-sm" %>
+  <%= submit_tag "Search", class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer" %>
+<% end %>
+
+<div class="overflow-x-auto rounded border border-slate-200 bg-white">
+  <table class="min-w-full divide-y divide-slate-200 text-sm">
+    <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+      <tr>
+        <th class="px-4 py-3">Gedcom</th>
+        <th class="px-4 py-3">Given name</th>
+        <th class="px-4 py-3">Surname</th>
+        <th class="px-4 py-3">Sex</th>
+        <th class="px-4 py-3">Is tree root</th>
+        <th class="px-4 py-3"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100">
+      <% @individuals.records.each do |individual| %>
+        <tr class="hover:bg-slate-50">
+          <td class="px-4 py-3"><%= individual.gedcom_id %></td>
+          <td class="px-4 py-3"><%= individual.given_name %></td>
+          <td class="px-4 py-3"><%= individual.surname %></td>
+          <td class="px-4 py-3"><%= individual.sex %></td>
+          <td class="px-4 py-3"><%= individual.is_tree_root %></td>
+          <td class="px-4 py-3 text-right whitespace-nowrap">
+            <%= link_to "View", admin_individual_path(individual), class: "text-slate-600 underline" %>
+            <%= link_to "Edit", edit_admin_individual_path(individual), class: "ml-2 text-slate-600 underline" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+<%= render "admin/shared/pagination", page: @individuals, base_url: admin_individuals_path %>

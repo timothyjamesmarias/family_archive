@@ -1,0 +1,6 @@
+<% title = @artifact.title || "Untitled #{@type.display_name}" %>
+<% content_for :title, title %>
+<div class="max-w-4xl mx-auto">
+  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8"><%= title %></h1>
+  <%= render "artifact_display", artifact: @artifact %>
+</div>

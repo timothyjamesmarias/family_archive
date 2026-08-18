@@ -1,0 +1,2 @@
+# Tests create the users they need. Devise's uniqueness and confirmation rules
+# make shared fixtures more trouble than they are worth here.

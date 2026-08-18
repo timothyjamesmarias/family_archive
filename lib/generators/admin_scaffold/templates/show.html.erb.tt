@@ -1,0 +1,23 @@
+<%% content_for :title, "<%= human_name %>" %>
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-semibold text-slate-900"><%= human_name %></h1>
+  <div class="flex gap-2">
+    <%%= link_to "Edit", edit_admin_<%= singular_table_name %>_path(@<%= singular_table_name %>), class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+    <%%= button_to "Delete", admin_<%= singular_table_name %>_path(@<%= singular_table_name %>), method: :delete,
+          data: { turbo_confirm: "Delete this <%= human_name.downcase %>?" },
+          class: "rounded border border-red-300 px-4 py-2 text-sm text-red-700 hover:bg-red-50 cursor-pointer" %>
+  </div>
+</div>
+
+<dl class="rounded border border-slate-200 bg-white divide-y divide-slate-100 text-sm">
+<% attributes.each do |attribute| -%>
+  <div class="flex px-4 py-3">
+    <dt class="w-48 font-medium text-slate-500"><%= attribute.human_name %></dt>
+    <dd class="text-slate-900"><%%= @<%= singular_table_name %>.<%= attribute.name %> %></dd>
+  </div>
+<% end -%>
+</dl>
+
+<div class="mt-6">
+  <%%= link_to "← Back to <%= human_name.downcase.pluralize %>", admin_<%= plural_table_name %>_path, class: "text-slate-600 underline" %>
+</div>

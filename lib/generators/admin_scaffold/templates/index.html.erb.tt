@@ -1,0 +1,40 @@
+<%% content_for :title, "<%= human_name.pluralize %>" %>
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-semibold text-slate-900"><%= human_name.pluralize %></h1>
+  <%%= link_to "New <%= human_name.downcase %>", new_admin_<%= singular_table_name %>_path, class: "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700" %>
+</div>
+
+<% if searchable_columns.any? -%>
+<%%= form_with url: admin_<%= plural_table_name %>_path, method: :get, class: "mb-4 flex gap-2" do %>
+  <%%= text_field_tag :q, params[:q], placeholder: "Search…", class: "w-64 rounded border border-slate-300 px-3 py-2 text-sm" %>
+  <%%= submit_tag "Search", class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer" %>
+<%% end %>
+
+<% end -%>
+<div class="overflow-x-auto rounded border border-slate-200 bg-white">
+  <table class="min-w-full divide-y divide-slate-200 text-sm">
+    <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+      <tr>
+<% attributes.each do |attribute| -%>
+        <th class="px-4 py-3"><%= attribute.human_name %></th>
+<% end -%>
+        <th class="px-4 py-3"></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-slate-100">
+      <%% @<%= plural_table_name %>.records.each do |<%= singular_table_name %>| %>
+        <tr class="hover:bg-slate-50">
+<% attributes.each do |attribute| -%>
+          <td class="px-4 py-3"><%%= <%= singular_table_name %>.<%= attribute.name %> %></td>
+<% end -%>
+          <td class="px-4 py-3 text-right whitespace-nowrap">
+            <%%= link_to "View", admin_<%= singular_table_name %>_path(<%= singular_table_name %>), class: "text-slate-600 underline" %>
+            <%%= link_to "Edit", edit_admin_<%= singular_table_name %>_path(<%= singular_table_name %>), class: "ml-2 text-slate-600 underline" %>
+          </td>
+        </tr>
+      <%% end %>
+    </tbody>
+  </table>
+</div>
+
+<%%= render "admin/shared/pagination", page: @<%= plural_table_name %>, base_url: admin_<%= plural_table_name %>_path %>

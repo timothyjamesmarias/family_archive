@@ -1,0 +1,38 @@
+<%# Page-number pagination. Locals: page (Pagination), base_url.
+    Emits nothing unless there is more than one page. Pages are 1-based. %>
+<% if page.last_page > 1 %>
+  <% current = page.current_page %>
+  <% last = page.last_page %>
+  <% active = "px-4 py-2 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-lg shadow hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors" %>
+  <% disabled = "px-4 py-2 bg-gray-100 dark:bg-gray-900 text-gray-400 dark:text-gray-600 rounded-lg cursor-not-allowed" %>
+  <div class="flex justify-center items-center gap-2 mt-8">
+    <% if current > 1 %>
+      <a href="<%= base_url %>?page=<%= current - 1 %>" class="<%= active %>">Previous</a>
+    <% else %>
+      <span class="<%= disabled %>">Previous</span>
+    <% end %>
+
+    <div class="flex gap-2">
+      <% (1..last).each do |n| %>
+        <% show_page = n == 1 || n == last || (n >= current - 2 && n <= current + 2) %>
+        <% if show_page && n != current %>
+          <a href="<%= base_url %>?page=<%= n %>" class="<%= active %>"><%= n %></a>
+        <% elsif show_page %>
+          <span class="px-4 py-2 bg-blue-600 text-white rounded-lg shadow font-semibold"><%= n %></span>
+        <% end %>
+        <% if n == 2 && current > 4 %>
+          <span class="px-2 py-2 text-gray-500 dark:text-gray-400">...</span>
+        <% end %>
+        <% if n == last - 1 && current < last - 3 %>
+          <span class="px-2 py-2 text-gray-500 dark:text-gray-400">...</span>
+        <% end %>
+      <% end %>
+    </div>
+
+    <% if current < last %>
+      <a href="<%= base_url %>?page=<%= current + 1 %>" class="<%= active %>">Next</a>
+    <% else %>
+      <span class="<%= disabled %>">Next</span>
+    <% end %>
+  </div>
+<% end %>

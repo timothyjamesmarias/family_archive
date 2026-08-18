@@ -1,0 +1,17 @@
+<% content_for :title, @type.plural_display_name %>
+<div class="max-w-3xl mx-auto">
+  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8"><%= @type.plural_display_name %></h1>
+  <% if @artifacts.empty? %>
+    <%= render "shared/empty_state",
+          title: "No #{@type.plural_display_name.downcase} yet",
+          description: "Check back later for family #{@type.plural_display_name.downcase}.",
+          icon_name: @type.empty_icon %>
+  <% else %>
+    <div class="space-y-4">
+      <% @artifacts.records.each do |artifact| %>
+        <%= render "artifact_list_item", artifact: artifact, type: @type %>
+      <% end %>
+    </div>
+  <% end %>
+  <%= render "shared/pagination", page: @artifacts, base_url: "/#{@type.route_segment}" %>
+</div>

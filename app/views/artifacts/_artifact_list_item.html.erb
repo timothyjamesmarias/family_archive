@@ -1,0 +1,45 @@
+<%# One artifact row in a typed collection list. Locals: artifact, type. %>
+<% primary = artifact.files.first %>
+<% has_image = primary && (primary.thumbnail_path || primary.image?) %>
+<% image_path = primary ? (primary.thumbnail_path || primary.storage_path) : "" %>
+<% file_count = artifact.files.size %>
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden">
+  <a
+    href="/<%= type.route_segment %>/<%= artifact.slug %>"
+    class="flex flex-col sm:flex-row gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
+  >
+    <div class="flex-shrink-0 w-full sm:w-32 h-32 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
+      <% if has_image %>
+        <img
+          src="<%= asset_url_for(image_path) %>"
+          alt="<%= artifact.title || "Untitled" %>"
+          class="w-full h-full object-cover"
+        >
+      <% else %>
+        <div class="w-full h-full flex items-center justify-center">
+          <%= icon_tag "document", css: "w-12 h-12 text-gray-400 dark:text-gray-500" %>
+        </div>
+      <% end %>
+    </div>
+    <div class="flex-1 min-w-0">
+      <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate mb-1">
+        <%= artifact.title || "Untitled #{type.display_name}" %>
+      </h3>
+      <% if artifact.original_date_string %>
+        <p class="text-sm text-gray-600 dark:text-gray-400 mb-2"><%= artifact.original_date_string %></p>
+      <% end %>
+
+      <div class="flex items-center gap-4 text-xs text-gray-500 dark:text-gray-500">
+        <% if file_count > 0 %>
+          <span>
+            <%= icon_tag "document", css: "w-4 h-4 inline-block mr-1" %>
+            <span><%= file_count %> <%= file_count == 1 ? "file" : "files" %></span>
+          </span>
+        <% end %>
+      </div>
+    </div>
+    <div class="flex-shrink-0 flex items-center">
+      <%= icon_tag "chevronRight", css: "w-5 h-5 text-gray-400 dark:text-gray-500" %>
+    </div>
+  </a>
+</div>

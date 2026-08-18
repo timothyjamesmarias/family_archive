@@ -1,0 +1,66 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`calculateLayout > handles childless marriages and orphans 1`] = `
+[
+  {
+    "id": "1",
+    "x": 140,
+    "y": 115,
+  },
+  {
+    "id": "2",
+    "x": 140,
+    "y": 335,
+  },
+  {
+    "id": "3",
+    "x": 470,
+    "y": 115,
+  },
+]
+`;
+
+exports[`calculateLayout > positions a two-family tree deterministically 1`] = `
+[
+  {
+    "id": "1",
+    "x": 150,
+    "y": 115,
+  },
+  {
+    "id": "2",
+    "x": 480,
+    "y": 115,
+  },
+  {
+    "id": "3",
+    "x": 140,
+    "y": 425,
+  },
+  {
+    "id": "4",
+    "x": 490,
+    "y": 425,
+  },
+  {
+    "id": "5",
+    "x": 1030,
+    "y": 115,
+  },
+  {
+    "id": "6",
+    "x": 1360,
+    "y": 115,
+  },
+  {
+    "id": "7",
+    "x": 1020,
+    "y": 425,
+  },
+  {
+    "id": "8",
+    "x": 1370,
+    "y": 425,
+  },
+]
+`;
