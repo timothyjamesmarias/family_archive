@@ -36,6 +36,7 @@ Thumbnail generation needs libvips locally (`brew install vips`).
 
 - `app/services` — domain operations (uploads, tree mutations, sanitization)
 - `app/queries` — recursive-CTE traversals over the genealogy graph
+- `script/gedcom-to-json.mjs` — read-gedcom CLI the GEDCOM importer shells to
 - `app/frontend/apps/family-tree` — the tree island (ported as-is; React later)
 - `lib/generators/admin_scaffold` — generator for admin CRUD sections
 - `docs`: see `CLAUDE.md` for architecture notes and conventions
@@ -45,5 +46,4 @@ Thumbnail generation needs libvips locally (`brew install vips`).
 Render, via `render.yaml`. Set `ADMIN_EMAIL`/`ADMIN_PASSWORD` (seeds the admin
 account). Artifact files are Active Storage attachments on local disk, which is
 ephemeral on Render — add an S3 service to `config/storage.yml` before
-uploading anything you care about. GEDCOM import is deferred and not yet
-ported.
+uploading anything you care about.

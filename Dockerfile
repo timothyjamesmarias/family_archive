@@ -64,6 +64,10 @@ RUN bundle exec bootsnap precompile -j 1 app/ lib/
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
+# Assets are built; drop dev-only packages so only runtime dependencies
+# (read-gedcom, used by script/gedcom-to-json.mjs) ship in the final image.
+RUN npm prune --omit=dev
+
 
 
 
@@ -78,6 +82,11 @@ USER 1000:1000
 # Copy built artifacts: gems, application
 COPY --chown=rails:rails --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --chown=rails:rails --from=build /rails /rails
+
+# Node stays in the runtime image: the GEDCOM importer shells out to
+# script/gedcom-to-json.mjs (read-gedcom).
+COPY --from=build /usr/local/node /usr/local/node
+ENV PATH=/usr/local/node/bin:$PATH
 
 # Entrypoint prepares the database.
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]

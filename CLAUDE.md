@@ -60,9 +60,14 @@ Seeds create `admin@example.com` / `password` in development.
 - **Mission Control** at `/admin/jobs` (admin-gated) shows the Solid Queue
   jobs, including Active Storage's analyze/transform/purge jobs. Variant
   generation needs libvips (`brew install vips` locally; the Dockerfile has it).
-- **GEDCOM import is deferred** — the AdonisJS importer was not ported. The
-  schema keeps `gedcom_id`/`gedcom_raw_data`/`last_imported_at` so a Ruby
-  importer can land later.
+- **GEDCOM import parses via Node** — Ruby has no maintained GEDCOM parser,
+  so `GedcomReader` shells out to `script/gedcom-to-json.mjs` (the same
+  `read-gedcom` package the AdonisJS app used) and `GedcomImporter` owns all
+  domain logic: upsert by GEDCOM id, replace only BIRTH/DEATH/BAPTISM/BURIAL
+  events, preserve hand-added members and events. Imports run through
+  `GedcomImportJob`; the admin screen shows the last result from the cache.
+  `read-gedcom` is a production npm dependency and the Dockerfile keeps node
+  in the runtime image for it.
 - **Admin scaffolding**: `bin/rails g admin_scaffold <model> field:type …`
   generates an admin CRUD (controller + views) matching the aside-nav layout;
   add the nav link in `app/views/layouts/admin.html.erb` by hand.

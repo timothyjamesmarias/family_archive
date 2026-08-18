@@ -1,6 +1,9 @@
 default: &default
   adapter: postgresql
   encoding: unicode
+  # libpq's GSSAPI support segfaults in forked processes on macOS, which is
+  # exactly what parallel tests do. Nothing here authenticates via GSS.
+  gssencmode: disable
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   host: <%= ENV.fetch("POSTGRES_HOST", "localhost") %>
   port: <%= ENV.fetch("POSTGRES_PORT", 5433) %>

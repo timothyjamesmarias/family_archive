@@ -58,6 +58,8 @@ Rails.application.routes.draw do
         post :unpublish
       end
     end
+    resource :gedcom_import, only: [ :show, :create ]
+
     resources :artifacts do
       member do
         post :add_files
