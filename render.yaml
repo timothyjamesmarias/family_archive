@@ -60,10 +60,6 @@ services:
       - key: ADMIN_PASSWORD
         sync: false
 
-      # Absolute-URL prefix for stored artifact files when they are served from
-      # a bucket/CDN instead of the app (see Storage::Disk).
-      - key: ASSET_BASE_URL
-        sync: false
 
   # Dedicated job worker. Enable this and set SOLID_QUEUE_IN_PUMA to false on
   # the web service when jobs need their own resources.

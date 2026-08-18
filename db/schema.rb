@@ -10,9 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_17_000003) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_18_040137) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.string "content_type"
+    t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "annotations", force: :cascade do |t|
     t.text "annotation_text", null: false
@@ -40,13 +68,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_000003) do
     t.bigint "artifact_id", null: false
     t.datetime "created_at", null: false
     t.integer "file_sequence", null: false
-    t.bigint "file_size", null: false
-    t.string "mime_type", null: false
-    t.string "storage_path", limit: 1000, null: false
-    t.string "thumbnail_path", limit: 1000
-    t.string "thumbnail_size", limit: 50
     t.datetime "updated_at", null: false
-    t.datetime "uploaded_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["artifact_id", "file_sequence"], name: "index_artifact_files_on_artifact_id_and_file_sequence", unique: true
     t.index ["artifact_id"], name: "index_artifact_files_on_artifact_id"
   end
@@ -54,11 +76,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_000003) do
   create_table "artifacts", force: :cascade do |t|
     t.string "artifact_type", limit: 50, null: false
     t.datetime "created_at", null: false
-    t.bigint "file_size", null: false
-    t.string "mime_type", null: false
     t.string "original_date_string"
     t.string "slug", null: false
-    t.string "storage_path", limit: 1000, null: false
     t.string "title", limit: 500
     t.datetime "updated_at", null: false
     t.datetime "uploaded_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
@@ -335,6 +354,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_000003) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "annotations", "artifact_files", on_delete: :cascade
   add_foreign_key "artifact_files", "artifacts", on_delete: :cascade
   add_foreign_key "commentaries", "artifacts", on_delete: :cascade

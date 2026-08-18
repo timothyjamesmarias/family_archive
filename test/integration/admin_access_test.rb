@@ -17,8 +17,7 @@ class AdminAccessTest < ActionDispatch::IntegrationTest
     sign_in create_admin
 
     [ admin_root_path, admin_individuals_path, admin_families_path, admin_places_path,
-      admin_artifacts_path, admin_articles_path, admin_users_path,
-      admin_thumbnails_path ].each do |path|
+      admin_artifacts_path, admin_articles_path, admin_users_path ].each do |path|
       get path
       assert_response :success, "expected #{path} to render"
     end

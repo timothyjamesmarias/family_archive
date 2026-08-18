@@ -1,52 +1,22 @@
 # Ingests uploaded files: creates the artifact with its files on upload, or
-# appends files to an existing artifact, enqueueing a thumbnail job when the
-# primary file is a supported image.
+# appends files to an existing artifact. Storage and thumbnails are Active
+# Storage's job — attaching enqueues the preprocessed :thumb variant.
 class ArtifactUploader
   MAX_SLUG_ATTEMPTS = 10
-  DEFAULT_MIME = "application/octet-stream"
 
   def upload(files:, artifact_type:, title: nil, original_date_string: nil)
     raise InvalidArgumentError.new("At least one file is required", field: "files") if files.empty?
 
-    slug = generate_slug
-    primary = files.first
-    year = Time.current.year
-    type_segment = artifact_type.downcase
-
-    primary_path = Storage.store(primary,
-      "artifacts/#{type_segment}/#{year}/#{slug}.#{extension_of(primary)}")
-
-    artifact = Artifact.create!(
-      slug: slug,
-      artifact_type: artifact_type,
-      title: title,
-      storage_path: primary_path,
-      mime_type: mime_of(primary),
-      file_size: primary.size,
-      original_date_string: original_date_string
-    )
-
-    files.each_with_index do |file, index|
-      storage_path =
-        if index.zero?
-          primary_path
-        else
-          Storage.store(file,
-            "artifacts/#{type_segment}/#{year}/#{slug}-#{index + 1}.#{extension_of(file)}")
-        end
-      artifact.files.create!(
-        file_sequence: index + 1,
-        storage_path: storage_path,
-        mime_type: mime_of(file),
-        file_size: file.size
+    ApplicationRecord.transaction do
+      artifact = Artifact.create!(
+        slug: generate_slug,
+        artifact_type: artifact_type,
+        title: title,
+        original_date_string: original_date_string
       )
+      attach_all(artifact, files, from_sequence: 1)
+      artifact
     end
-
-    if ThumbnailGenerator.supported?(mime_of(primary))
-      GenerateThumbnailJob.perform_later(artifact.id, ThumbnailGenerator::MEDIUM)
-    end
-
-    artifact
   end
 
   def add_files(artifact_id, files)
@@ -54,39 +24,18 @@ class ArtifactUploader
     raise NotFoundError, "Artifact not found with id: #{artifact_id}" unless artifact
     raise InvalidArgumentError.new("At least one file is required", field: "files") if files.empty?
 
-    max_sequence = artifact.files.map(&:file_sequence).max || 0
-    year = Time.current.year
-    type_segment = artifact.artifact_type.downcase
-
-    needs_thumbnail = files.each_with_index.map do |file, index|
-      sequence = max_sequence + index + 1
-      storage_path = Storage.store(file,
-        "artifacts/#{type_segment}/#{year}/#{artifact.slug}-#{sequence}.#{extension_of(file)}")
-      artifact.files.create!(
-        file_sequence: sequence,
-        storage_path: storage_path,
-        mime_type: mime_of(file),
-        file_size: file.size
-      )
-      ThumbnailGenerator.supported?(mime_of(file))
-    end.any?
-
-    if needs_thumbnail
-      RegenerateThumbnailJob.perform_later(artifact.id, ThumbnailGenerator::MEDIUM)
-    end
-
+    next_sequence = (artifact.files.map(&:file_sequence).max || 0) + 1
+    ApplicationRecord.transaction { attach_all(artifact, files, from_sequence: next_sequence) }
     artifact.reload
   end
 
   private
 
-  def extension_of(file)
-    extension = File.extname(file.original_filename.to_s).delete_prefix(".")
-    extension.presence || "bin"
-  end
-
-  def mime_of(file)
-    file.content_type.presence || DEFAULT_MIME
+  def attach_all(artifact, files, from_sequence:)
+    files.each_with_index do |upload, index|
+      record = artifact.files.create!(file_sequence: from_sequence + index)
+      record.file.attach(upload)
+    end
   end
 
   def generate_slug

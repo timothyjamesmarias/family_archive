@@ -11,7 +11,7 @@ module Admin
     ].freeze
 
     def index
-      scope = Artifact.order(uploaded_at: :desc).includes(:files)
+      scope = Artifact.order(uploaded_at: :desc).includes(files: { file_attachment: :blob })
       scope = scope.of_type(params[:artifact_type]) if params[:artifact_type].present?
       scope = search(scope) if params[:q].present?
       @artifacts = Pagination.paginate(
@@ -20,7 +20,7 @@ module Admin
     end
 
     def show
-      @artifact = Artifact.includes(files: :annotations).find(params[:id])
+      @artifact = Artifact.includes(files: [ :annotations, { file_attachment: :blob } ]).find(params[:id])
     end
 
     # Artifacts are only created by uploading files — a record without a stored
@@ -69,9 +69,8 @@ module Admin
       end
     end
 
-    # Deleting only the row would orphan every stored file and thumbnail.
     def destroy
-      ArtifactDeletion.new.destroy_artifact(params[:id].to_i)
+      Artifact.find(params[:id]).destroy!
       redirect_to admin_artifacts_path, notice: "Artifact deleted."
     end
 
@@ -90,7 +89,7 @@ module Admin
     end
 
     def destroy_file
-      ArtifactDeletion.new.destroy_file(params[:id].to_i, params[:file_id].to_i)
+      Artifact.includes(:files).find(params[:id]).remove_file!(params[:file_id])
       redirect_to admin_artifact_path(params[:id]), notice: "File deleted."
     rescue DomainError => e
       redirect_to admin_artifact_path(params[:id]), alert: e.message

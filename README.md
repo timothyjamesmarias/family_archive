@@ -43,6 +43,7 @@ Thumbnail generation needs libvips locally (`brew install vips`).
 ## Deploy
 
 Render, via `render.yaml`. Set `ADMIN_EMAIL`/`ADMIN_PASSWORD` (seeds the admin
-account) and `ASSET_BASE_URL` once artifact files live in a bucket —
-`public/uploads` is ephemeral on Render. GEDCOM import is deferred and not yet
+account). Artifact files are Active Storage attachments on local disk, which is
+ephemeral on Render — add an S3 service to `config/storage.yml` before
+uploading anything you care about. GEDCOM import is deferred and not yet
 ported.

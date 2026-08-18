@@ -46,7 +46,3 @@ node_modules
 # https://vitejs.dev/guide/env-and-mode.html#env-files
 *.local
 
-
-# Uploaded artifact files live on disk, not in git
-/public/uploads/*
-!/public/uploads/.keep

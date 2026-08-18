@@ -36,21 +36,25 @@
   <% @artifact.files.each do |file| %>
     <div class="flex items-center gap-4 px-4 py-3 text-sm">
       <div class="w-20 h-20 shrink-0 bg-slate-100 rounded overflow-hidden flex items-center justify-center">
-        <% if file.thumbnail_path || file.image? %>
-          <img src="<%= asset_url_for(file.thumbnail_path || file.storage_path) %>" alt="" class="w-full h-full object-cover">
-        <% else %>
-          <span class="text-xs text-slate-400"><%= file.mime_type.split("/").last %></span>
+        <% if file.thumbnail? %>
+          <img src="<%= url_for(file.file.variant(:thumb)) %>" alt="" class="w-full h-full object-cover">
+        <% elsif file.image? %>
+          <img src="<%= url_for(file.file) %>" alt="" class="w-full h-full object-cover">
+        <% elsif file.file.attached? %>
+          <span class="text-xs text-slate-400"><%= file.file.blob.content_type.to_s.split("/").last %></span>
         <% end %>
       </div>
       <div class="flex-1 min-w-0">
-        <p class="text-slate-900 truncate">#<%= file.file_sequence %> · <%= file.storage_path %></p>
-        <p class="text-slate-500">
-          <%= file.mime_type %> · <%= number_to_human_size(file.file_size) %>
-          <% if file.annotations.any? %> · <%= pluralize(file.annotations.size, "annotation") %><% end %>
-        </p>
+        <p class="text-slate-900 truncate">#<%= file.file_sequence %> · <%= file.file.attached? ? file.file.blob.filename : "(no file)" %></p>
+        <% if file.file.attached? %>
+          <p class="text-slate-500">
+            <%= file.file.blob.content_type %> · <%= number_to_human_size(file.file.blob.byte_size) %>
+            <% if file.annotations.any? %> · <%= pluralize(file.annotations.size, "annotation") %><% end %>
+          </p>
+        <% end %>
       </div>
       <% if @artifact.files.size > 1 %>
-        <%= button_to "Delete", admin_artifact_file_path(@artifact, file.id), method: :delete,
+        <%= button_to "Delete", file_admin_artifact_path(@artifact, file.id), method: :delete,
               data: { turbo_confirm: "Delete this file?" },
               class: "text-red-700 underline cursor-pointer" %>
       <% end %>

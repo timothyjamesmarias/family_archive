@@ -10,10 +10,8 @@ class PublicPagesTest < ActionDispatch::IntegrationTest
   end
 
   test "an artifact collection lists only its type" do
-    photo = Artifact.create!(slug: "p1", artifact_type: "PHOTO", title: "A Photo",
-      storage_path: "x", mime_type: "image/jpeg", file_size: 1)
-    Artifact.create!(slug: "l1", artifact_type: "LETTER", title: "A Letter",
-      storage_path: "x", mime_type: "image/jpeg", file_size: 1)
+    photo = Artifact.create!(slug: "p1", artifact_type: "PHOTO", title: "A Photo")
+    Artifact.create!(slug: "l1", artifact_type: "LETTER", title: "A Letter")
 
     get "/photos"
     assert_match photo.title, response.body

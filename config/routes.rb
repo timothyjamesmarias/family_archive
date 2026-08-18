@@ -64,11 +64,6 @@ Rails.application.routes.draw do
         delete "files/:file_id", action: :destroy_file, as: :file, file_id: /\d+/
       end
     end
-
-    resource :thumbnails, only: :show do
-      post :backfill
-      post :regenerate
-    end
   end
 
   # Solid Queue dashboard. Admin-gated in the MissionControl base controller

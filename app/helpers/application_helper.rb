@@ -1,9 +1,4 @@
 module ApplicationHelper
-  # Public URL for a stored file, given the `storage_path` held in the database.
-  def asset_url_for(storage_path)
-    Storage.asset_url(storage_path)
-  end
-
   def icon_tag(name, css: "", stroke: "2")
     render "shared/icon", name: name, css: css, stroke: stroke
   end

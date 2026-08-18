@@ -17,4 +17,22 @@ class Artifact < ApplicationRecord
   def primary_file
     files.find { |file| file.file_sequence == 1 }
   end
+
+  # Removes one file and closes the sequence gap. The stored object is purged
+  # by the attachment when the row goes.
+  def remove_file!(file_id)
+    file = files.find { |f| f.id == file_id.to_i }
+    raise NotFoundError, "File not found with id: #{file_id}" unless file
+    if files.size <= 1
+      raise ConflictError.new(
+        "Cannot delete the only file. Please delete the entire artifact instead.",
+        field: "files"
+      )
+    end
+
+    file.destroy!
+    files.reject { |f| f.id == file.id }
+      .sort_by(&:file_sequence)
+      .each_with_index { |remaining, index| remaining.update!(file_sequence: index + 1) }
+  end
 end

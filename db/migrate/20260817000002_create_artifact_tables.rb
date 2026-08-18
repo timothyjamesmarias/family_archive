@@ -4,9 +4,6 @@ class CreateArtifactTables < ActiveRecord::Migration[8.1]
       t.string :slug, null: false
       t.string :artifact_type, limit: 50, null: false
       t.string :title, limit: 500
-      t.string :storage_path, limit: 1000, null: false
-      t.string :mime_type, null: false
-      t.bigint :file_size, null: false
       t.datetime :uploaded_at, null: false, default: -> { "CURRENT_TIMESTAMP" }
       t.string :original_date_string
       t.timestamps
@@ -14,15 +11,11 @@ class CreateArtifactTables < ActiveRecord::Migration[8.1]
     add_index :artifacts, :slug, unique: true
     add_index :artifacts, :artifact_type
 
+    # The stored object lives in Active Storage (has_one_attached :file); this
+    # row carries the artifact's ordering and the annotation anchor.
     create_table :artifact_files do |t|
       t.references :artifact, null: false, foreign_key: { on_delete: :cascade }
       t.integer :file_sequence, null: false
-      t.string :storage_path, limit: 1000, null: false
-      t.string :mime_type, null: false
-      t.bigint :file_size, null: false
-      t.string :thumbnail_path, limit: 1000
-      t.string :thumbnail_size, limit: 50
-      t.datetime :uploaded_at, null: false, default: -> { "CURRENT_TIMESTAMP" }
       t.timestamps
     end
     add_index :artifact_files, [ :artifact_id, :file_sequence ], unique: true

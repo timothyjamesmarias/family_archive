@@ -1,7 +1,5 @@
 <%# One artifact row in a typed collection list. Locals: artifact, type. %>
 <% primary = artifact.files.first %>
-<% has_image = primary && (primary.thumbnail_path || primary.image?) %>
-<% image_path = primary ? (primary.thumbnail_path || primary.storage_path) : "" %>
 <% file_count = artifact.files.size %>
 <div class="bg-white dark:bg-gray-800 rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden">
   <a
@@ -9,9 +7,15 @@
     class="flex flex-col sm:flex-row gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors"
   >
     <div class="flex-shrink-0 w-full sm:w-32 h-32 bg-gray-200 dark:bg-gray-700 rounded overflow-hidden">
-      <% if has_image %>
+      <% if primary&.thumbnail? %>
         <img
-          src="<%= asset_url_for(image_path) %>"
+          src="<%= url_for(primary.file.variant(:thumb)) %>"
+          alt="<%= artifact.title || "Untitled" %>"
+          class="w-full h-full object-cover"
+        >
+      <% elsif primary&.image? %>
+        <img
+          src="<%= url_for(primary.file) %>"
           alt="<%= artifact.title || "Untitled" %>"
           class="w-full h-full object-cover"
         >
