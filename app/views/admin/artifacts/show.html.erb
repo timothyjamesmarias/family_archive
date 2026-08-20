@@ -1,5 +1,9 @@
 <% title = @artifact.title || "Untitled #{@artifact.type.display_name}" %>
 <% content_for :title, title %>
+<% content_for :head do %>
+  <meta name="turbo-visit-control" content="reload">
+  <%= vite_javascript_tag "admin_artifact_files.ts" %>
+<% end %>
 <div class="flex items-center justify-between mb-6">
   <h1 class="text-2xl font-semibold text-slate-900"><%= title %></h1>
   <div class="flex gap-2">
@@ -36,7 +40,7 @@
 </dl>
 
 <h2 class="mt-8 mb-3 text-lg font-semibold text-slate-900">Files</h2>
-<div class="rounded border border-slate-200 bg-white divide-y divide-slate-100">
+<div data-testid="artifact-files" class="rounded border border-slate-200 bg-white divide-y divide-slate-100">
   <% @artifact.files.each do |file| %>
     <div class="flex items-center gap-4 px-4 py-3 text-sm">
       <div class="w-20 h-20 shrink-0 bg-slate-100 rounded overflow-hidden flex items-center justify-center">
@@ -58,19 +62,33 @@
         <% end %>
       </div>
       <% if @artifact.files.size > 1 %>
+        <%# Outside Turbo: this page reloads on visit (turbo-visit-control), and
+            a Turbo-driven redirect back to it would consume the flash on the
+            first of the two requests. Native submit keeps it. %>
         <%= button_to "Delete", file_admin_artifact_path(@artifact, file.id), method: :delete,
-              data: { turbo_confirm: "Delete this file?" },
+              form: { data: { turbo: false }, onsubmit: "return confirm('Delete this file?')" },
               class: "text-red-700 underline cursor-pointer" %>
+      <% else %>
+        <span class="text-xs text-slate-400">The only file can't be deleted</span>
       <% end %>
     </div>
   <% end %>
 </div>
 
 <h3 class="mt-6 mb-2 text-sm font-semibold text-slate-700">Add files</h3>
-<%= form_with url: add_files_admin_artifact_path(@artifact), method: :post, multipart: true, class: "flex items-center gap-2" do %>
-  <%= file_field_tag "files[]", multiple: true, required: true, class: "text-sm" %>
-  <%= submit_tag "Add", class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer" %>
-<% end %>
+<div data-artifact-add-files class="max-w-xl">
+  <%# Uppy picks the files; the classic multipart POST (data: { turbo: false })
+      keeps the redirect + flash flow and remounts the dashboard on reload. %>
+  <%= form_with url: add_files_admin_artifact_path(@artifact), method: :post, multipart: true,
+        data: { turbo: false }, class: "space-y-3" do %>
+    <%= file_field_tag "files[]", multiple: true, class: "hidden", data: { uppy_input: true } %>
+    <div data-uppy-dashboard></div>
+    <button type="button" data-uppy-submit
+            class="rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer disabled:opacity-50">
+      Add files
+    </button>
+  <% end %>
+</div>
 
 <div class="mt-6">
   <%= link_to "← Back to artifacts", admin_artifacts_path, class: "text-slate-600 underline" %>

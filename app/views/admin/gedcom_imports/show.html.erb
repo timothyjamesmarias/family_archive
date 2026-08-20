@@ -17,9 +17,9 @@
           keeps the redirect + flash flow and remounts the dashboard on reload. %>
       <%= form_with url: admin_gedcom_import_path, method: :post, multipart: true,
             data: { turbo: false }, class: "space-y-3" do %>
-        <%= file_field_tag :file, accept: ".ged", class: "hidden", data: { gedcom_file: true } %>
+        <%= file_field_tag :file, accept: ".ged", class: "hidden", data: { uppy_input: true } %>
         <div data-uppy-dashboard></div>
-        <button type="button" data-import
+        <button type="button" data-uppy-submit
                 class="rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 cursor-pointer disabled:opacity-50">
           Import
         </button>

@@ -62,6 +62,26 @@ class ArtifactAdminTest < ApplicationSystemTestCase
     assert_selector "[data-testid='annotation-marker']", count: 1
   end
 
+  test "adding a file through the details page and deleting it again" do
+    artifact = upload_photo(title: "Stack of letters")
+    sign_in_as email: "boss@example.com", admin: true
+
+    visit admin_artifact_path(artifact)
+    assert_text "The only file can't be deleted"
+
+    attach_to_uppy FIXTURE
+    click_on "Add files"
+    assert_text "Files added."
+    assert_equal [ 1, 2 ], artifact.reload.files.map(&:file_sequence)
+
+    within("[data-testid='artifact-files']") do
+      accept_confirm { all("button", text: "Delete").last.click }
+    end
+    assert_text "File deleted."
+    assert_equal [ 1 ], artifact.reload.files.map(&:file_sequence)
+    assert_text "The only file can't be deleted"
+  end
+
   test "the typed collection pages appear in the aside nav" do
     upload_photo(title: "Wedding day")
     sign_in_as email: "boss@example.com", admin: true
