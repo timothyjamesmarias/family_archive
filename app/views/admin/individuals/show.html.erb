@@ -1,37 +1,37 @@
 <% content_for :title, "Individual" %>
 <div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-semibold text-slate-900">Individual</h1>
+  <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Individual</h1>
   <div class="flex gap-2">
-    <%= link_to "Edit", edit_admin_individual_path(@individual), class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+    <%= link_to "Edit", edit_admin_individual_path(@individual), class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
     <%= button_to "Delete", admin_individual_path(@individual), method: :delete,
           data: { turbo_confirm: "Delete this individual?" },
-          class: "rounded border border-red-300 px-4 py-2 text-sm text-red-700 hover:bg-red-50 cursor-pointer" %>
+          class: "rounded border border-red-300 dark:border-red-800 px-4 py-2 text-sm text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 cursor-pointer" %>
   </div>
 </div>
 
-<dl class="rounded border border-slate-200 bg-white divide-y divide-slate-100 text-sm">
+<dl class="rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-800 text-sm">
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Gedcom</dt>
-    <dd class="text-slate-900"><%= @individual.gedcom_id %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Gedcom</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @individual.gedcom_id %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Given name</dt>
-    <dd class="text-slate-900"><%= @individual.given_name %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Given name</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @individual.given_name %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Surname</dt>
-    <dd class="text-slate-900"><%= @individual.surname %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Surname</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @individual.surname %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Sex</dt>
-    <dd class="text-slate-900"><%= @individual.sex %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Sex</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @individual.sex %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Is tree root</dt>
-    <dd class="text-slate-900"><%= @individual.is_tree_root %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Is tree root</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @individual.is_tree_root %></dd>
   </div>
 </dl>
 
 <div class="mt-6">
-  <%= link_to "← Back to individuals", admin_individuals_path, class: "text-slate-600 underline" %>
+  <%= link_to "← Back to individuals", admin_individuals_path, class: "text-slate-600 dark:text-slate-400 underline" %>
 </div>

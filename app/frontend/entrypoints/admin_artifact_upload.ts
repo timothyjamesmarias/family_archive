@@ -4,6 +4,7 @@ import '@uppy/core/css/style.min.css'
 import '@uppy/dashboard/css/style.min.css'
 import { csrfHeaders } from '../shared/csrf'
 import { showToast } from '../shared/components/toast'
+import { pageTheme } from '../shared/uppyFormPicker'
 import { MAX_FILE_SIZE, MAX_FILE_SIZE_LABEL, MAX_FILES } from '../shared/uploads'
 
 /**
@@ -35,6 +36,7 @@ function init() {
     proudlyDisplayPoweredByUppy: false,
     hideUploadButton: true,
     note: `Up to ${MAX_FILES} files, ${MAX_FILE_SIZE_LABEL} each. The first file is the primary one.`,
+    theme: pageTheme(),
   })
 
   const setBusy = (busy: boolean) => {

@@ -2,24 +2,24 @@
 <% list_path = @type_page ? admin_typed_artifacts_path(@type_page.route_segment) : admin_artifacts_path %>
 <% content_for :title, title %>
 <div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-semibold text-slate-900"><%= title %></h1>
+  <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100"><%= title %></h1>
   <%= link_to "Upload artifact", new_admin_artifact_path(type: @type_page&.key),
-        class: "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700" %>
+        class: "rounded bg-slate-900 dark:bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 dark:hover:bg-slate-600" %>
 </div>
 
 <%= form_with url: list_path, method: :get, class: "mb-4 flex gap-2" do %>
-  <%= text_field_tag :q, params[:q], placeholder: "Search…", class: "w-64 rounded border border-slate-300 px-3 py-2 text-sm" %>
+  <%= text_field_tag :q, params[:q], placeholder: "Search…", class: "w-64 rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   <% unless @type_page %>
     <%= select_tag :artifact_type,
           options_for_select(ArtifactType::ALL.map { |t| [ t.display_name, t.key ] }, params[:artifact_type]),
-          include_blank: "All types", class: "rounded border border-slate-300 px-3 py-2 text-sm" %>
+          include_blank: "All types", class: "rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   <% end %>
-  <%= submit_tag "Filter", class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer" %>
+  <%= submit_tag "Filter", class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer" %>
 <% end %>
 
-<div class="overflow-x-auto rounded border border-slate-200 bg-white">
-  <table class="min-w-full divide-y divide-slate-200 text-sm">
-    <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+<div class="overflow-x-auto rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+  <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-sm">
+    <thead class="bg-slate-50 dark:bg-slate-950 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
       <tr>
         <th class="px-4 py-3"></th>
         <th class="px-4 py-3">Title</th>
@@ -30,9 +30,9 @@
         <th class="px-4 py-3"></th>
       </tr>
     </thead>
-    <tbody class="divide-y divide-slate-100">
+    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
       <% @artifacts.records.each do |artifact| %>
-        <tr class="hover:bg-slate-50">
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800">
           <td class="px-4 py-2 w-16">
             <%= render "thumbnail", file: artifact.files.first %>
           </td>
@@ -44,8 +44,8 @@
           <td class="px-4 py-3"><%= artifact.files.size %></td>
           <td class="px-4 py-3"><%= artifact.uploaded_at.strftime("%Y-%m-%d") %></td>
           <td class="px-4 py-3 text-right whitespace-nowrap">
-            <%= link_to "View", admin_artifact_path(artifact), class: "text-slate-600 underline" %>
-            <%= link_to "Edit", edit_admin_artifact_path(artifact), class: "ml-2 text-slate-600 underline" %>
+            <%= link_to "View", admin_artifact_path(artifact), class: "text-slate-600 dark:text-slate-400 underline" %>
+            <%= link_to "Edit", edit_admin_artifact_path(artifact), class: "ml-2 text-slate-600 dark:text-slate-400 underline" %>
           </td>
         </tr>
       <% end %>

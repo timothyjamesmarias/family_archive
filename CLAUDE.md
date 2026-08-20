@@ -92,8 +92,9 @@ Three Vite entrypoint groups:
 Pages that mount an island set `turbo-visit-control: reload` in `:head` so
 Turbo never restores a stale mount from its snapshot cache.
 
-Tailwind v4 notes: dark mode is a `dark` class on `<html>` (toggled by
-`shared/darkMode.ts`), custom classes that other classes `@apply` must be
+Tailwind v4 notes: dark mode is a `dark` class on `<html>` (applied and
+toggled by the `dark-mode` Stimulus controller, which both layouts share —
+the admin uses it too), custom classes that other classes `@apply` must be
 `@utility`, and the theme lives in `@theme` inside `public.css`.
 
 ## Style

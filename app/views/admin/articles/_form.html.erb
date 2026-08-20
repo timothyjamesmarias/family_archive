@@ -2,30 +2,30 @@
   <%= render "admin/shared/form_errors", record: article %>
 
   <div>
-    <%= form.label :slug, class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <span class="text-xs text-slate-500">Lowercase letters, numbers and hyphens</span>
-    <%= form.text_field :slug, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :slug, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <span class="text-xs text-slate-500 dark:text-slate-400">Lowercase letters, numbers and hyphens</span>
+    <%= form.text_field :slug, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <%= form.label :title, class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <%= form.text_field :title, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :title, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <%= form.text_field :title, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <%= form.label :excerpt, class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <%= form.text_field :excerpt, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :excerpt, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <%= form.text_field :excerpt, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <%= form.label :content, "Content (HTML)", class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <span class="text-xs text-slate-500">Sanitized on save to the editor's allowed tags</span>
-    <%= form.text_area :content, rows: 16, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm font-mono" %>
+    <%= form.label :content, "Content (HTML)", class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <span class="text-xs text-slate-500 dark:text-slate-400">Sanitized on save to the editor's allowed tags</span>
+    <%= form.text_area :content, rows: 16, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono" %>
   </div>
   <div>
-    <%= form.label :published_at, class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <%= form.datetime_field :published_at, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :published_at, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <%= form.datetime_field :published_at, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
 
   <div class="flex gap-2 pt-2">
-    <%= form.submit class: "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 cursor-pointer" %>
-    <%= link_to "Cancel", admin_articles_path, class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+    <%= form.submit class: "rounded bg-slate-900 dark:bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 dark:hover:bg-slate-600 cursor-pointer" %>
+    <%= link_to "Cancel", admin_articles_path, class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
   </div>
 <% end %>

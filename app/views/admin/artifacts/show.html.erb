@@ -5,57 +5,57 @@
   <%= vite_javascript_tag "admin_artifact_files.ts" %>
 <% end %>
 <div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-semibold text-slate-900"><%= title %></h1>
+  <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100"><%= title %></h1>
   <div class="flex gap-2">
     <%= link_to "View on site", "/#{@artifact.type.route_segment}/#{@artifact.slug}",
-          class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+          class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
     <% if @artifact.type.key == "PHOTO" %>
       <%= link_to "Edit annotations", annotations_admin_artifact_path(@artifact),
-            class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+            class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
     <% end %>
-    <%= link_to "Edit", edit_admin_artifact_path(@artifact), class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+    <%= link_to "Edit", edit_admin_artifact_path(@artifact), class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
     <%= button_to "Delete", admin_artifact_path(@artifact), method: :delete,
           data: { turbo_confirm: "Delete this artifact and all of its files?" },
-          class: "rounded border border-red-300 px-4 py-2 text-sm text-red-700 hover:bg-red-50 cursor-pointer" %>
+          class: "rounded border border-red-300 dark:border-red-800 px-4 py-2 text-sm text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 cursor-pointer" %>
   </div>
 </div>
 
-<dl class="rounded border border-slate-200 bg-white divide-y divide-slate-100 text-sm">
+<dl class="rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-800 text-sm">
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Type</dt>
-    <dd class="text-slate-900"><%= @artifact.type.display_name %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Type</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @artifact.type.display_name %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Slug</dt>
-    <dd class="text-slate-900"><%= @artifact.slug %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Slug</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @artifact.slug %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Original date</dt>
-    <dd class="text-slate-900"><%= @artifact.original_date_string %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Original date</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @artifact.original_date_string %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Uploaded</dt>
-    <dd class="text-slate-900"><%= @artifact.uploaded_at.strftime("%Y-%m-%d %H:%M") %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Uploaded</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @artifact.uploaded_at.strftime("%Y-%m-%d %H:%M") %></dd>
   </div>
 </dl>
 
-<h2 class="mt-8 mb-3 text-lg font-semibold text-slate-900">Files</h2>
-<div data-testid="artifact-files" class="rounded border border-slate-200 bg-white divide-y divide-slate-100">
+<h2 class="mt-8 mb-3 text-lg font-semibold text-slate-900 dark:text-slate-100">Files</h2>
+<div data-testid="artifact-files" class="rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-800">
   <% @artifact.files.each do |file| %>
     <div class="flex items-center gap-4 px-4 py-3 text-sm">
-      <div class="w-20 h-20 shrink-0 bg-slate-100 rounded overflow-hidden flex items-center justify-center">
+      <div class="w-20 h-20 shrink-0 bg-slate-100 dark:bg-slate-800 rounded overflow-hidden flex items-center justify-center">
         <% if file.thumbnail? %>
           <img src="<%= url_for(file.file.variant(:thumb)) %>" alt="" class="w-full h-full object-cover">
         <% elsif file.image? %>
           <img src="<%= url_for(file.file) %>" alt="" class="w-full h-full object-cover">
         <% elsif file.file.attached? %>
-          <span class="text-xs text-slate-400"><%= file.file.blob.content_type.to_s.split("/").last %></span>
+          <span class="text-xs text-slate-400 dark:text-slate-500"><%= file.file.blob.content_type.to_s.split("/").last %></span>
         <% end %>
       </div>
       <div class="flex-1 min-w-0">
-        <p class="text-slate-900 truncate">#<%= file.file_sequence %> · <%= file.file.attached? ? file.file.blob.filename : "(no file)" %></p>
+        <p class="text-slate-900 dark:text-slate-100 truncate">#<%= file.file_sequence %> · <%= file.file.attached? ? file.file.blob.filename : "(no file)" %></p>
         <% if file.file.attached? %>
-          <p class="text-slate-500">
+          <p class="text-slate-500 dark:text-slate-400">
             <%= file.file.blob.content_type %> · <%= number_to_human_size(file.file.blob.byte_size) %>
             <% if file.annotations.any? %> · <%= pluralize(file.annotations.size, "annotation") %><% end %>
           </p>
@@ -67,15 +67,15 @@
             first of the two requests. Native submit keeps it. %>
         <%= button_to "Delete", file_admin_artifact_path(@artifact, file.id), method: :delete,
               form: { data: { turbo: false }, onsubmit: "return confirm('Delete this file?')" },
-              class: "text-red-700 underline cursor-pointer" %>
+              class: "text-red-700 dark:text-red-400 underline cursor-pointer" %>
       <% else %>
-        <span class="text-xs text-slate-400">The only file can't be deleted</span>
+        <span class="text-xs text-slate-400 dark:text-slate-500">The only file can't be deleted</span>
       <% end %>
     </div>
   <% end %>
 </div>
 
-<h3 class="mt-6 mb-2 text-sm font-semibold text-slate-700">Add files</h3>
+<h3 class="mt-6 mb-2 text-sm font-semibold text-slate-700 dark:text-slate-300">Add files</h3>
 <div data-artifact-add-files class="max-w-xl">
   <%# Uppy picks the files; the classic multipart POST (data: { turbo: false })
       keeps the redirect + flash flow and remounts the dashboard on reload. %>
@@ -84,12 +84,12 @@
     <%= file_field_tag "files[]", multiple: true, class: "hidden", data: { uppy_input: true } %>
     <div data-uppy-dashboard></div>
     <button type="button" data-uppy-submit
-            class="rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer disabled:opacity-50">
+            class="rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer disabled:opacity-50">
       Add files
     </button>
   <% end %>
 </div>
 
 <div class="mt-6">
-  <%= link_to "← Back to artifacts", admin_artifacts_path, class: "text-slate-600 underline" %>
+  <%= link_to "← Back to artifacts", admin_artifacts_path, class: "text-slate-600 dark:text-slate-400 underline" %>
 </div>

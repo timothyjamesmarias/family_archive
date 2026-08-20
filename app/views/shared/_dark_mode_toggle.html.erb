@@ -1,6 +1,7 @@
 <button
   class="p-2 rounded-md bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors border border-stone-200 dark:border-stone-700"
-  onclick="window.darkMode.toggle()"
+  data-controller="dark-mode"
+  data-action="dark-mode#toggle"
   aria-label="Toggle dark mode"
 >
   <%= icon_tag "sun", css: "w-5 h-5 text-stone-700 dark:text-stone-300 hidden dark:block" %>

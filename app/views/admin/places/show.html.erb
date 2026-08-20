@@ -1,41 +1,41 @@
 <% content_for :title, "Place" %>
 <div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-semibold text-slate-900">Place</h1>
+  <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Place</h1>
   <div class="flex gap-2">
-    <%= link_to "Edit", edit_admin_place_path(@place), class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+    <%= link_to "Edit", edit_admin_place_path(@place), class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
     <%= button_to "Delete", admin_place_path(@place), method: :delete,
           data: { turbo_confirm: "Delete this place?" },
-          class: "rounded border border-red-300 px-4 py-2 text-sm text-red-700 hover:bg-red-50 cursor-pointer" %>
+          class: "rounded border border-red-300 dark:border-red-800 px-4 py-2 text-sm text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 cursor-pointer" %>
   </div>
 </div>
 
-<dl class="rounded border border-slate-200 bg-white divide-y divide-slate-100 text-sm">
+<dl class="rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-800 text-sm">
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Name</dt>
-    <dd class="text-slate-900"><%= @place.name %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Name</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @place.name %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">City</dt>
-    <dd class="text-slate-900"><%= @place.city %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">City</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @place.city %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">State province</dt>
-    <dd class="text-slate-900"><%= @place.state_province %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">State province</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @place.state_province %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Country</dt>
-    <dd class="text-slate-900"><%= @place.country %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Country</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @place.country %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Latitude</dt>
-    <dd class="text-slate-900"><%= @place.latitude %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Latitude</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @place.latitude %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Longitude</dt>
-    <dd class="text-slate-900"><%= @place.longitude %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Longitude</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @place.longitude %></dd>
   </div>
 </dl>
 
 <div class="mt-6">
-  <%= link_to "← Back to places", admin_places_path, class: "text-slate-600 underline" %>
+  <%= link_to "← Back to places", admin_places_path, class: "text-slate-600 dark:text-slate-400 underline" %>
 </div>

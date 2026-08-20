@@ -1,31 +1,31 @@
 <% content_for :title, "Users" %>
 <div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-semibold text-slate-900">Users</h1>
-  <%= link_to "New user", new_admin_user_path, class: "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700" %>
+  <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">Users</h1>
+  <%= link_to "New user", new_admin_user_path, class: "rounded bg-slate-900 dark:bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 dark:hover:bg-slate-600" %>
 </div>
 
 <%= form_with url: admin_users_path, method: :get, class: "mb-4 flex gap-2" do %>
-  <%= text_field_tag :q, params[:q], placeholder: "Search…", class: "w-64 rounded border border-slate-300 px-3 py-2 text-sm" %>
-  <%= submit_tag "Search", class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer" %>
+  <%= text_field_tag :q, params[:q], placeholder: "Search…", class: "w-64 rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
+  <%= submit_tag "Search", class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer" %>
 <% end %>
 
-<div class="overflow-x-auto rounded border border-slate-200 bg-white">
-  <table class="min-w-full divide-y divide-slate-200 text-sm">
-    <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+<div class="overflow-x-auto rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+  <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800 text-sm">
+    <thead class="bg-slate-50 dark:bg-slate-950 text-left text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
       <tr>
         <th class="px-4 py-3">Name</th>
         <th class="px-4 py-3">Email</th>
         <th class="px-4 py-3"></th>
       </tr>
     </thead>
-    <tbody class="divide-y divide-slate-100">
+    <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
       <% @users.records.each do |user| %>
-        <tr class="hover:bg-slate-50">
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-800">
           <td class="px-4 py-3"><%= user.name %></td>
           <td class="px-4 py-3"><%= user.email %></td>
           <td class="px-4 py-3 text-right whitespace-nowrap">
-            <%= link_to "View", admin_user_path(user), class: "text-slate-600 underline" %>
-            <%= link_to "Edit", edit_admin_user_path(user), class: "ml-2 text-slate-600 underline" %>
+            <%= link_to "View", admin_user_path(user), class: "text-slate-600 dark:text-slate-400 underline" %>
+            <%= link_to "Edit", edit_admin_user_path(user), class: "ml-2 text-slate-600 dark:text-slate-400 underline" %>
           </td>
         </tr>
       <% end %>

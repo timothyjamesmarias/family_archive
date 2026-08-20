@@ -3,6 +3,7 @@ import Dashboard from '@uppy/dashboard'
 import '@uppy/core/css/style.min.css'
 import '@uppy/dashboard/css/style.min.css'
 import { showToast } from './components/toast'
+import { prefersDark } from '../controllers/dark_mode_controller'
 
 interface UppyFormPickerOptions {
   /** Container holding [data-uppy-dashboard], [data-uppy-input], [data-uppy-submit]. */
@@ -16,6 +17,14 @@ interface UppyFormPickerOptions {
   height: number
   /** Toast shown when submit is clicked with nothing picked. */
   emptyMessage: string
+}
+
+/** Uppy's own 'auto' theme follows the system preference, not the site's
+ * stored choice. Asking the controller module (rather than the `dark` class)
+ * also works when a page entrypoint loads before application.js has applied
+ * the class — importing it applies the class as a side effect. */
+export function pageTheme(): 'dark' | 'light' {
+  return prefersDark() ? 'dark' : 'light'
 }
 
 /**
@@ -42,6 +51,7 @@ export function mountUppyFormPicker({
     proudlyDisplayPoweredByUppy: false,
     hideUploadButton: true,
     note,
+    theme: pageTheme(),
   })
 
   submitButton.addEventListener('click', () => {

@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Class-based dark mode: `dark` on <html>, toggled by the dark-mode Stimulus
+   controller. Must match the variant in public.css. */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source "../../views/**/*.erb";
 @source "../../helpers/**/*.rb";
 @source "../**/*.{js,ts,jsx,tsx}";

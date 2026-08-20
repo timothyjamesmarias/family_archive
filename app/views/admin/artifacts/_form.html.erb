@@ -2,21 +2,21 @@
   <%= render "admin/shared/form_errors", record: artifact %>
 
   <div>
-    <%= form.label :artifact_type, "Type", class: "block text-sm font-medium text-slate-700 mb-1" %>
+    <%= form.label :artifact_type, "Type", class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
     <%= form.select :artifact_type, ArtifactType::ALL.map { |t| [ t.display_name, t.key ] },
-          {}, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+          {}, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <%= form.label :title, class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <%= form.text_field :title, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :title, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <%= form.text_field :title, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <%= form.label :original_date_string, "Original date", class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <%= form.text_field :original_date_string, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :original_date_string, "Original date", class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <%= form.text_field :original_date_string, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
 
   <div class="flex gap-2 pt-2">
-    <%= form.submit class: "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 cursor-pointer" %>
-    <%= link_to "Cancel", admin_artifacts_path, class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+    <%= form.submit class: "rounded bg-slate-900 dark:bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 dark:hover:bg-slate-600 cursor-pointer" %>
+    <%= link_to "Cancel", admin_artifacts_path, class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
   </div>
 <% end %>

@@ -2,32 +2,32 @@
   <%= render "admin/shared/form_errors", record: place %>
 
   <div>
-    <%= form.label :name, class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <%= form.text_field :name, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :name, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <%= form.text_field :name, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <%= form.label :city, class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <%= form.text_field :city, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :city, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <%= form.text_field :city, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <%= form.label :state_province, class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <%= form.text_field :state_province, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :state_province, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <%= form.text_field :state_province, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <%= form.label :country, class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <%= form.text_field :country, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :country, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <%= form.text_field :country, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <%= form.label :latitude, class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <%= form.number_field :latitude, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :latitude, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <%= form.number_field :latitude, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <%= form.label :longitude, class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <%= form.number_field :longitude, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :longitude, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <%= form.number_field :longitude, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
 
   <div class="flex gap-2 pt-2">
-    <%= form.submit class: "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 cursor-pointer" %>
-    <%= link_to "Cancel", admin_places_path, class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+    <%= form.submit class: "rounded bg-slate-900 dark:bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 dark:hover:bg-slate-600 cursor-pointer" %>
+    <%= link_to "Cancel", admin_places_path, class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
   </div>
 <% end %>

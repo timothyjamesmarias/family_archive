@@ -3,11 +3,11 @@
   <meta name="turbo-visit-control" content="reload">
   <%= vite_javascript_tag "admin_gedcom_upload.ts" %>
 <% end %>
-<h1 class="text-2xl font-semibold text-slate-900 mb-6">GEDCOM Import</h1>
+<h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6">GEDCOM Import</h1>
 
 <div class="max-w-xl space-y-6">
-  <div class="rounded border border-slate-200 bg-white p-5">
-    <p class="text-sm text-slate-600 mb-3">
+  <div class="rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5">
+    <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">
       Upload a <code>.ged</code> export. Individuals and families are matched by
       their GEDCOM id, so re-importing the same file updates them in place —
       people, relationships, and events added by hand are preserved.
@@ -20,7 +20,7 @@
         <%= file_field_tag :file, accept: ".ged", class: "hidden", data: { uppy_input: true } %>
         <div data-uppy-dashboard></div>
         <button type="button" data-uppy-submit
-                class="rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 cursor-pointer disabled:opacity-50">
+                class="rounded bg-slate-900 dark:bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 dark:hover:bg-slate-600 cursor-pointer disabled:opacity-50">
           Import
         </button>
       <% end %>
@@ -28,22 +28,22 @@
   </div>
 
   <% if @last_result %>
-    <div class="rounded border <%= @last_result[:success] ? "border-slate-200" : "border-red-200" %> bg-white p-5">
-      <h2 class="font-semibold text-slate-900 mb-2">
+    <div class="rounded border <%= @last_result[:success] ? "border-slate-200 dark:border-slate-800" : "border-red-200 dark:border-red-900" %> bg-white dark:bg-slate-900 p-5">
+      <h2 class="font-semibold text-slate-900 dark:text-slate-100 mb-2">
         Last import — <%= @last_result[:success] ? "succeeded" : "failed" %>
-        <span class="font-normal text-slate-500">
+        <span class="font-normal text-slate-500 dark:text-slate-400">
           (<%= @last_result[:finished_at].strftime("%Y-%m-%d %H:%M") %>)
         </span>
       </h2>
       <% if @last_result[:success] %>
-        <dl class="text-sm text-slate-700 space-y-1">
+        <dl class="text-sm text-slate-700 dark:text-slate-300 space-y-1">
           <div>Individuals: <%= @last_result[:individuals_imported] %></div>
           <div>Families: <%= @last_result[:families_imported] %></div>
           <div>Events: <%= @last_result[:events_imported] %></div>
           <div>New places: <%= @last_result[:places_imported] %></div>
         </dl>
       <% else %>
-        <ul class="text-sm text-red-700 list-disc pl-4">
+        <ul class="text-sm text-red-700 dark:text-red-400 list-disc pl-4">
           <% Array(@last_result[:errors]).each do |error| %>
             <li><%= error %></li>
           <% end %>
@@ -52,7 +52,7 @@
     </div>
   <% end %>
 
-  <p class="text-sm text-slate-600">
+  <p class="text-sm text-slate-600 dark:text-slate-400">
     Imports run in the background — watch progress in the
     <%= link_to "jobs dashboard", mission_control_jobs_path, class: "underline" %>.
   </p>

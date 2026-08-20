@@ -1,45 +1,45 @@
 <% content_for :title, @article.title %>
 <div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-semibold text-slate-900"><%= @article.title %></h1>
+  <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100"><%= @article.title %></h1>
   <div class="flex gap-2">
     <% if @article.published? %>
       <%= button_to "Unpublish", unpublish_admin_article_path(@article), method: :post,
-            class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer" %>
+            class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer" %>
     <% else %>
       <%= button_to "Publish", publish_admin_article_path(@article), method: :post,
             class: "rounded bg-emerald-700 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-600 cursor-pointer" %>
     <% end %>
-    <%= link_to "Edit", edit_admin_article_path(@article), class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+    <%= link_to "Edit", edit_admin_article_path(@article), class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
     <%= button_to "Delete", admin_article_path(@article), method: :delete,
           data: { turbo_confirm: "Delete this article?" },
-          class: "rounded border border-red-300 px-4 py-2 text-sm text-red-700 hover:bg-red-50 cursor-pointer" %>
+          class: "rounded border border-red-300 dark:border-red-800 px-4 py-2 text-sm text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950 cursor-pointer" %>
   </div>
 </div>
 
-<dl class="rounded border border-slate-200 bg-white divide-y divide-slate-100 text-sm">
+<dl class="rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-800 text-sm">
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Slug</dt>
-    <dd class="text-slate-900"><%= @article.slug %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Slug</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @article.slug %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Status</dt>
-    <dd class="text-slate-900"><%= @article.published? ? "Published" : "Draft" %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Status</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @article.published? ? "Published" : "Draft" %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Published at</dt>
-    <dd class="text-slate-900"><%= @article.published_at&.strftime("%Y-%m-%d %H:%M") %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Published at</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @article.published_at&.strftime("%Y-%m-%d %H:%M") %></dd>
   </div>
   <div class="flex px-4 py-3">
-    <dt class="w-48 font-medium text-slate-500">Excerpt</dt>
-    <dd class="text-slate-900"><%= @article.excerpt %></dd>
+    <dt class="w-48 font-medium text-slate-500 dark:text-slate-400">Excerpt</dt>
+    <dd class="text-slate-900 dark:text-slate-100"><%= @article.excerpt %></dd>
   </div>
 </dl>
 
-<h2 class="mt-8 mb-3 text-lg font-semibold text-slate-900">Content preview</h2>
-<div class="rounded border border-slate-200 bg-white p-6 prose max-w-none">
+<h2 class="mt-8 mb-3 text-lg font-semibold text-slate-900 dark:text-slate-100">Content preview</h2>
+<div class="rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 prose max-w-none">
   <%= article_html(@article) %>
 </div>
 
 <div class="mt-6">
-  <%= link_to "← Back to articles", admin_articles_path, class: "text-slate-600 underline" %>
+  <%= link_to "← Back to articles", admin_articles_path, class: "text-slate-600 dark:text-slate-400 underline" %>
 </div>

@@ -1,6 +1,6 @@
 <%# Locals: page (Pagination), base_url. Carries the current search and filters through. %>
 <% if page.last_page > 1 %>
-  <div class="mt-4 flex items-center gap-3 text-sm text-slate-600">
+  <div class="mt-4 flex items-center gap-3 text-sm text-slate-600 dark:text-slate-400">
     <% query = request.query_parameters.except("page") %>
     <% if page.current_page > 1 %>
       <%= link_to "Previous", "#{base_url}?#{query.merge(page: page.current_page - 1).to_query}", class: "underline" %>

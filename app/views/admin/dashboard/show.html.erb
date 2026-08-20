@@ -1,6 +1,6 @@
 <% content_for :title, "Admin - Family Archive" %>
 
-<h1 class="text-2xl font-bold text-slate-900">Overview</h1>
+<h1 class="text-2xl font-bold text-slate-900 dark:text-slate-100">Overview</h1>
 
 <dl class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
   <% tiles = {
@@ -12,26 +12,26 @@
     "Users" => [ @counts[:users], admin_users_path ]
   } %>
   <% tiles.each do |label, (count, path)| %>
-    <a href="<%= path %>" class="rounded border border-slate-200 bg-white p-4 hover:border-slate-300">
-      <dt class="text-sm text-slate-600"><%= label %></dt>
-      <dd class="mt-1 text-2xl font-semibold text-slate-900"><%= count %></dd>
+    <a href="<%= path %>" class="rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 hover:border-slate-300 dark:hover:border-slate-500">
+      <dt class="text-sm text-slate-600 dark:text-slate-400"><%= label %></dt>
+      <dd class="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100"><%= count %></dd>
     </a>
   <% end %>
 </dl>
 
-<p class="mt-4 text-sm text-slate-600">
+<p class="mt-4 text-sm text-slate-600 dark:text-slate-400">
   Articles: <%= @published_articles %> published, <%= @draft_articles %> draft<%= "s" unless @draft_articles == 1 %>.
 </p>
 
-<h2 class="mt-8 mb-3 text-lg font-semibold text-slate-900">Recent uploads</h2>
-<div class="rounded border border-slate-200 bg-white divide-y divide-slate-100 text-sm">
+<h2 class="mt-8 mb-3 text-lg font-semibold text-slate-900 dark:text-slate-100">Recent uploads</h2>
+<div class="rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 divide-y divide-slate-100 dark:divide-slate-800 text-sm">
   <% if @recent_artifacts.none? %>
-    <p class="px-4 py-3 text-slate-500">No artifacts uploaded yet.</p>
+    <p class="px-4 py-3 text-slate-500 dark:text-slate-400">No artifacts uploaded yet.</p>
   <% end %>
   <% @recent_artifacts.each do |artifact| %>
     <div class="flex items-center justify-between px-4 py-3">
-      <%= link_to artifact.title || "Untitled (#{artifact.slug})", admin_artifact_path(artifact), class: "text-slate-900 underline" %>
-      <span class="text-slate-500"><%= artifact.type.display_name %> · <%= artifact.uploaded_at.strftime("%Y-%m-%d") %></span>
+      <%= link_to artifact.title || "Untitled (#{artifact.slug})", admin_artifact_path(artifact), class: "text-slate-900 dark:text-slate-100 underline" %>
+      <span class="text-slate-500 dark:text-slate-400"><%= artifact.type.display_name %> · <%= artifact.uploaded_at.strftime("%Y-%m-%d") %></span>
     </div>
   <% end %>
 </div>

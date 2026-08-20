@@ -5,9 +5,9 @@
   <%= vite_javascript_tag "admin_annotations.tsx" %>
 <% end %>
 <div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-semibold text-slate-900"><%= title %></h1>
+  <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100"><%= title %></h1>
   <%= link_to "Back to artifact", admin_artifact_path(@artifact),
-        class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+        class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
 </div>
 
 <div id="annotations-editor" data-payload="<%= @payload.to_json %>"></div>

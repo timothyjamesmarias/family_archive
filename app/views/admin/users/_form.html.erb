@@ -2,27 +2,27 @@
   <%= render "admin/shared/form_errors", record: user %>
 
   <div>
-    <%= form.label :name, class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <%= form.text_field :name, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :name, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <%= form.text_field :name, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <%= form.label :email, class: "block text-sm font-medium text-slate-700 mb-1" %>
-    <%= form.email_field :email, class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.label :email, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
+    <%= form.email_field :email, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <%= form.label :password, class: "block text-sm font-medium text-slate-700 mb-1" %>
+    <%= form.label :password, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
     <% if user.persisted? %>
-      <span class="text-xs text-slate-500">Leave blank to keep the current password</span>
+      <span class="text-xs text-slate-500 dark:text-slate-400">Leave blank to keep the current password</span>
     <% end %>
-    <%= form.password_field :password, autocomplete: "new-password", class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <%= form.password_field :password, autocomplete: "new-password", class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div class="flex items-center gap-2">
     <%= form.check_box :admin %>
-    <%= form.label :admin, "Administrator", class: "text-sm font-medium text-slate-700" %>
+    <%= form.label :admin, "Administrator", class: "text-sm font-medium text-slate-700 dark:text-slate-300" %>
   </div>
 
   <div class="flex gap-2 pt-2">
-    <%= form.submit class: "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 cursor-pointer" %>
-    <%= link_to "Cancel", admin_users_path, class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+    <%= form.submit class: "rounded bg-slate-900 dark:bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 dark:hover:bg-slate-600 cursor-pointer" %>
+    <%= link_to "Cancel", admin_users_path, class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
   </div>
 <% end %>
