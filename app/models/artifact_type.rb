@@ -36,6 +36,8 @@ class ArtifactType
     ALL.reject { |type| type.key == "OTHER" }
   end
 
+  BY_ROUTE_SEGMENT = ALL.index_by(&:route_segment).freeze
+
   def self.fetch(key)
     BY_KEY.fetch(key)
   end

@@ -1,0 +1,13 @@
+<% title = "Annotations — #{@artifact.title || @artifact.slug}" %>
+<% content_for :title, title %>
+<% content_for :head do %>
+  <meta name="turbo-visit-control" content="reload">
+  <%= vite_javascript_tag "admin_annotations.tsx" %>
+<% end %>
+<div class="flex items-center justify-between mb-6">
+  <h1 class="text-2xl font-semibold text-slate-900"><%= title %></h1>
+  <%= link_to "Back to artifact", admin_artifact_path(@artifact),
+        class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+</div>
+
+<div id="annotations-editor" data-payload="<%= @payload.to_json %>"></div>

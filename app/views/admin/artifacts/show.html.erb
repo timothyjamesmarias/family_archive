@@ -5,6 +5,10 @@
   <div class="flex gap-2">
     <%= link_to "View on site", "/#{@artifact.type.route_segment}/#{@artifact.slug}",
           class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+    <% if @artifact.type.key == "PHOTO" %>
+      <%= link_to "Edit annotations", annotations_admin_artifact_path(@artifact),
+            class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
+    <% end %>
     <%= link_to "Edit", edit_admin_artifact_path(@artifact), class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
     <%= button_to "Delete", admin_artifact_path(@artifact), method: :delete,
           data: { turbo_confirm: "Delete this artifact and all of its files?" },

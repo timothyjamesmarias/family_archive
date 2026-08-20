@@ -1,0 +1,10 @@
+<%# A small square preview of an artifact's primary file. Locals: file (ArtifactFile or nil). %>
+<div class="w-12 h-12 rounded overflow-hidden bg-slate-100 flex items-center justify-center">
+  <% if file&.thumbnail? %>
+    <img src="<%= url_for(file.file.variant(:thumb)) %>" alt="" class="w-full h-full object-cover">
+  <% elsif file&.image? %>
+    <img src="<%= url_for(file.file) %>" alt="" class="w-full h-full object-cover">
+  <% elsif file&.file&.attached? %>
+    <span class="text-[10px] text-slate-400"><%= file.file.blob.content_type.to_s.split("/").last %></span>
+  <% end %>
+</div>

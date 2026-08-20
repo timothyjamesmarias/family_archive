@@ -1,31 +1,46 @@
 <% content_for :title, "Upload artifact" %>
+<% content_for :head do %>
+  <meta name="turbo-visit-control" content="reload">
+  <%= vite_javascript_tag "admin_artifact_upload.ts" %>
+<% end %>
 <h1 class="text-2xl font-semibold text-slate-900 mb-6">Upload artifact</h1>
 
-<%= form_with url: admin_artifacts_path, method: :post, multipart: true, class: "max-w-xl space-y-4" do |form| %>
+<div class="max-w-2xl space-y-4"
+     data-artifact-upload
+     data-create-url="<%= admin_artifacts_path(format: :json) %>"
+     data-artifacts-url="<%= admin_artifacts_path %>">
   <div>
-    <label class="block text-sm font-medium text-slate-700 mb-1">Files</label>
-    <span class="text-xs text-slate-500">The first file becomes the primary file. Max 50&nbsp;MB each.</span>
-    <%= file_field_tag "files[]", multiple: true, required: true, class: "w-full text-sm" %>
-  </div>
-  <div>
-    <label class="block text-sm font-medium text-slate-700 mb-1">Type</label>
+    <label class="block text-sm font-medium text-slate-700 mb-1" for="artifact_type">Type</label>
     <%= select_tag "artifact[artifact_type]",
-          options_for_select(ArtifactType::ALL.map { |t| [ t.display_name, t.key ] }, params.dig(:artifact, :artifact_type)),
-          include_blank: "Choose a type…", required: true,
+          options_for_select(ArtifactType::ALL.map { |t| [ t.display_name, t.key ] }, params[:type] || "PHOTO"),
+          id: "artifact_type", data: { field_type: true },
           class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <label class="block text-sm font-medium text-slate-700 mb-1">Title</label>
-    <%= text_field_tag "artifact[title]", params.dig(:artifact, :title), class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <label class="block text-sm font-medium text-slate-700 mb-1" for="artifact_title">Title</label>
+    <%= text_field_tag "artifact[title]", nil, id: "artifact_title", data: { field_title: true },
+          class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <label class="block text-sm font-medium text-slate-700 mb-1">Original date</label>
-    <span class="text-xs text-slate-500">Free text, e.g. "Summer 1943"</span>
-    <%= text_field_tag "artifact[original_date_string]", params.dig(:artifact, :original_date_string), class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
+    <label class="block text-sm font-medium text-slate-700 mb-1" for="artifact_original_date">Original date</label>
+    <span class="text-xs text-slate-500">Free text as recorded on the artifact, e.g. "Summer 1943"</span>
+    <%= text_field_tag "artifact[original_date_string]", nil, id: "artifact_original_date", data: { field_date: true },
+          class: "w-full rounded border border-slate-300 px-3 py-2 text-sm" %>
   </div>
 
+  <div data-uppy-dashboard></div>
+
+  <p data-upload-error class="hidden rounded border border-red-300 bg-red-50 px-4 py-2 text-sm text-red-700"></p>
+
   <div class="flex gap-2 pt-2">
-    <%= submit_tag "Upload", class: "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 cursor-pointer" %>
+    <button type="button" data-submit="upload"
+            class="rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 cursor-pointer disabled:opacity-50">
+      Upload
+    </button>
+    <button type="button" data-submit="add-another"
+            class="rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer disabled:opacity-50">
+      Save and add another
+    </button>
     <%= link_to "Cancel", admin_artifacts_path, class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100" %>
   </div>
-<% end %>
+</div>

@@ -16,8 +16,11 @@ class ArtifactFile < ApplicationRecord
     file.attached? && file.blob.content_type.to_s.start_with?("image/")
   end
 
-  # A variant can only be generated for image types vips understands.
+  # True only once the preprocessed :thumb variant actually exists — a variant
+  # URL triggers on-demand generation otherwise, which needs vips inside the
+  # image request and 500s where it is missing. Callers fall back to the
+  # original file until the transform job has run.
   def thumbnail?
-    file.attached? && file.blob.representable?
+    file.attached? && file.blob.representable? && file.blob.variant_records.any?
   end
 end

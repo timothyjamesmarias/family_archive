@@ -33,6 +33,11 @@
 
           <p class="px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">Content</p>
           <%= link_to "Artifacts", admin_artifacts_path, class: nav_item %>
+          <div class="ml-4">
+            <% ArtifactType::ALL.each do |type| %>
+              <%= link_to type.plural_display_name, admin_typed_artifacts_path(type.route_segment), class: nav_item %>
+            <% end %>
+          </div>
           <%= link_to "Articles", admin_articles_path, class: nav_item %>
 
           <p class="px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">System</p>

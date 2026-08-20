@@ -80,6 +80,15 @@ Three Vite entrypoint groups:
 - `public.(ts|css)` — public pages: dark mode, mobile menu, annotated-photo
   islands; Tailwind with the Paperwhite theme (stone/sage palette, Lora/Inter).
 - `family_tree.(ts|css)` — the family-tree island, loaded only on /family-tree.
+- `admin_artifact_upload.ts` — the Uppy dashboard on the artifact upload page
+  (multi-file, "save and add another"; posts FormData to the JSON create).
+- `admin_annotations.tsx` — the React + MUI annotations editor
+  (`app/frontend/apps/annotations`, ported from the Adonis admin; the page
+  embeds its payload in `data-payload` and saves via
+  `PUT /api/artifact-files/:id/annotations`).
+
+Pages that mount an island set `turbo-visit-control: reload` in `:head` so
+Turbo never restores a stale mount from its snapshot cache.
 
 Tailwind v4 notes: dark mode is a `dark` class on `<html>` (toggled by
 `shared/darkMode.ts`), custom classes that other classes `@apply` must be

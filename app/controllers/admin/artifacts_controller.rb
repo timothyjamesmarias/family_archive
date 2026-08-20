@@ -11,8 +11,11 @@ module Admin
     ].freeze
 
     def index
-      scope = Artifact.order(uploaded_at: :desc).includes(files: { file_attachment: :blob })
-      scope = scope.of_type(params[:artifact_type]) if params[:artifact_type].present?
+      @type_page = ArtifactType::BY_ROUTE_SEGMENT[params[:segment]]
+      type_key = @type_page&.key || params[:artifact_type].presence
+
+      scope = Artifact.order(uploaded_at: :desc).includes(files: { file_attachment: { blob: :variant_records } })
+      scope = scope.of_type(type_key) if type_key
       scope = search(scope) if params[:q].present?
       @artifacts = Pagination.paginate(
         scope, page: params.fetch(:page, 1), per_page: PER_PAGE
@@ -20,7 +23,7 @@ module Admin
     end
 
     def show
-      @artifact = Artifact.includes(files: [ :annotations, { file_attachment: :blob } ]).find(params[:id])
+      @artifact = Artifact.includes(files: [ :annotations, { file_attachment: { blob: :variant_records } } ]).find(params[:id])
     end
 
     # Artifacts are only created by uploading files — a record without a stored
@@ -36,9 +39,14 @@ module Admin
       error ||= "Choose an artifact type" unless type
 
       if error
-        @artifact = Artifact.new(artifact_params.except(:artifact_type))
-        flash.now[:alert] = error
-        return render :new, status: :unprocessable_entity
+        return respond_to do |format|
+          format.html do
+            @artifact = Artifact.new(artifact_params.except(:artifact_type))
+            flash.now[:alert] = error
+            render :new, status: :unprocessable_entity
+          end
+          format.json { render json: { errors: { files: error } }, status: :unprocessable_entity }
+        end
       end
 
       artifact = ArtifactUploader.new.upload(
@@ -47,7 +55,10 @@ module Admin
         title: params.dig(:artifact, :title).presence,
         original_date_string: params.dig(:artifact, :original_date_string).presence
       )
-      redirect_to admin_artifact_path(artifact), notice: "Artifact uploaded."
+      respond_to do |format|
+        format.html { redirect_to admin_artifact_path(artifact), notice: "Artifact uploaded." }
+        format.json { render json: { data: { id: artifact.id } }, status: :created }
+      end
     end
 
     def edit
@@ -95,7 +106,41 @@ module Admin
       redirect_to admin_artifact_path(params[:id]), alert: e.message
     end
 
+    def annotations
+      @artifact = Artifact.includes(files: [ :annotations, { file_attachment: { blob: :variant_records } } ])
+                          .find(params[:id])
+      @payload = annotations_payload(@artifact)
+    end
+
     private
+
+    # The shape the annotations editor island expects; mirrors the Adonis
+    # /api/admin/artifacts/:id/annotations payload, with `url` in place of
+    # `storagePath` now that files live in Active Storage.
+    def annotations_payload(artifact)
+      {
+        id: artifact.id,
+        title: artifact.title,
+        slug: artifact.slug,
+        artifactType: artifact.artifact_type,
+        files: artifact.files.select { |file| file.file.attached? }.map do |file|
+          {
+            id: file.id,
+            url: url_for(file.file),
+            mimeType: file.file.blob.content_type,
+            fileSequence: file.file_sequence,
+            annotations: file.annotations.map do |annotation|
+              {
+                id: annotation.id,
+                annotationText: annotation.annotation_text,
+                xCoord: annotation.x_coord.to_f,
+                yCoord: annotation.y_coord.to_f
+              }
+            end
+          }
+        end
+      }
+    end
 
     def search(scope)
       pattern = "%#{Artifact.sanitize_sql_like(params[:q])}%"

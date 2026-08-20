@@ -38,6 +38,7 @@ Thumbnail generation needs libvips locally (`brew install vips`).
 - `app/queries` — recursive-CTE traversals over the genealogy graph
 - `script/gedcom-to-json.mjs` — read-gedcom CLI the GEDCOM importer shells to
 - `app/frontend/apps/family-tree` — the tree island (ported as-is; React later)
+- `app/frontend/apps/annotations` — the admin photo-annotations editor (React + MUI)
 - `lib/generators/admin_scaffold` — generator for admin CRUD sections
 - `docs`: see `CLAUDE.md` for architecture notes and conventions
 

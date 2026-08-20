@@ -1,14 +1,19 @@
-<% content_for :title, "Artifacts" %>
+<% title = @type_page ? @type_page.plural_display_name : "Artifacts" %>
+<% list_path = @type_page ? admin_typed_artifacts_path(@type_page.route_segment) : admin_artifacts_path %>
+<% content_for :title, title %>
 <div class="flex items-center justify-between mb-6">
-  <h1 class="text-2xl font-semibold text-slate-900">Artifacts</h1>
-  <%= link_to "Upload artifact", new_admin_artifact_path, class: "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700" %>
+  <h1 class="text-2xl font-semibold text-slate-900"><%= title %></h1>
+  <%= link_to "Upload artifact", new_admin_artifact_path(type: @type_page&.key),
+        class: "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700" %>
 </div>
 
-<%= form_with url: admin_artifacts_path, method: :get, class: "mb-4 flex gap-2" do %>
+<%= form_with url: list_path, method: :get, class: "mb-4 flex gap-2" do %>
   <%= text_field_tag :q, params[:q], placeholder: "Search…", class: "w-64 rounded border border-slate-300 px-3 py-2 text-sm" %>
-  <%= select_tag :artifact_type,
-        options_for_select(ArtifactType::ALL.map { |t| [ t.display_name, t.key ] }, params[:artifact_type]),
-        include_blank: "All types", class: "rounded border border-slate-300 px-3 py-2 text-sm" %>
+  <% unless @type_page %>
+    <%= select_tag :artifact_type,
+          options_for_select(ArtifactType::ALL.map { |t| [ t.display_name, t.key ] }, params[:artifact_type]),
+          include_blank: "All types", class: "rounded border border-slate-300 px-3 py-2 text-sm" %>
+  <% end %>
   <%= submit_tag "Filter", class: "rounded border border-slate-300 px-4 py-2 text-sm hover:bg-slate-100 cursor-pointer" %>
 <% end %>
 
@@ -16,8 +21,9 @@
   <table class="min-w-full divide-y divide-slate-200 text-sm">
     <thead class="bg-slate-50 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
       <tr>
+        <th class="px-4 py-3"></th>
         <th class="px-4 py-3">Title</th>
-        <th class="px-4 py-3">Type</th>
+        <% unless @type_page %><th class="px-4 py-3">Type</th><% end %>
         <th class="px-4 py-3">Slug</th>
         <th class="px-4 py-3">Files</th>
         <th class="px-4 py-3">Uploaded</th>
@@ -27,8 +33,13 @@
     <tbody class="divide-y divide-slate-100">
       <% @artifacts.records.each do |artifact| %>
         <tr class="hover:bg-slate-50">
+          <td class="px-4 py-2 w-16">
+            <%= render "thumbnail", file: artifact.files.first %>
+          </td>
           <td class="px-4 py-3"><%= artifact.title || "Untitled" %></td>
-          <td class="px-4 py-3"><%= artifact.type.display_name %></td>
+          <% unless @type_page %>
+            <td class="px-4 py-3"><%= artifact.type.display_name %></td>
+          <% end %>
           <td class="px-4 py-3"><%= artifact.slug %></td>
           <td class="px-4 py-3"><%= artifact.files.size %></td>
           <td class="px-4 py-3"><%= artifact.uploaded_at.strftime("%Y-%m-%d") %></td>
@@ -42,4 +53,4 @@
   </table>
 </div>
 
-<%= render "admin/shared/pagination", page: @artifacts, base_url: admin_artifacts_path %>
+<%= render "admin/shared/pagination", page: @artifacts, base_url: list_path %>

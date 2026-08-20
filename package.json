@@ -8,6 +8,8 @@
   "devDependencies": {
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
     "@types/d3-selection": "^3.0.11",
     "@types/d3-shape": "^3.1.8",
     "@types/d3-transition": "^3.0.9",
@@ -25,8 +27,14 @@
     "vitest": "^4.1.10"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.23",
+    "@mui/icons-material": "^9.3.1",
+    "@mui/material": "^9.3.1",
+    "@uppy/core": "^5.2.0",
+    "@uppy/dashboard": "^5.1.1",
     "d3-selection": "^3.0.0",
     "d3-shape": "^3.2.0",
     "d3-zoom": "^3.0.0",

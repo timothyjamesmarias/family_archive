@@ -41,7 +41,7 @@ class ArtifactsController < ApplicationController
   end
 
   def scope_for(type)
-    attachment = { file_attachment: :blob }
+    attachment = { file_attachment: { blob: :variant_records } }
     includes = type.key == "PHOTO" ? [ :annotations, attachment ] : [ attachment ]
     Artifact.of_type(type.key).includes(files: includes)
   end

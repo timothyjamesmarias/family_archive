@@ -60,12 +60,18 @@ Rails.application.routes.draw do
     end
     resource :gedcom_import, only: [ :show, :create ]
 
-    resources :artifacts do
+    resources :artifacts, constraints: { id: /\d+/ } do
       member do
         post :add_files
         delete "files/:file_id", action: :destroy_file, as: :file, file_id: /\d+/
+        get :annotations
       end
     end
+
+    # One collection page per artifact type (/admin/artifacts/photos, ...),
+    # mirroring the public typed routes. Same index action with the type pinned.
+    get "artifacts/:segment", to: "artifacts#index", as: :typed_artifacts,
+        constraints: { segment: Regexp.union(ArtifactType::ALL.map(&:route_segment)) }
   end
 
   # Solid Queue dashboard. Admin-gated in the MissionControl base controller
