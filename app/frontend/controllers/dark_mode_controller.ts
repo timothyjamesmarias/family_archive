@@ -8,8 +8,9 @@ export function prefersDark(): boolean {
   return window.matchMedia('(prefers-color-scheme: dark)').matches
 }
 
-// Applied on import — before Stimulus connects — so the theme is set as early
-// as the old shared/darkMode module did and the flash window stays minimal.
+// The pre-paint application lives in shared/_theme_boot.html.erb (inline in
+// both layouts — a deferred module runs too late and flashes). This re-apply
+// on import only covers a page that lost the boot script.
 document.documentElement.classList.toggle('dark', prefersDark())
 
 export default class extends Controller {

@@ -6,15 +6,7 @@
     <title><%= content_for(:title) || "Family Archive" %></title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <script>
-      (function () {
-        const theme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        if (theme === 'dark' || (!theme && prefersDark)) {
-          document.documentElement.classList.add('dark');
-        }
-      })();
-    </script>
+    <%= render "shared/theme_boot" %>
     <%= vite_client_tag %>
     <%= vite_stylesheet_tag "public" %>
     <%= vite_javascript_tag "public.ts" %>
