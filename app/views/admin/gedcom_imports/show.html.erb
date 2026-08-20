@@ -1,4 +1,8 @@
 <% content_for :title, "GEDCOM Import" %>
+<% content_for :head do %>
+  <meta name="turbo-visit-control" content="reload">
+  <%= vite_javascript_tag "admin_gedcom_upload.ts" %>
+<% end %>
 <h1 class="text-2xl font-semibold text-slate-900 mb-6">GEDCOM Import</h1>
 
 <div class="max-w-xl space-y-6">
@@ -8,10 +12,19 @@
       their GEDCOM id, so re-importing the same file updates them in place —
       people, relationships, and events added by hand are preserved.
     </p>
-    <%= form_with url: admin_gedcom_import_path, method: :post, multipart: true, class: "flex items-center gap-2" do %>
-      <%= file_field_tag :file, accept: ".ged", required: true, class: "text-sm" %>
-      <%= submit_tag "Import", class: "rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 cursor-pointer" %>
-    <% end %>
+    <div data-gedcom-upload>
+      <%# Uppy picks the file; the classic multipart POST (data: { turbo: false })
+          keeps the redirect + flash flow and remounts the dashboard on reload. %>
+      <%= form_with url: admin_gedcom_import_path, method: :post, multipart: true,
+            data: { turbo: false }, class: "space-y-3" do %>
+        <%= file_field_tag :file, accept: ".ged", class: "hidden", data: { gedcom_file: true } %>
+        <div data-uppy-dashboard></div>
+        <button type="button" data-import
+                class="rounded bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 cursor-pointer disabled:opacity-50">
+          Import
+        </button>
+      <% end %>
+    </div>
   </div>
 
   <% if @last_result %>

@@ -18,6 +18,23 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     assert_no_current_path new_user_session_path
   end
 
+  # Uppy hides its file inputs off-screen, which Capybara refuses to interact
+  # with; unhiding them and setting the first directly feeds Uppy the same
+  # `change` event a picked file would.
+  def attach_to_uppy(path)
+    input = find(".uppy-Dashboard input[type='file']", visible: :all, match: :first)
+    page.execute_script(<<~JS)
+      document.querySelectorAll(".uppy-Dashboard input[type=file]").forEach((el) => {
+        el.style.opacity = "1"
+        el.style.display = "block"
+        el.style.visibility = "visible"
+        el.style.width = "1px"
+        el.style.height = "1px"
+      })
+    JS
+    input.set(path)
+  end
+
   private
 
   # Chromedriver intermittently eats synthesized keystrokes on this page (the

@@ -3,23 +3,6 @@ require "application_system_test_case"
 class ArtifactAdminTest < ApplicationSystemTestCase
   FIXTURE = Rails.root.join("test/fixtures/files/artifact.png")
 
-  # Uppy hides its file inputs off-screen, which Capybara refuses to interact
-  # with; unhiding them and setting the first directly feeds Uppy the same
-  # `change` event a picked file would.
-  def attach_to_uppy(path)
-    input = find(".uppy-Dashboard input[type='file']", visible: :all, match: :first)
-    page.execute_script(<<~JS)
-      document.querySelectorAll(".uppy-Dashboard input[type=file]").forEach((el) => {
-        el.style.opacity = "1"
-        el.style.display = "block"
-        el.style.visibility = "visible"
-        el.style.width = "1px"
-        el.style.height = "1px"
-      })
-    JS
-    input.set(path)
-  end
-
   def upload_photo(title:)
     ArtifactUploader.new.upload(
       files: [ Rack::Test::UploadedFile.new(FIXTURE, "image/png") ],
