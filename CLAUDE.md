@@ -58,8 +58,10 @@ Seeds create `admin@example.com` / `password` in development.
 - **Article HTML is sanitized twice**: `ArticleHtml.sanitize` on save, and the
   `article_html` helper on render.
 - **Mission Control** at `/admin/jobs` (admin-gated) shows the Solid Queue
-  jobs, including Active Storage's analyze/transform/purge jobs. Variant
-  generation needs libvips (`brew install vips` locally; the Dockerfile has it).
+  jobs, including Active Storage's analyze/transform/purge jobs. Development
+  uses Solid Queue too (the :async default would keep the dashboard empty), so
+  jobs only run under `bin/dev`, which starts the worker. Variant generation
+  needs libvips (`brew install vips` locally; the Dockerfile has it).
 - **GEDCOM import parses via Node** — Ruby has no maintained GEDCOM parser,
   so `GedcomReader` shells out to `script/gedcom-to-json.mjs` (the same
   `read-gedcom` package the AdonisJS app used) and `GedcomImporter` owns all

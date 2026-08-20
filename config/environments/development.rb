@@ -31,6 +31,12 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
+  # Same queue as production so Mission Control (/admin/jobs) sees the jobs;
+  # the default :async adapter runs them invisibly in-process. bin/dev runs
+  # the worker (Procfile.dev's `jobs: bin/jobs`) — `bin/rails server` alone
+  # leaves jobs queued.
+  config.active_job.queue_adapter = :solid_queue
+
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 
