@@ -5,21 +5,23 @@ default: &default
   # exactly what parallel tests do. Nothing here authenticates via GSS.
   gssencmode: disable
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+local: &local
+  <<: *default
   host: <%= ENV.fetch("POSTGRES_HOST", "localhost") %>
   port: <%= ENV.fetch("POSTGRES_PORT", 5433) %>
   username: <%= ENV.fetch("POSTGRES_USER", "postgres") %>
   password: <%= ENV.fetch("POSTGRES_PASSWORD", "postgres") %>
 
 development:
-  <<: *default
+  <<: *local
   database: family_archive_development
 
 test:
-  <<: *default
+  <<: *local
   database: family_archive_test
 
+# Production connection details come entirely from DATABASE_URL (set by Render).
 production:
   <<: *default
   database: family_archive_production
-  username: <%= ENV.fetch("POSTGRES_USER", "family_archive") %>
-  password: <%= ENV["FAMILY_ARCHIVE_DATABASE_PASSWORD"] %>
