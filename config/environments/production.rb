@@ -89,8 +89,9 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   # Enable DNS rebinding protection and other `Host` header attacks.
-  # APP_HOST is the app's own domain; RENDER_EXTERNAL_HOSTNAME is set by Render.
-  config.hosts << ENV["APP_HOST"] if ENV["APP_HOST"].present?
+  # APP_HOST is the app's own domain; the leading dot also admits its
+  # subdomains (www). RENDER_EXTERNAL_HOSTNAME is set by Render.
+  config.hosts << ".#{ENV["APP_HOST"]}" if ENV["APP_HOST"].present?
   config.hosts << ENV["RENDER_EXTERNAL_HOSTNAME"] if ENV["RENDER_EXTERNAL_HOSTNAME"].present?
 
   # Skip DNS rebinding protection for the default health check endpoint.
