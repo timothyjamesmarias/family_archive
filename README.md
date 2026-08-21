@@ -45,6 +45,5 @@ Thumbnail generation needs libvips locally (`brew install vips`).
 ## Deploy
 
 Render, via `render.yaml`. Set `ADMIN_EMAIL`/`ADMIN_PASSWORD` (seeds the admin
-account). Artifact files are Active Storage attachments on local disk, which is
-ephemeral on Render — add an S3 service to `config/storage.yml` before
-uploading anything you care about.
+account) and the S3 vars for Active Storage uploads: `AWS_ACCESS_KEY_ID`,
+`AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `AWS_S3_BUCKET`.

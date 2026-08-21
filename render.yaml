@@ -60,6 +60,17 @@ services:
       - key: ADMIN_PASSWORD
         sync: false
 
+      # S3 bucket for Active Storage uploads (Render's disk is ephemeral).
+      # The IAM user needs s3:GetObject/PutObject/DeleteObject/ListBucket on it.
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_REGION
+        sync: false
+      - key: AWS_S3_BUCKET
+        sync: false
+
 
   # Dedicated job worker. Enable this and set SOLID_QUEUE_IN_PUMA to false on
   # the web service when jobs need their own resources.
@@ -82,3 +93,24 @@ services:
   #       fromDatabase:
   #         name: family-archive-db
   #         property: connectionString
+  #     # Jobs (variant transforms, purges) touch the same S3 bucket.
+  #     - key: AWS_ACCESS_KEY_ID
+  #       fromService:
+  #         name: family-archive
+  #         type: web
+  #         envVarKey: AWS_ACCESS_KEY_ID
+  #     - key: AWS_SECRET_ACCESS_KEY
+  #       fromService:
+  #         name: family-archive
+  #         type: web
+  #         envVarKey: AWS_SECRET_ACCESS_KEY
+  #     - key: AWS_REGION
+  #       fromService:
+  #         name: family-archive
+  #         type: web
+  #         envVarKey: AWS_REGION
+  #     - key: AWS_S3_BUCKET
+  #       fromService:
+  #         name: family-archive
+  #         type: web
+  #         envVarKey: AWS_S3_BUCKET
