@@ -70,6 +70,10 @@ services:
         sync: false
       - key: AWS_S3_BUCKET
         sync: false
+      # Folder inside the bucket that blob keys are generated under. Changing
+      # it only affects new uploads — existing keys are stored in the DB.
+      - key: AWS_S3_KEY_PREFIX
+        value: production
 
 
   # Dedicated job worker. Enable this and set SOLID_QUEUE_IN_PUMA to false on
@@ -114,3 +118,8 @@ services:
   #         name: family-archive
   #         type: web
   #         envVarKey: AWS_S3_BUCKET
+  #     - key: AWS_S3_KEY_PREFIX
+  #       fromService:
+  #         name: family-archive
+  #         type: web
+  #         envVarKey: AWS_S3_KEY_PREFIX

@@ -120,7 +120,8 @@ Render via `render.yaml` (Docker). Solid Queue runs inside Puma
 (`SOLID_QUEUE_IN_PUMA`); production databases arrive via `DATABASE_URL`.
 Active Storage uploads go to S3 — set `AWS_ACCESS_KEY_ID`,
 `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, and `AWS_S3_BUCKET` in Render
-(declared `sync: false` in the blueprint).
+(declared `sync: false` in the blueprint). `AWS_S3_KEY_PREFIX` (default
+`production`) namespaces blob keys under a folder in the bucket.
 
 ## Testing
 
