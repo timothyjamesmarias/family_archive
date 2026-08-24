@@ -13,9 +13,93 @@
 @theme {
   --font-serif: "Lora", Georgia, "Times New Roman", serif;
   --font-sans: "Inter", "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   --leading-extra-relaxed: 1.75;
   --leading-super-relaxed: 1.8;
+
+  /* Page vs sheet: the two paper tones live between taupe-50 and white,
+     so surfaces read as sheets on a desk. */
+  --color-paper-base: #f4f2ef;
+  --color-paper-sheet: #fdfcfb;
+
+  /* Action colour: links, primary buttons, focus rings, current-state marks.
+     700 for text on paper; 300 for everything on dark. */
+  --color-verdigris-50: #f2f7f5;
+  --color-verdigris-100: #e1ece8;
+  --color-verdigris-200: #c3d9d1;
+  --color-verdigris-300: #92bfae;
+  --color-verdigris-400: #5f9c84;
+  --color-verdigris-500: #437a66;
+  --color-verdigris-600: #386a58;
+  --color-verdigris-700: #2f5d4b;
+  --color-verdigris-800: #294e40;
+  --color-verdigris-900: #244237;
+
+  /* Editorial voice: the archive's own writing, held apart from the record. */
+  --color-heather-50: #f7f5f8;
+  --color-heather-100: #ebe7ee;
+  --color-heather-200: #d9d2df;
+  --color-heather-300: #bdb1c6;
+  --color-heather-400: #9c8caa;
+  --color-heather-500: #7d6b8c;
+  --color-heather-600: #675874;
+  --color-heather-700: #564a61;
+  --color-heather-800: #4a4053;
+  --color-heather-900: #403848;
+
+  /* Dark-mode surfaces. Inverting taupe is not enough; lamplight gets its
+     own family, darkest first: 900 sits under primary buttons, 800 is the
+     page, 700 the sheet, 600 recessed/raised, 500 the hairline. The light
+     end carries text: 50 body, 100 secondary, 200 muted labels. */
+  --color-ink-50: #ece8e4;
+  --color-ink-100: #b9b0aa;
+  --color-ink-200: #9b918a;
+  --color-ink-300: #6e655f;
+  --color-ink-400: #574f4c;
+  --color-ink-500: #3f3937;
+  --color-ink-600: #332e2c;
+  --color-ink-700: #2a2624;
+  --color-ink-800: #211d1c;
+  --color-ink-900: #1b1817;
+
+  /* Functional colours, flat keys so they compose with the dark: variant.
+     -text is the mono label tone, -body the message copy. */
+  --color-success-bg: #e8f3e8;
+  --color-success-border: #c3ddc3;
+  --color-success-text: #3f6b3f;
+  --color-success-body: #3d613d;
+  --color-success-bg-dark: #2d3e2d;
+  --color-success-border-dark: #3f5540;
+  --color-success-text-dark: #7fb07f;
+  --color-success-body-dark: #cfe0cf;
+
+  --color-error-bg: #f5e8e8;
+  --color-error-border: #ddc3c3;
+  --color-error-text: #8c4a4a;
+  --color-error-body: #6f3b3b;
+  --color-error-bg-dark: #3e2d2d;
+  --color-error-border-dark: #553f3f;
+  --color-error-text-dark: #d69b9b;
+  --color-error-body-dark: #e0cfcf;
+
+  --color-warning-bg: #f5f0e8;
+  --color-warning-border: #ddd2c3;
+  --color-warning-text: #7a6a3d;
+  --color-warning-body: #6f613b;
+  --color-warning-bg-dark: #3e3a2d;
+  --color-warning-border-dark: #55503f;
+  --color-warning-text-dark: #c9b380;
+  --color-warning-body-dark: #e0dacf;
+
+  --color-info-bg: #e8eff5;
+  --color-info-border: #c3d2dd;
+  --color-info-text: #4a6b8c;
+  --color-info-body: #3b566f;
+  --color-info-bg-dark: #2d3640;
+  --color-info-border-dark: #3f4a55;
+  --color-info-text-dark: #809fc9;
+  --color-info-body-dark: #cfd8e0;
 
   --color-sage-50: #f6f7f6;
   --color-sage-100: #e3e7e3;
