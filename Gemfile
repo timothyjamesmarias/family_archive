@@ -22,6 +22,9 @@ gem "mission_control-jobs"
 # Sanitizes article HTML written by the admin editor before it is stored
 gem "rails-html-sanitizer"
 
+# Encapsulated, testable view components for the design system [https://viewcomponent.org]
+gem "view_component"
+
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"
 

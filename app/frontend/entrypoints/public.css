@@ -4,6 +4,7 @@
 @plugin "@tailwindcss/typography";
 
 @source "../../views/**/*.erb";
+@source "../../components/**/*.{erb,rb}";
 @source "../**/*.{js,ts,jsx,tsx}";
 
 /* Dark mode is toggled by a `dark` class on <html>, not the OS preference. */

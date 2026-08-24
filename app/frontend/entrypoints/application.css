@@ -6,4 +6,5 @@
 
 @source "../../views/**/*.erb";
 @source "../../helpers/**/*.rb";
+@source "../../components/**/*.{erb,rb}";
 @source "../**/*.{js,ts,jsx,tsx}";
