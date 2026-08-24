@@ -1,0 +1,5 @@
+<% if image_source %>
+  <img src="<%= url_for(image_source) %>" alt="<%= alt_text %>" class="max-w-full max-h-full object-contain border border-taupe-300">
+<% else %>
+  <%= helpers.icon_tag artifact.type.empty_icon, css: "#{icon_size} text-taupe-400 dark:text-ink-300" %>
+<% end %>

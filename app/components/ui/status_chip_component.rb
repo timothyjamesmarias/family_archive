@@ -4,13 +4,15 @@ module Ui
   # transcription").
   class StatusChipComponent < ApplicationComponent
     TONE_CLASSES = { neutral: nil, attention: "chip-status-attention" }.freeze
+    SIZE_CLASSES = { md: nil, sm: "chip-status-sm" }.freeze
 
-    def initialize(tone: :neutral)
+    def initialize(tone: :neutral, size: :md)
       @tone = tone
+      @size = size
     end
 
     def call
-      tag.span content, class: class_names("chip-status", TONE_CLASSES.fetch(@tone))
+      tag.span content, class: class_names("chip-status", TONE_CLASSES.fetch(@tone), SIZE_CLASSES.fetch(@size))
     end
   end
 end

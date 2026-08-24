@@ -1,0 +1,9 @@
+<div class="empty-state">
+  <div class="font-serif text-[21px] text-taupe-700 mb-2.5 dark:text-ink-100"><%= title %></div>
+  <% if body %>
+    <p class="text-[15px] leading-[1.65] text-taupe-700 m-0 mx-auto max-w-[46ch] dark:text-ink-100"><%= body %></p>
+  <% end %>
+  <% if action? %>
+    <div class="mt-5"><%= action %></div>
+  <% end %>
+</div>

@@ -1,0 +1,6 @@
+<div class="space-y-3">
+  <%= render Ui::MessageComponent.new(level: :success).with_content("Transcription published. It is now searchable across the archive.") %>
+  <%= render Ui::MessageComponent.new(level: :error).with_content("Upload failed — the file exceeds 50 MB.") %>
+  <%= render Ui::MessageComponent.new(level: :warning).with_content("Two people in this photograph are unidentified.") %>
+  <%= render Ui::MessageComponent.new(level: :info).with_content("This transcription was generated automatically and has not been reviewed.") %>
+</div>

@@ -1,0 +1,24 @@
+<div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,230px),1fr))] gap-5">
+  <%= render ArtifactCardComponent.new(
+        artifact: Artifact.new(artifact_type: "PHOTO", slug: "farmhouse",
+                               title: "Family gathered outside the farmhouse",
+                               original_date_string: "c. 1947"),
+        href: "#", badge_count: 9
+      ) %>
+  <%= render ArtifactCardComponent.new(
+        artifact: Artifact.new(artifact_type: "PHOTO", slug: "portrait",
+                               title: "Anna Marias, studio portrait",
+                               original_date_string: "1928"),
+        href: "#"
+      ) %>
+  <%= render ArtifactCardComponent.new(
+        artifact: Artifact.new(artifact_type: "PHOTO", slug: "mystery"),
+        href: "#"
+      ) %>
+  <%= render ArtifactCardComponent.new(
+        artifact: Artifact.new(artifact_type: "LEDGER", slug: "accounts",
+                               title: "Store accounts, Kirkland Road",
+                               original_date_string: "1908–1913"),
+        href: "#"
+      ) %>
+</div>

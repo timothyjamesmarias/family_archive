@@ -101,6 +101,9 @@
   --color-info-text-dark: #809fc9;
   --color-info-body-dark: #cfd8e0;
 
+  /* The only shadow in the system: hover on a browsable card, popovers. */
+  --shadow-lifted: 0 1px 2px rgba(70, 62, 60, 0.05), 0 8px 24px -12px rgba(70, 62, 60, 0.14);
+
   --color-sage-50: #f6f7f6;
   --color-sage-100: #e3e7e3;
   --color-sage-200: #c7cfc7;
@@ -341,6 +344,109 @@
 
   .field-invalid .field-input {
     @apply border-error-text dark:border-error-text-dark;
+  }
+
+  /* Mono metadata text — dates, counts, IDs beside titles. */
+  .meta {
+    @apply font-mono text-[11px] text-taupe-600 dark:text-ink-200;
+  }
+
+  /* The mat a scan sits on — recessed, never cropped edge-to-edge.
+     Scans keep a light mat in dark mode: the document is a physical
+     object and its tones must stay comparable. */
+  .mat {
+    @apply bg-taupe-100 flex items-center justify-center overflow-hidden dark:bg-ink-600;
+  }
+
+  .chip-status-sm {
+    @apply text-[13px] px-[9px] py-1;
+  }
+
+  /* Pagination — mono 40px cells, verdigris current page. */
+  .pager-cell {
+    @apply font-mono text-[13px] text-taupe-600 no-underline border border-taupe-200
+           min-w-10 h-10 inline-flex items-center justify-center px-3
+           hover:bg-taupe-50
+           dark:text-ink-100 dark:border-ink-500 dark:hover:bg-ink-600;
+  }
+
+  .pager-cell-current {
+    @apply text-paper-sheet bg-verdigris-700 border-verdigris-700 hover:bg-verdigris-700
+           dark:text-ink-900 dark:bg-verdigris-300 dark:border-verdigris-300 dark:hover:bg-verdigris-300;
+  }
+
+  .pager-cell-disabled {
+    @apply text-taupe-400 border-taupe-100 hover:bg-transparent cursor-default
+           dark:text-ink-300 dark:border-ink-600 dark:hover:bg-transparent;
+  }
+
+  /* Tabs — the active tab carries an inset verdigris underline. */
+  .tab {
+    @apply text-[15px] text-taupe-700 no-underline px-[18px] py-3
+           hover:text-verdigris-700 hover:bg-verdigris-50
+           dark:text-ink-100 dark:hover:text-verdigris-300 dark:hover:bg-ink-600;
+  }
+
+  .tab-active {
+    @apply font-medium text-taupe-900 shadow-[inset_0_-2px_0_var(--color-verdigris-700)]
+           hover:text-taupe-900 hover:bg-transparent
+           dark:text-ink-50 dark:shadow-[inset_0_-2px_0_var(--color-verdigris-400)]
+           dark:hover:text-ink-50 dark:hover:bg-transparent;
+  }
+
+  /* Messages — flash and inline notices, mono level label + body. */
+  .message {
+    @apply border px-5 py-4 flex gap-3.5 items-baseline;
+  }
+
+  .message-label {
+    @apply font-mono text-[11px] tracking-[0.1em] uppercase shrink-0;
+  }
+
+  .message-body {
+    @apply text-[15px] leading-relaxed;
+  }
+
+  .message-success {
+    @apply bg-success-bg border-success-border text-success-body
+           dark:bg-success-bg-dark dark:border-success-border-dark dark:text-success-body-dark;
+  }
+
+  .message-success .message-label {
+    @apply text-success-text dark:text-success-text-dark;
+  }
+
+  .message-error {
+    @apply bg-error-bg border-error-border text-error-body
+           dark:bg-error-bg-dark dark:border-error-border-dark dark:text-error-body-dark;
+  }
+
+  .message-error .message-label {
+    @apply text-error-text dark:text-error-text-dark;
+  }
+
+  .message-warning {
+    @apply bg-warning-bg border-warning-border text-warning-body
+           dark:bg-warning-bg-dark dark:border-warning-border-dark dark:text-warning-body-dark;
+  }
+
+  .message-warning .message-label {
+    @apply text-warning-text dark:text-warning-text-dark;
+  }
+
+  .message-info {
+    @apply bg-info-bg border-info-border text-info-body
+           dark:bg-info-bg-dark dark:border-info-border-dark dark:text-info-body-dark;
+  }
+
+  .message-info .message-label {
+    @apply text-info-text dark:text-info-text-dark;
+  }
+
+  /* Empty states carry a dashed rule, not an illustration. */
+  .empty-state {
+    @apply border border-dashed border-taupe-300 bg-taupe-50 text-center px-7 py-11
+           dark:border-ink-400 dark:bg-ink-700;
   }
 
   .prose-article {
