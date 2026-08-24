@@ -1,0 +1,17 @@
+<div class="bg-paper-sheet dark:bg-ink-700 border border-taupe-200 dark:border-ink-500 p-7 grid gap-6 sm:grid-cols-2">
+  <%= render Ui::FieldComponent.new(label: "Title") do %>
+    <input type="text" class="field-input" value="Letter from Anna Marias">
+  <% end %>
+  <%= render Ui::FieldComponent.new(label: "Date as written", hint: "Transcribe exactly as it appears. Parsing happens separately.") do %>
+    <input type="text" class="field-input" value="18 April 1931">
+  <% end %>
+  <%= render Ui::FieldComponent.new(label: "Artifact type") do %>
+    <select class="field-input">
+      <option>Letter</option>
+      <option>Photograph</option>
+    </select>
+  <% end %>
+  <%= render Ui::FieldComponent.new(label: "Storage path", error: "Required. No file has been attached to this record.") do %>
+    <input type="text" class="field-input">
+  <% end %>
+</div>

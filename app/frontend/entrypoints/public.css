@@ -159,38 +159,188 @@
   h6 {
     @apply font-serif;
   }
+
+  :focus-visible {
+    @apply outline-2 outline-verdigris-500 outline-offset-1 dark:outline-verdigris-400;
+  }
 }
 
-/* Custom classes must be @utility (not @layer components) to be usable
-   inside @apply under Tailwind v4. */
+/* Recipe classes are the design system's vocabulary: components (Ruby now,
+   React later) map props to these names and nothing else, so a restyle
+   touches this file once. Custom classes must be @utility (not
+   @layer components) to be usable inside @apply under Tailwind v4. */
+
 @utility btn {
-  @apply px-5 py-2.5 rounded-md font-sans font-medium transition-colors duration-150;
+  @apply inline-flex items-center justify-center font-sans font-medium
+         border transition-colors duration-150 cursor-pointer
+         h-11 px-[22px] text-[15px];
 }
 
 @utility card {
-  @apply bg-stone-50 border border-stone-200 rounded-md p-6
-         dark:bg-stone-900 dark:border-stone-800;
+  @apply bg-paper-sheet border border-taupe-200 p-6
+         dark:bg-ink-700 dark:border-ink-500;
 }
 
 @layer components {
+  /* Buttons — foundations 04/09. 52/44/36px heights, square corners. */
   .btn-primary {
-    @apply btn bg-transparent border border-stone-400 text-stone-700
-           hover:bg-stone-100 hover:border-stone-500
-           dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800;
+    @apply btn text-paper-sheet bg-verdigris-700 border-verdigris-700
+           hover:bg-verdigris-800 hover:border-verdigris-800
+           dark:text-ink-900 dark:bg-verdigris-300 dark:border-verdigris-300
+           dark:hover:bg-verdigris-200 dark:hover:border-verdigris-200;
   }
 
   .btn-secondary {
-    @apply text-stone-600 underline hover:text-stone-900 transition-colors
-           dark:text-stone-400 dark:hover:text-stone-100;
+    @apply btn text-taupe-700 bg-paper-sheet border-taupe-300
+           hover:bg-taupe-50 hover:border-taupe-700 hover:text-taupe-900
+           dark:text-ink-50 dark:bg-transparent dark:border-ink-400
+           dark:hover:bg-ink-600 dark:hover:border-ink-200;
   }
 
+  .btn-quiet {
+    @apply btn text-verdigris-700 bg-transparent border-transparent px-3.5
+           underline underline-offset-[3px]
+           hover:text-verdigris-900 hover:bg-verdigris-50
+           dark:text-verdigris-300 dark:hover:text-verdigris-200 dark:hover:bg-ink-600;
+  }
+
+  .btn-danger {
+    @apply btn text-error-text bg-paper-sheet border-[#d9b3b3]
+           hover:bg-error-bg hover:border-error-text
+           dark:text-error-text-dark dark:bg-transparent dark:border-error-border-dark
+           dark:hover:bg-error-bg-dark;
+  }
+
+  .btn-lg {
+    @apply h-13 px-[26px] text-base;
+  }
+
+  .btn-sm {
+    @apply h-9 px-4 text-sm;
+  }
+
+  .btn-primary:disabled,
+  .btn-secondary:disabled,
+  .btn-quiet:disabled,
+  .btn-danger:disabled {
+    @apply text-taupe-600 bg-taupe-100 border-taupe-200 no-underline cursor-not-allowed
+           hover:text-taupe-600 hover:bg-taupe-100 hover:border-taupe-200
+           dark:text-ink-300 dark:bg-ink-700 dark:border-ink-500
+           dark:hover:text-ink-300 dark:hover:bg-ink-700 dark:hover:border-ink-500;
+  }
+
+  /* Links — foundations 08. Verdigris acts; terracotta names people and
+     places; citations are dotted; footnotes are mono brackets. */
   .link {
-    @apply text-sage-600 hover:underline transition-colors
-           dark:text-sage-400;
+    @apply text-verdigris-700 underline decoration-1 underline-offset-2
+           hover:text-verdigris-900 hover:bg-verdigris-100
+           dark:text-verdigris-300 dark:hover:text-verdigris-200 dark:hover:bg-transparent;
   }
 
-  .card-lg {
-    @apply card p-8;
+  .link-person {
+    @apply text-terracotta-700 underline decoration-1 decoration-terracotta-300 underline-offset-2
+           hover:bg-terracotta-100
+           dark:text-terracotta-300 dark:decoration-terracotta-600 dark:hover:bg-transparent;
+  }
+
+  .link-citation {
+    @apply text-verdigris-700 underline decoration-1 decoration-dotted underline-offset-[3px]
+           hover:decoration-solid
+           dark:text-verdigris-300;
+  }
+
+  .link-footnote {
+    @apply font-mono text-[11px] text-verdigris-700 no-underline align-super px-0.5
+           hover:bg-verdigris-100
+           dark:text-verdigris-300 dark:hover:bg-ink-600;
+  }
+
+  /* Chips — foundations 04. Type chips are mono small caps; tone is a
+     second, redundant channel next to the text. Dark tints are mixed from
+     the accent into the ink board (the foundations specimen shows only the
+     terracotta pair; the same mix reproduces it). */
+  .chip {
+    @apply inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.1em] uppercase
+           border px-[11px] py-[7px];
+  }
+
+  .chip-sm {
+    @apply text-[10px] px-2 py-1;
+  }
+
+  .chip-terracotta {
+    @apply text-terracotta-700 bg-terracotta-100 border-terracotta-200 dark:text-terracotta-300;
+  }
+
+  .chip-sage {
+    @apply text-sage-700 bg-sage-100 border-sage-200 dark:text-sage-300;
+  }
+
+  .chip-dusty {
+    @apply text-dusty-700 bg-dusty-100 border-dusty-200 dark:text-dusty-300;
+  }
+
+  .chip-taupe {
+    @apply text-taupe-700 bg-taupe-50 border-taupe-200 dark:text-ink-100;
+  }
+
+  .dark .chip-terracotta {
+    background: color-mix(in oklab, var(--color-terracotta-500) 16%, var(--color-ink-800));
+    border-color: color-mix(in oklab, var(--color-terracotta-500) 34%, var(--color-ink-800));
+  }
+
+  .dark .chip-sage {
+    background: color-mix(in oklab, var(--color-sage-500) 16%, var(--color-ink-800));
+    border-color: color-mix(in oklab, var(--color-sage-500) 34%, var(--color-ink-800));
+  }
+
+  .dark .chip-dusty {
+    background: color-mix(in oklab, var(--color-dusty-500) 16%, var(--color-ink-800));
+    border-color: color-mix(in oklab, var(--color-dusty-500) 34%, var(--color-ink-800));
+  }
+
+  .dark .chip-taupe {
+    @apply bg-ink-600 border-ink-500;
+  }
+
+  /* Status chips speak Inter, not mono — they are the application talking. */
+  .chip-status {
+    @apply inline-flex items-center gap-1.5 font-sans text-[13px] border px-[11px] py-[7px]
+           text-taupe-700 bg-taupe-50 border-taupe-200
+           dark:text-ink-100 dark:bg-ink-600 dark:border-ink-500;
+  }
+
+  .chip-status-attention {
+    @apply text-warning-text bg-warning-bg border-warning-border
+           dark:text-warning-text-dark dark:bg-warning-bg-dark dark:border-warning-border-dark;
+  }
+
+  /* Fields — foundations 04. Mono label, 44px control, hint below. */
+  .field {
+    @apply flex flex-col gap-2;
+  }
+
+  .field-label {
+    @apply font-mono text-[11px] tracking-[0.1em] uppercase text-taupe-600 dark:text-ink-200;
+  }
+
+  .field-input {
+    @apply font-sans text-base text-taupe-900 bg-paper-sheet border border-taupe-300
+           h-11 px-3 w-full
+           dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400;
+  }
+
+  .field-hint {
+    @apply text-[13px] leading-[1.55] text-taupe-700 dark:text-ink-100;
+  }
+
+  .field-invalid .field-label,
+  .field-invalid .field-hint {
+    @apply text-error-text dark:text-error-text-dark;
+  }
+
+  .field-invalid .field-input {
+    @apply border-error-text dark:border-error-text-dark;
   }
 
   .prose-article {
@@ -215,7 +365,7 @@
   }
 
   .prose-article a {
-    @apply text-sage-600 hover:underline dark:text-sage-400;
+    @apply text-verdigris-700 hover:underline dark:text-verdigris-300;
   }
 
   .prose-article blockquote {

@@ -16,6 +16,10 @@ module FamilyArchive
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks generators])
 
+    # Component previews (/rails/view_components in development) render in a
+    # layout that loads the public design system, not the app chrome.
+    config.view_component.previews.default_layout = "component_preview"
+
     # The jobs dashboard inherits the admin gate (authenticate_user! +
     # require_admin) instead of Mission Control's default HTTP basic auth.
     config.mission_control.jobs.base_controller_class = "Admin::BaseController"

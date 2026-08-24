@@ -1,30 +1,33 @@
 class ArtifactType
-  attr_reader :key, :display_name, :plural_display_name, :route_segment, :empty_icon
+  attr_reader :key, :display_name, :plural_display_name, :route_segment, :empty_icon, :chip_tone
 
-  def initialize(key:, display_name:, plural_display_name:, route_segment:, empty_icon:)
+  def initialize(key:, display_name:, plural_display_name:, route_segment:, empty_icon:, chip_tone:)
     @key = key
     @display_name = display_name
     @plural_display_name = plural_display_name
     @route_segment = route_segment
     @empty_icon = empty_icon
+    @chip_tone = chip_tone
     freeze
   end
 
+  # Chip tone is assigned, never chosen: written records are terracotta,
+  # images sage, time-based media dusty (design foundations, section 04).
   ALL = [
     new(key: "PHOTO", display_name: "Photo", plural_display_name: "Photos",
-        route_segment: "photos", empty_icon: "photo"),
+        route_segment: "photos", empty_icon: "photo", chip_tone: "sage"),
     new(key: "LETTER", display_name: "Letter", plural_display_name: "Letters",
-        route_segment: "letters", empty_icon: "letter"),
+        route_segment: "letters", empty_icon: "letter", chip_tone: "terracotta"),
     new(key: "DOCUMENT", display_name: "Document", plural_display_name: "Documents",
-        route_segment: "documents", empty_icon: "document"),
+        route_segment: "documents", empty_icon: "document", chip_tone: "terracotta"),
     new(key: "LEDGER", display_name: "Ledger", plural_display_name: "Ledgers",
-        route_segment: "ledgers", empty_icon: "ledger"),
+        route_segment: "ledgers", empty_icon: "ledger", chip_tone: "terracotta"),
     new(key: "AUDIO", display_name: "Audio Recording", plural_display_name: "Audio",
-        route_segment: "audio", empty_icon: "audio"),
+        route_segment: "audio", empty_icon: "audio", chip_tone: "dusty"),
     new(key: "VIDEO", display_name: "Video Recording", plural_display_name: "Videos",
-        route_segment: "videos", empty_icon: "video"),
+        route_segment: "videos", empty_icon: "video", chip_tone: "dusty"),
     new(key: "OTHER", display_name: "Other", plural_display_name: "Other",
-        route_segment: "other", empty_icon: "document")
+        route_segment: "other", empty_icon: "document", chip_tone: "taupe")
   ].freeze
 
   BY_KEY = ALL.index_by(&:key).freeze
