@@ -12,17 +12,11 @@
           Every item here is a primary source &mdash; the originals, not a retelling of them.
         </p>
 
-        <%= form_with url: search_path, method: :get, class: "flex max-w-[520px] mb-3.5" do %>
+        <%= form_with url: search_path, method: :get, class: "flex max-w-[520px] mb-[26px]" do %>
           <input type="text" name="q" placeholder="Search names, places, transcriptions"
                  class="font-sans text-base text-taupe-900 bg-paper-sheet border border-taupe-500 border-r-0 h-13 px-4 flex-1 min-w-0 dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400">
           <button type="submit" class="btn-primary h-13 px-6 flex-shrink-0">Search</button>
         <% end %>
-        <div class="flex flex-wrap gap-x-[18px] gap-y-2 items-baseline mb-[26px]">
-          <span class="font-mono text-[11px] tracking-[0.08em] uppercase text-taupe-600 dark:text-ink-200">Try</span>
-          <a href="<%= search_path(q: "Bremen") %>" class="text-sm text-verdigris-700 underline dark:text-verdigris-300">Bremen</a>
-          <a href="<%= search_path(q: "1931") %>" class="text-sm text-verdigris-700 underline dark:text-verdigris-300">1931</a>
-          <a href="<%= search_path(q: "Kirkland Road") %>" class="text-sm text-verdigris-700 underline dark:text-verdigris-300">Kirkland Road</a>
-        </div>
 
         <div class="flex flex-wrap gap-3">
           <a href="<%= artifacts_hub_path %>" class="font-sans text-[15px] font-medium text-taupe-700 bg-paper-sheet border border-taupe-300 px-6 h-12 inline-flex items-center no-underline hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-transparent dark:border-ink-400 dark:hover:border-ink-200 dark:hover:text-ink-50">Browse the collections</a>
