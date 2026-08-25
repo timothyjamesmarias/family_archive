@@ -443,6 +443,20 @@
     @apply text-info-text dark:text-info-text-dark;
   }
 
+  /* Masthead — the single sheet-toned bar every public page shares. */
+  .masthead-link {
+    @apply text-[15px] text-taupe-700 no-underline px-3.5 py-2.5
+           hover:text-verdigris-700 hover:bg-verdigris-50
+           dark:text-ink-100 dark:hover:text-verdigris-300 dark:hover:bg-ink-600;
+  }
+
+  .masthead-link-active {
+    @apply text-taupe-900 shadow-[inset_0_-2px_0_var(--color-verdigris-700)]
+           hover:text-taupe-900 hover:bg-transparent
+           dark:text-ink-50 dark:shadow-[inset_0_-2px_0_var(--color-verdigris-400)]
+           dark:hover:text-ink-50 dark:hover:bg-transparent;
+  }
+
   /* Empty states carry a dashed rule, not an illustration. */
   .empty-state {
     @apply border border-dashed border-taupe-300 bg-taupe-50 text-center px-7 py-11
