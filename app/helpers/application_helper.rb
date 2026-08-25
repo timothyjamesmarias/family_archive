@@ -7,7 +7,10 @@ module ApplicationHelper
   # and drifts slowly; an hour of staleness is invisible in an archive.
   def archive_holdings_summary
     Rails.cache.fetch("archive_holdings_summary", expires_in: 1.hour) do
-      "#{number_with_delimiter(Artifact.count)} artifacts · #{number_with_delimiter(Individual.count)} individuals"
+      artifact_count = Artifact.count
+      individual_count = Individual.count
+      "#{number_with_delimiter(artifact_count)} #{"artifact".pluralize(artifact_count)} · " \
+        "#{number_with_delimiter(individual_count)} #{"individual".pluralize(individual_count)}"
     end
   end
 

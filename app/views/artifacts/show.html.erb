@@ -1,6 +1,11 @@
-<% title = @artifact.title || "Untitled #{@type.display_name}" %>
-<% content_for :title, title %>
-<div class="max-w-4xl mx-auto">
-  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8"><%= title %></h1>
-  <%= render "artifact_display", artifact: @artifact %>
-</div>
+<% title = @artifact.title || @type.untitled_label %>
+<% content_for :title, "#{title} – Marias Family Archive" %>
+
+<% if @type.written_record? %>
+  <%= render "reader", artifact: @artifact, type: @type, title: title, leaf: @leaf, tab: @tab %>
+<% else %>
+  <div class="max-w-4xl mx-auto">
+    <h1 class="font-serif text-4xl font-medium tracking-[-0.015em] mb-8"><%= title %></h1>
+    <%= render "artifact_display", artifact: @artifact %>
+  </div>
+<% end %>

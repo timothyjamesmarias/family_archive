@@ -1,0 +1,123 @@
+<%# The reader for written records (letters, documents, ledgers): scan and
+    transcription side by side, per Pages screen 5. Locals: artifact, type,
+    title, leaf, tab. Drawn elements without backing data (people/places,
+    medium, citations, zoom, prev/next) are omitted, not faked — see
+    docs/design-system-plan.md. %>
+<% content_for :full_bleed, true %>
+<% base_path = "/#{type.route_segment}/#{artifact.slug}" %>
+<% content_for :breadcrumbs do %>
+  <div class="bg-taupe-100 border-b border-taupe-200 dark:bg-ink-600 dark:border-ink-500">
+    <div class="max-w-[1360px] mx-auto">
+      <%= render Ui::BreadcrumbsComponent.new do |trail| %>
+        <% trail.with_crumb(label: "Archive", href: root_path) %>
+        <% trail.with_crumb(label: type.plural_display_name, href: "/#{type.route_segment}") %>
+        <% trail.with_crumb(label: title) %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<header class="border-b border-taupe-200 dark:border-ink-500">
+  <div class="max-w-[1360px] mx-auto px-5 sm:px-10 pt-10 pb-7">
+    <div class="flex flex-wrap gap-2 items-center mb-3.5">
+      <%= render Ui::TypeChipComponent.new(artifact_type: type) %>
+      <% if artifact.original_date_string %>
+        <span class="font-mono text-xs text-taupe-600 dark:text-ink-200"><%= artifact.original_date_string %></span>
+        <span class="font-mono text-xs text-taupe-600 dark:text-ink-200">·</span>
+      <% end %>
+      <span class="font-mono text-xs text-taupe-600 dark:text-ink-200"><%= artifact.slug %></span>
+    </div>
+    <h1 class="font-serif text-[40px] leading-[1.15] font-medium tracking-[-0.015em] mb-[18px] max-w-[26ch]"><%= title %></h1>
+    <% if (primary = artifact.files.first) %>
+      <div class="flex flex-wrap gap-2.5 items-center">
+        <%= link_to "Download scan", rails_blob_path(primary.file, disposition: "attachment"),
+              class: "font-sans text-sm font-medium text-taupe-700 bg-paper-sheet border border-taupe-300 px-4 h-10 inline-flex items-center no-underline hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-transparent dark:border-ink-400 dark:hover:border-ink-200 dark:hover:text-ink-50" %>
+      </div>
+    <% end %>
+  </div>
+</header>
+
+<div class="max-w-[1360px] mx-auto grid grid-cols-1 lg:grid-cols-2 items-start">
+  <div class="bg-taupe-100 lg:border-r border-b lg:border-b-0 border-taupe-200 p-6 lg:sticky lg:top-0 dark:bg-ink-600 dark:border-ink-500">
+    <% current_file = artifact.files[leaf - 1] %>
+    <% if current_file %>
+      <div class="field-label mb-4">Scan &nbsp;·&nbsp; leaf <%= leaf %> of <%= artifact.files.size %></div>
+      <div class="mat border border-taupe-300 p-3.5 dark:border-ink-400">
+        <img src="<%= url_for(current_file.file) %>" alt="<%= title %>, leaf <%= leaf %>" class="max-w-full max-h-[520px] object-contain">
+      </div>
+      <% if artifact.files.size > 1 %>
+        <div class="flex flex-wrap gap-2.5 mt-3.5">
+          <% artifact.files.each_with_index do |file, index| %>
+            <a href="<%= base_path %>?leaf=<%= index + 1 %><%= "&tab=#{tab}" %>"
+               class="mat w-[54px] h-[72px] <%= index + 1 == leaf ? "border-2 border-verdigris-700 dark:border-verdigris-400" : "border border-taupe-300 dark:border-ink-400" %>"
+               aria-label="Leaf <%= index + 1 %>">
+              <% if file.thumbnail? %>
+                <img src="<%= url_for(file.file.variant(:thumb)) %>" alt="" class="max-w-full max-h-full object-contain">
+              <% end %>
+            </a>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="bg-paper-sheet px-5 sm:px-7 pt-6 pb-7 dark:bg-ink-700">
+    <div class="mb-[22px]">
+      <%= render Ui::TabsComponent.new do |tabs| %>
+        <% if artifact.transcription %>
+          <% tabs.with_tab(label: "Transcription", href: "#{base_path}?tab=transcription", active: tab == "transcription") %>
+        <% end %>
+        <% if artifact.transcription&.translations&.any? %>
+          <% tabs.with_tab(label: "Translation", href: "#{base_path}?tab=translation", active: tab == "translation") %>
+        <% end %>
+        <% if artifact.commentaries.any? %>
+          <% tabs.with_tab(label: "Commentary", href: "#{base_path}?tab=commentary", active: tab == "commentary", count: artifact.commentaries.size) %>
+        <% end %>
+        <% tabs.with_tab(label: "Details", href: "#{base_path}?tab=details", active: tab == "details") %>
+      <% end %>
+    </div>
+
+    <% case tab %>
+    <% when "transcription" %>
+      <div class="field-label mb-4">Verbatim &mdash; spelling preserved</div>
+      <div class="border-l-2 border-dusty-300 pl-[22px] mb-[26px]">
+        <% artifact.transcription.transcription_text.split(/\n{2,}/).each do |paragraph| %>
+          <p class="font-serif text-xl leading-[1.85] text-taupe-900 mb-[18px] last:mb-0 max-w-[60ch] whitespace-pre-line dark:text-ink-50"><%= paragraph %></p>
+        <% end %>
+      </div>
+      <% artifact.transcription.translations.each do |translation| %>
+        <div class="bg-dusty-50 border border-dusty-200 px-5 py-4 mb-[22px] dark:bg-ink-600 dark:border-ink-500">
+          <div class="font-mono text-[11px] tracking-[0.1em] uppercase text-dusty-700 mb-2 dark:text-dusty-300">Machine translation &mdash; <%= translation.target_language.upcase %></div>
+          <p class="text-[15px] leading-[1.7] text-dusty-800 m-0 dark:text-ink-100">Available under the Translation tab. Generated automatically and not reviewed by an editor.</p>
+        </div>
+      <% end %>
+    <% when "translation" %>
+      <% artifact.transcription.translations.each do |translation| %>
+        <div class="bg-dusty-50 border border-dusty-200 px-6 py-5 mb-[22px] dark:bg-ink-600 dark:border-ink-500">
+          <div class="font-mono text-[11px] tracking-[0.1em] uppercase text-dusty-700 mb-3.5 dark:text-dusty-300">Machine translation &mdash; <%= translation.target_language.upcase %> &nbsp;·&nbsp; generated automatically, not reviewed</div>
+          <% translation.translated_text.split(/\n{2,}/).each do |paragraph| %>
+            <p class="font-serif text-xl leading-[1.85] text-dusty-900 mb-[18px] last:mb-0 max-w-[60ch] whitespace-pre-line dark:text-ink-50"><%= paragraph %></p>
+          <% end %>
+        </div>
+      <% end %>
+    <% when "commentary" %>
+      <% artifact.commentaries.each do |commentary| %>
+        <div class="bg-heather-50 border border-heather-200 px-6 py-5 mb-[22px] dark:bg-ink-600 dark:border-ink-500">
+          <div class="font-mono text-[11px] tracking-[0.1em] uppercase text-heather-700 mb-2 dark:text-heather-300"><%= commentary.commentary_type.presence || "Commentary" %></div>
+          <% commentary.commentary_text.split(/\n{2,}/).each do |paragraph| %>
+            <p class="text-base leading-[1.7] text-heather-900 mb-3.5 last:mb-0 max-w-[66ch] whitespace-pre-line dark:text-ink-100"><%= paragraph %></p>
+          <% end %>
+        </div>
+      <% end %>
+    <% when "details" %>
+      <%= render MetadataListComponent.new do |list| %>
+        <% list.with_row(term: "Identifier") { tag.span(artifact.slug, class: "font-mono text-sm") } %>
+        <% if artifact.original_date_string %>
+          <% list.with_row(term: "Date as written") { artifact.original_date_string } %>
+        <% end %>
+        <% list.with_row(term: "Files") { "#{artifact.files.size} #{"file".pluralize(artifact.files.size)}" } %>
+        <% list.with_row(term: "Added") { artifact.uploaded_at.strftime("%-d %B %Y") } %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
