@@ -36,8 +36,6 @@ invent (see CLAUDE.md, "Design System").
 ## Up next (in order)
 
 1. **Articles index** — no mockup yet; needs design before code
-2. **Family tree page chrome** (screen 6) — island untouched until the
-   React rewrite
 
 ## Blocked / waiting on decisions
 
@@ -53,4 +51,6 @@ invent (see CLAUDE.md, "Design System").
 ## Later
 
 - React twins of the component library when the family-tree rewrite starts
+- Family tree page chrome (screen 6) — agreed to do it after the React
+  rewrite of the island, which makes it easier
 - Search buildout to Tim's architecture
