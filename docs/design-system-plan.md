@@ -24,14 +24,17 @@ invent (see CLAUDE.md, "Design System").
   decisions: people/places tags, medium field, review dates, Cite this
   item, zoom/fullscreen, prev/next ordering, article↔artifact links
 
+- Collection index controls (screens 3–4): collection search (plain
+  ILIKE finding aid), auto-submitting sort, data-backed filter pills,
+  Grid/List switcher. The 1940s and Has-people pills are omitted until
+  parsed dates and people tagging exist
+
 ## Up next (in order)
 
-1. **Collection index controls** (screens 3–4) — per-collection search,
-   sort, filter pills, Grid/List switcher; needs query/controller support
-2. **Article show** — apply the foundations rich-content spec (no page
+1. **Article show** — apply the foundations rich-content spec (no page
    mockup; foundations section 08 is the source)
-3. **Articles index** — no mockup yet; needs design before code
-4. **Family tree page chrome** (screen 6) — island untouched until the
+2. **Articles index** — no mockup yet; needs design before code
+3. **Family tree page chrome** (screen 6) — island untouched until the
    React rewrite
 
 ## Blocked / waiting on decisions
