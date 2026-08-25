@@ -9,12 +9,30 @@ class ArtifactsController < ApplicationController
     end
   end
 
+  SORT_ORDERS = {
+    "newest" => { uploaded_at: :desc },
+    "oldest" => { uploaded_at: :asc },
+    "title" => Arel.sql("title ASC NULLS LAST")
+  }.freeze
+
+  # Which pills a collection offers, keyed by what its records can carry.
+  FILTER_SCOPES = {
+    "annotated" => ->(scope) { scope.joins(files: :annotations) },
+    "transcribed" => ->(scope) { scope.joins(:transcription) },
+    "translated" => ->(scope) { scope.joins(transcription: :translations) }
+  }.freeze
+
   def index
     @type = artifact_type
+    @view = %w[grid list].include?(params[:view]) ? params[:view] : @type.browse_layout.to_s
+    @query = params[:q].to_s.strip
+    @sort = SORT_ORDERS.key?(params[:sort]) ? params[:sort] : default_sort
+    @filters = available_filters.select { |filter| params[filter] == "1" }
     @artifacts = Pagination.paginate(
-      scope_for(@type), page: params.fetch(:page, 1), per_page: PER_PAGE
+      filtered_scope.order(SORT_ORDERS.fetch(@sort)),
+      page: params.fetch(:page, 1), per_page: PER_PAGE
     )
-    @transcribed_count = scope_for(@type).joins(:transcription).count unless @type.grid?
+    @transcribed_count = Artifact.of_type(@type.key).joins(:transcription).count unless @type.grid?
   end
 
   READER_TABS = %w[transcription translation commentary details].freeze
@@ -56,5 +74,36 @@ class ArtifactsController < ApplicationController
     attachment = { file_attachment: { blob: :variant_records } }
     includes = type.key == "PHOTO" ? [ :annotations, attachment ] : [ attachment ]
     Artifact.of_type(type.key).includes({ files: includes }, transcription: :translations)
+  end
+
+  # The photos mockup sorts newest first; the letters mockup oldest first.
+  def default_sort
+    @type.grid? ? "newest" : "oldest"
+  end
+
+  def available_filters
+    return [ "annotated" ] if @type.key == "PHOTO"
+    return %w[transcribed translated] if @type.written_record? || @type.key == "AUDIO"
+
+    []
+  end
+  helper_method :available_filters
+
+  # Filters and the collection search narrow via id subqueries so the
+  # joins can't inflate counts or fight the eager loads. The search is a
+  # plain ILIKE over titles and transcriptions — a finding aid, not the
+  # future search feature.
+  def filtered_scope
+    scope = scope_for(@type)
+    return scope if @query.blank? && @filters.empty?
+
+    narrowed = Artifact.of_type(@type.key)
+    if @query.present?
+      pattern = "%#{ActiveRecord::Base.sanitize_sql_like(@query)}%"
+      narrowed = narrowed.left_joins(:transcription)
+        .where("artifacts.title ILIKE :q OR transcriptions.transcription_text ILIKE :q", q: pattern)
+    end
+    @filters.each { |filter| narrowed = FILTER_SCOPES.fetch(filter).call(narrowed) }
+    scope.where(id: narrowed.select(:id))
   end
 end

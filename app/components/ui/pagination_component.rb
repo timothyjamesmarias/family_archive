@@ -5,10 +5,11 @@ module Ui
   class PaginationComponent < ApplicationComponent
     WINDOW = 2
 
-    def initialize(page:, base_url:, noun: nil)
+    def initialize(page:, base_url:, noun: nil, extra_params: {})
       @page = page
       @base_url = base_url
       @noun = noun
+      @extra_params = extra_params
     end
 
     def render?
@@ -30,7 +31,7 @@ module Ui
     end
 
     def url_for_page(number)
-      "#{base_url}?page=#{number}"
+      "#{base_url}?#{@extra_params.merge(page: number).to_query}"
     end
 
     def count_label

@@ -443,6 +443,36 @@
     @apply text-info-text dark:text-info-text-dark;
   }
 
+  /* Filter pills — collection index controls. Active pills wear the
+     verdigris wash and carry a dismiss glyph. */
+  .pill {
+    @apply font-sans text-sm text-taupe-700 no-underline bg-paper-sheet border border-taupe-200
+           px-3 py-2 inline-flex items-center gap-2
+           hover:border-taupe-500 hover:text-taupe-900
+           dark:text-ink-100 dark:bg-transparent dark:border-ink-500
+           dark:hover:border-ink-200 dark:hover:text-ink-50;
+  }
+
+  .pill-active {
+    @apply text-verdigris-700 bg-verdigris-100 border-verdigris-200
+           hover:border-verdigris-400 hover:text-verdigris-900
+           dark:text-verdigris-300 dark:bg-ink-600 dark:border-ink-400
+           dark:hover:text-verdigris-200;
+  }
+
+  /* Segmented control — Grid/List view switcher. */
+  .segment {
+    @apply font-sans text-sm font-medium text-taupe-600 no-underline bg-paper-sheet
+           h-10 px-4 inline-flex items-center border-r border-taupe-300 last:border-r-0
+           hover:bg-taupe-50
+           dark:text-ink-100 dark:bg-ink-700 dark:border-ink-400 dark:hover:bg-ink-600;
+  }
+
+  .segment-active {
+    @apply text-taupe-900 bg-taupe-100 hover:bg-taupe-100
+           dark:text-ink-50 dark:bg-ink-600 dark:hover:bg-ink-600;
+  }
+
   /* Masthead — the single sheet-toned bar every public page shares. */
   .masthead-link {
     @apply text-[15px] text-taupe-700 no-underline px-3.5 py-2.5
