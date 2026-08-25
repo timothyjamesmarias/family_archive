@@ -87,9 +87,9 @@ class ArtifactAdminTest < ApplicationSystemTestCase
     sign_in_as email: "boss@example.com", admin: true
 
     visit admin_root_path
-    click_on "Photos"
+    click_on "Photographs"
 
-    assert_selector "h1", text: "Photos"
+    assert_selector "h1", text: "Photographs"
     assert_text "Wedding day"
   end
 end

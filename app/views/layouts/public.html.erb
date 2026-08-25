@@ -13,6 +13,15 @@
     <%= yield :head %>
   </head>
   <body class="bg-paper-base text-taupe-900 dark:bg-ink-800 dark:text-ink-50 min-h-screen flex flex-col font-sans">
+    <%# Login and error pages carry a wordmark-only masthead (screens 13–14). %>
+    <% if content_for?(:minimal_chrome) %>
+      <header class="bg-paper-sheet border-b border-taupe-200 dark:bg-ink-700 dark:border-ink-500">
+        <div class="max-w-[1360px] mx-auto px-5 sm:px-8 py-[18px]">
+          <%= link_to "Marias Family Archive", root_path,
+                class: "font-serif text-xl font-medium text-taupe-900 no-underline hover:text-verdigris-700 dark:text-ink-50 dark:hover:text-verdigris-300" %>
+        </div>
+      </header>
+    <% else %>
     <header class="bg-paper-sheet border-b border-taupe-200 dark:bg-ink-700 dark:border-ink-500">
       <div class="max-w-[1360px] mx-auto px-5 sm:px-8 py-[18px]">
         <div class="flex justify-between items-center gap-8">
@@ -69,6 +78,7 @@
         </div>
       </div>
     </header>
+    <% end %>
 
     <%= yield :breadcrumbs %>
 
