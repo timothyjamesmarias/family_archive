@@ -18,7 +18,7 @@ module Ui
     renders_many :crumbs, CrumbComponent
 
     def call
-      tag.nav(class: "bg-taupe-100 px-6 py-3 flex flex-wrap gap-x-2.5 gap-y-1.5 items-center font-mono text-[11px] tracking-[0.06em] text-taupe-600 dark:bg-ink-600 dark:text-ink-200", aria: { label: "Breadcrumb" }) do
+      tag.nav(class: "bg-taupe-100 px-5 sm:px-8 py-3 flex flex-wrap gap-x-2.5 gap-y-1.5 items-center font-mono text-[11px] tracking-[0.06em] text-taupe-600 dark:bg-ink-600 dark:text-ink-200", aria: { label: "Breadcrumb" }) do
         safe_join(crumbs.flat_map.with_index { |crumb, index| [ (separator if index.positive?), crumb ].compact })
       end
     end

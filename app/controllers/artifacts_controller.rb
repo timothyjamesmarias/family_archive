@@ -1,23 +1,12 @@
 class ArtifactsController < ApplicationController
   PER_PAGE = 24
-
-  HUB_CARDS = [
-    { href: "/photos", title: "Photographs", icon: "photo",
-      description: "Family photographs and images through the generations" },
-    { href: "/videos", title: "Videos", icon: "video",
-      description: "Home movies and video recordings" },
-    { href: "/audio", title: "Audio Recordings", icon: "audio",
-      description: "Oral histories and audio recordings" },
-    { href: "/letters", title: "Letters", icon: "letter",
-      description: "Family correspondence and personal letters" },
-    { href: "/documents", title: "Documents", icon: "document",
-      description: "Historical documents and official records" },
-    { href: "/ledgers", title: "Ledgers", icon: "ledger",
-      description: "Account books and business ledgers" }
-  ].freeze
+  HUB_PREVIEW_COUNT = 3
 
   def hub
-    @cards = HUB_CARDS
+    @counts = Artifact.group(:artifact_type).count
+    @previews = ArtifactType.browsable.to_h do |type|
+      [ type.key, scope_for(type).order(created_at: :desc).limit(HUB_PREVIEW_COUNT) ]
+    end
   end
 
   def index
@@ -25,6 +14,7 @@ class ArtifactsController < ApplicationController
     @artifacts = Pagination.paginate(
       scope_for(@type), page: params.fetch(:page, 1), per_page: PER_PAGE
     )
+    @transcribed_count = scope_for(@type).joins(:transcription).count unless @type.grid?
   end
 
   def show
@@ -43,6 +33,6 @@ class ArtifactsController < ApplicationController
   def scope_for(type)
     attachment = { file_attachment: { blob: :variant_records } }
     includes = type.key == "PHOTO" ? [ :annotations, attachment ] : [ attachment ]
-    Artifact.of_type(type.key).includes(files: includes)
+    Artifact.of_type(type.key).includes({ files: includes }, transcription: :translations)
   end
 end

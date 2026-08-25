@@ -1,17 +1,65 @@
-<% content_for :title, @type.plural_display_name %>
-<div class="max-w-3xl mx-auto">
-  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8"><%= @type.plural_display_name %></h1>
-  <% if @artifacts.empty? %>
-    <%= render "shared/empty_state",
-          title: "No #{@type.plural_display_name.downcase} yet",
-          description: "Check back later for family #{@type.plural_display_name.downcase}.",
-          icon_name: @type.empty_icon %>
-  <% else %>
-    <div class="space-y-4">
-      <% @artifacts.records.each do |artifact| %>
-        <%= render "artifact_list_item", artifact: artifact, type: @type %>
+<% content_for :title, "#{@type.plural_display_name} – Marias Family Archive" %>
+<% content_for :breadcrumbs do %>
+  <div class="bg-taupe-100 border-b border-taupe-200 dark:bg-ink-600 dark:border-ink-500">
+    <div class="max-w-[1360px] mx-auto">
+      <%= render Ui::BreadcrumbsComponent.new do |trail| %>
+        <% trail.with_crumb(label: "Archive", href: root_path) %>
+        <% trail.with_crumb(label: "Artifacts", href: artifacts_hub_path) %>
+        <% trail.with_crumb(label: @type.plural_display_name) %>
       <% end %>
     </div>
+  </div>
+<% end %>
+
+<header class="mb-8">
+  <h1 class="font-serif text-4xl font-medium tracking-[-0.015em] mb-2"><%= @type.plural_display_name %></h1>
+  <% if @artifacts.total.positive? %>
+    <p class="text-taupe-700 dark:text-ink-100">
+      <% if @type.grid? %>
+        <% from = (@artifacts.current_page - 1) * @artifacts.per_page + 1 %>
+        <%= @artifacts.total %> <%= "item".pluralize(@artifacts.total) %>
+        &nbsp;·&nbsp; showing <%= from %>&ndash;<%= from + @artifacts.records.size - 1 %>
+      <% else %>
+        <%= @artifacts.total %> <%= "item".pluralize(@artifacts.total) %>
+        &nbsp;·&nbsp; <%= @transcribed_count %> transcribed
+      <% end %>
+    </p>
   <% end %>
-  <%= render "shared/pagination", page: @artifacts, base_url: "/#{@type.route_segment}" %>
+</header>
+
+<% if @artifacts.empty? %>
+  <%= render Ui::EmptyStateComponent.new(title: "Nothing catalogued here yet") %>
+<% elsif @type.grid? %>
+  <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,230px),1fr))] gap-5">
+    <% @artifacts.records.each do |artifact| %>
+      <%= render ArtifactCardComponent.new(
+            artifact: artifact,
+            href: "/#{@type.route_segment}/#{artifact.slug}",
+            badge_count: @type.key == "PHOTO" ? artifact.files.sum { |file| file.annotations.size } : nil
+          ) %>
+    <% end %>
+  </div>
+<% else %>
+  <div class="bg-paper-sheet border border-taupe-200 dark:bg-ink-700 dark:border-ink-500">
+    <% @artifacts.records.each do |artifact| %>
+      <%= render ArtifactRowComponent.new(
+            artifact: artifact,
+            href: "/#{@type.route_segment}/#{artifact.slug}",
+            snippet: artifact.transcription&.transcription_text&.squish&.truncate(150, omission: "")
+          ) do |row| %>
+        <% if artifact.transcription %>
+          <% row.with_status { "Transcribed" } %>
+          <% artifact.transcription.translations.each do |translation| %>
+            <% row.with_status { "Translated #{translation.target_language.upcase}" } %>
+          <% end %>
+        <% elsif @type.written_record? %>
+          <% row.with_status(tone: :attention) { "Needs transcription" } %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
+
+<div class="mt-8">
+  <%= render Ui::PaginationComponent.new(page: @artifacts, base_url: "/#{@type.route_segment}") %>
 </div>

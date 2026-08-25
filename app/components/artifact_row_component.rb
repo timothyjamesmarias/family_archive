@@ -20,7 +20,7 @@ class ArtifactRowComponent < ApplicationComponent
   end
 
   def untitled_label
-    "Untitled #{artifact.type.display_name.downcase}"
+    artifact.type.untitled_label
   end
 
   def date_label

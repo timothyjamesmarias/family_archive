@@ -28,6 +28,8 @@
                   class: class_names("masthead-link", "masthead-link-active": artifacts_active) %>
             <%= link_to "Articles", articles_path,
                   class: class_names("masthead-link", "masthead-link-active": request.path.start_with?("/articles")) %>
+            <%= link_to "Search", search_path,
+                  class: "font-mono text-xs tracking-[0.06em] text-taupe-700 no-underline px-3 py-2.5 border border-taupe-200 ml-2 hover:border-taupe-500 hover:text-verdigris-700 dark:text-ink-100 dark:border-ink-500 dark:hover:border-ink-200 dark:hover:text-verdigris-300" %>
             <span class="w-px h-[22px] bg-taupe-200 mx-2 dark:bg-ink-500" aria-hidden="true"></span>
             <%= render "shared/dark_mode_toggle" %>
             <% if user_signed_in? %>
@@ -57,6 +59,7 @@
             <%= link_to "Family Tree", family_tree_path, class: mobile_link %>
             <%= link_to "Artifacts", artifacts_hub_path, class: mobile_link %>
             <%= link_to "Articles", articles_path, class: mobile_link %>
+            <%= link_to "Search", search_path, class: mobile_link %>
             <% if user_signed_in? %>
               <%= link_to "Dashboard", admin_root_path, class: mobile_link %>
             <% else %>
@@ -69,8 +72,14 @@
 
     <%= yield :breadcrumbs %>
 
-    <main class="w-full max-w-[1360px] mx-auto px-5 sm:px-8 py-10 flex-grow">
-      <%= render "layouts/flash" %>
+    <%# Banded pages (home) manage their own full-width sections; everything
+        else renders inside the shared content container. %>
+    <main class="flex-grow <%= "w-full max-w-[1360px] mx-auto px-5 sm:px-8 py-10" unless content_for?(:full_bleed) %>">
+      <% if content_for?(:full_bleed) %>
+        <div class="w-full max-w-[1360px] mx-auto px-5 sm:px-8"><%= render "layouts/flash" %></div>
+      <% else %>
+        <%= render "layouts/flash" %>
+      <% end %>
       <%= yield %>
     </main>
 

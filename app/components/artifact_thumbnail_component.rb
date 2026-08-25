@@ -23,6 +23,6 @@ class ArtifactThumbnailComponent < ApplicationComponent
   end
 
   def alt_text
-    artifact.title || "Untitled #{artifact.type.display_name}"
+    artifact.title || artifact.type.untitled_label
   end
 end

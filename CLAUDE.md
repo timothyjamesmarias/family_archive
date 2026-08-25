@@ -75,6 +75,26 @@ Seeds create `admin@example.com` / `password` in development.
   generates an admin CRUD (controller + views) matching the aside-nav layout;
   add the nav link in `app/views/layouts/admin.html.erb` by hand.
 
+## Design System
+
+The public UI is specified by the claude.ai/design project ("Archive
+Foundations" and "Archive Pages"). **The design files are the spec — follow
+them literally.** Implementation glue is fine when genuinely needed to
+realize the design's logic (helpers, caching, pagination windowing,
+extrapolating dark mode from the ink table). What is not acceptable:
+writing copy the mockups don't contain, adding features or affordances
+that aren't drawn, or deviating from drawn sizes, labels, or structure
+without necessity. When the design is silent, ambiguous, or impossible to
+follow literally (missing backend, placeholder content), stop and ask —
+the design file may get updated instead. Hex values in the design are
+authoritative over its prose annotations.
+
+Design tokens and recipe classes live in
+`app/frontend/entrypoints/public.css`; ViewComponents
+(`app/components`, primitives under `Ui::`) are thin maps from props to
+those recipe classes so future React twins share the same vocabulary.
+Previews render at `/rails/view_components` in development.
+
 ## Frontend
 
 Three Vite entrypoint groups:

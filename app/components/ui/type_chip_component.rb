@@ -8,7 +8,7 @@ module Ui
     end
 
     def call
-      tag.span @artifact_type.display_name,
+      tag.span @artifact_type.chip_label,
         class: class_names("chip", "chip-#{@artifact_type.chip_tone}", "chip-sm": @size == :sm)
     end
   end

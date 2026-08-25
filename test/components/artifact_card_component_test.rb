@@ -18,7 +18,7 @@ class ArtifactCardComponentTest < ViewComponent::TestCase
 
     render_inline(ArtifactCardComponent.new(artifact: artifact, href: "/photos/mystery"))
 
-    assert_selector ".italic", text: "Untitled photo"
+    assert_selector ".italic", text: "Untitled photograph"
     assert_selector ".meta", text: /Date unknown/
   end
 

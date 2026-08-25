@@ -19,7 +19,7 @@ class ArtifactAdminPagesTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_match "Wedding day", response.body
     assert_no_match "Dear John", response.body
-    assert_select "h1", "Photos"
+    assert_select "h1", "Photographs"
   end
 
   test "the aside nav links every artifact type page" do

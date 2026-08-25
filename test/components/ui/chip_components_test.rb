@@ -10,10 +10,10 @@ module Ui
 
     test "photos take sage and media takes dusty" do
       render_inline(TypeChipComponent.new(artifact_type: ArtifactType.fetch("PHOTO")))
-      assert_selector "span.chip.chip-sage", text: "Photo"
+      assert_selector "span.chip.chip-sage", text: "Photograph"
 
       render_inline(TypeChipComponent.new(artifact_type: ArtifactType.fetch("AUDIO")))
-      assert_selector "span.chip.chip-dusty", text: "Audio Recording"
+      assert_selector "span.chip.chip-dusty", text: "Audio"
     end
 
     test "small size for card contexts" do

@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get "robots.txt" => "sitemaps#robots"
 
   get "artifacts" => "artifacts#hub", as: :artifacts_hub
+  get "search" => "searches#show", as: :search
 
   # One typed collection per browsable artifact type: /photos, /photos/:slug, ...
   ArtifactType.browsable.each do |type|
