@@ -20,6 +20,11 @@ module FamilyArchive
     # layout that loads the public design system, not the app chrome.
     config.view_component.previews.default_layout = "component_preview"
 
+    # Error pages render through the app (screen 14) so they share the real
+    # layout and recipes; the static files in public/ remain only as the
+    # failsafe when Rails itself cannot respond.
+    config.exceptions_app = routes
+
     # The jobs dashboard inherits the admin gate (authenticate_user! +
     # require_admin) instead of Mission Control's default HTTP basic auth.
     config.mission_control.jobs.base_controller_class = "Admin::BaseController"
