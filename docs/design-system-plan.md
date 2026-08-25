@@ -35,7 +35,35 @@ invent (see CLAUDE.md, "Design System").
 
 ## Up next (in order)
 
-1. **Articles index** — no mockup yet; needs design before code
+Screens 9–15 landed in "Archive Pages (standalone)" (export/
+pages-standalone-src.html is the readable source). Screens 1–8 are
+unchanged except the masthead, unified to the implemented chrome. The
+hero Try links remain in the design but stay out of the code by Tim's
+instruction until they can be built dynamically.
+
+1. **Empty states retrofit** (screen 15) — drawn copy for true-empty
+   (upload button signed-in only), filtered-empty (count + Clear
+   filters), and home bands collapsing to a single line
+2. **Articles index** (screen 9) — heather reading list with a featured
+   Latest row; "Sources: N artifacts" omitted (no association);
+   pagination kept though not drawn
+3. **Login** (screen 13) — sheet card, drawn error, wordmark-only chrome
+4. **404/500** (screen 14) — needs a mechanism decision: static files
+   with inlined styles vs exceptions_app through the layout
+5. **Photo detail** (screen 10) — annotations tab + marker/list sync via
+   the AnnotatedPhoto island; person links/attributions/metadata blocked
+6. **Audio detail** (screen 11) — player + plain transcript; timestamped
+   seeking blocked on a transcript data model
+7. **Video detail** (screen 12) — dark player band; description/metadata
+   blocked
+
+## Data model needs the new screens surfaced (Tim's call)
+
+- Person/place tagging on artifacts and annotations
+- Medium and description fields on artifacts
+- Timestamped transcripts; audio/video durations
+- Article↔artifact source associations; citation format
+- Annotation attributions ("identified by …")
 
 ## Blocked / waiting on decisions
 
