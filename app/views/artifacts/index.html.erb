@@ -75,7 +75,38 @@
 </div>
 
 <% if @artifacts.empty? %>
-  <%= render Ui::EmptyStateComponent.new(title: "Nothing catalogued here yet") %>
+  <% if @query.present? || @filters.any? %>
+    <%# Filtered-empty: name what excluded everything and offer the exit. %>
+    <% constraints = @filters.map { |f| { "annotated" => "Annotated", "transcribed" => "Transcribed", "translated" => "Translated" }.fetch(f) } %>
+    <% constraints << "“#{@query}”" if @query.present? %>
+    <% total = Artifact.of_type(@type.key).count %>
+    <%= render Ui::EmptyStateComponent.new(title: "No #{@type.plural_display_name.downcase} match these filters") do |empty| %>
+      <% empty.with_action do %>
+        <p class="text-[15px] leading-[1.65] text-taupe-700 m-0 mx-auto mb-[18px] max-w-[52ch] dark:text-ink-100">
+          <%= total %> <%= @type.plural_display_name.downcase %> exist;
+          <% if constraints.size > 1 %>
+            the combination of <%= safe_join(constraints.map { |c| tag.strong(c, class: "font-semibold text-taupe-900 dark:text-ink-50") }, " and ") %> excludes all of them.
+          <% else %>
+            <strong class="font-semibold text-taupe-900 dark:text-ink-50"><%= constraints.first %></strong> excludes all of them.
+          <% end %>
+        </p>
+        <a href="<%= base_url %>?<%= { sort: @sort, view: @view }.to_query %>" class="text-[15px] text-verdigris-700 underline dark:text-verdigris-300">Clear filters</a>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%# True-empty: the collection is real and waiting; admins get the upload. %>
+    <%= render Ui::EmptyStateComponent.new(
+          title: "No #{@type.plural_display_name.downcase} catalogued yet",
+          body: "The collection exists and is waiting for its first scan."
+        ) do |empty| %>
+      <% if user_signed_in? %>
+        <% empty.with_action do %>
+          <%= render Ui::ButtonComponent.new(href: new_admin_artifact_path(type: @type.key))
+                .with_content("Upload the first #{@type.display_name.downcase}") %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
 <% elsif @view == "grid" %>
   <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,230px),1fr))] gap-5">
     <% @artifacts.records.each do |artifact| %>

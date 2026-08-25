@@ -4,8 +4,8 @@
     <% list.with_row(term: "Date as written") { "18 April 1931" } %>
     <% list.with_row(term: "Medium") { "Ink on onionskin, 2 leaves, 210 × 148 mm" } %>
     <% list.with_row(term: "People") do %>
-      <%= render Ui::LinkComponent.new(href: "#", role: :person) { "Anna Marias" } %>
-      <%= render Ui::LinkComponent.new(href: "#", role: :person) { "Josef Marias" } %>
+      <%= render Ui::LinkComponent.new(href: "#", role: :person).with_content("Anna Marias") %>
+      <%= render Ui::LinkComponent.new(href: "#", role: :person).with_content("Josef Marias") %>
     <% end %>
   <% end %>
 </div>

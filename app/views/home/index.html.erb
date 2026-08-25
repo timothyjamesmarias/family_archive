@@ -48,9 +48,15 @@
 
 <div class="max-w-[1360px] mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
   <section class="px-5 sm:px-14 py-11 lg:border-r border-taupe-200 dark:border-ink-500">
+    <% if @recent_artifacts.empty? %>
+      <div class="flex flex-wrap gap-x-5 gap-y-2.5 items-baseline justify-between">
+        <div class="field-label">Recently added</div>
+        <span class="text-sm text-taupe-600 dark:text-ink-200">Nothing catalogued yet &mdash; the first artifact will appear here.</span>
+      </div>
+    <% else %>
     <div class="flex flex-wrap gap-x-5 gap-y-2.5 items-baseline justify-between mb-5">
       <div class="field-label">Recently added</div>
-      <%= render Ui::LinkComponent.new(href: artifacts_hub_path, class: "text-sm") { "All artifacts" } %>
+      <%= render Ui::LinkComponent.new(href: artifacts_hub_path, class: "text-sm").with_content("All artifacts") %>
     </div>
     <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,190px),1fr))] gap-[18px]">
       <% @recent_artifacts.each do |artifact| %>
@@ -68,9 +74,16 @@
         </a>
       <% end %>
     </div>
+    <% end %>
   </section>
 
   <section class="bg-heather-50 px-5 sm:px-10 py-11 dark:bg-ink-700">
+    <% if @recent_articles.empty? %>
+      <div class="flex flex-wrap gap-x-5 gap-y-2.5 items-baseline justify-between">
+        <div class="font-mono text-[11px] tracking-[0.12em] uppercase text-heather-700 dark:text-heather-300">From the articles</div>
+        <span class="text-sm text-heather-700 dark:text-heather-300">Nothing published yet &mdash; the first article will appear here.</span>
+      </div>
+    <% else %>
     <div class="flex flex-wrap gap-x-5 gap-y-2.5 items-baseline justify-between mb-5">
       <div class="font-mono text-[11px] tracking-[0.12em] uppercase text-heather-700 dark:text-heather-300">From the articles</div>
       <a href="<%= articles_path %>" class="text-sm text-heather-700 underline dark:text-heather-300">All</a>
@@ -83,6 +96,7 @@
           <p class="text-[15px] leading-[1.6] text-heather-800 m-0 dark:text-ink-100"><%= article.excerpt %></p>
         <% end %>
       </a>
+    <% end %>
     <% end %>
   </section>
 </div>

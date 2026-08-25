@@ -1,7 +1,7 @@
 <div class="bg-paper-sheet dark:bg-ink-700 border border-taupe-200 dark:border-ink-500 p-7 space-y-4 font-serif text-[17px] leading-relaxed text-taupe-900 dark:text-ink-50">
-  <p>An <%= render Ui::LinkComponent.new(href: "#") { "ordinary inline link" } %> in body copy.</p>
-  <p>A link to <%= render Ui::LinkComponent.new(href: "#", role: :person) { "Anna Marias" } %> or to <%= render Ui::LinkComponent.new(href: "#", role: :place) { "Bremen" } %>.</p>
-  <p>Cites <%= render Ui::LinkComponent.new(href: "#", role: :citation) { "the 1931 letter" } %> as its source.</p>
-  <p>Held at <%= render Ui::LinkComponent.new(href: "https://example.org", role: :external) { "the county archive" } %></p>
-  <p>Sold the field<%= render Ui::LinkComponent.new(href: "#note-3", role: :footnote) { "[3]" } %> to pay passage.</p>
+  <p>An <%= render Ui::LinkComponent.new(href: "#").with_content("ordinary inline link") %> in body copy.</p>
+  <p>A link to <%= render Ui::LinkComponent.new(href: "#", role: :person).with_content("Anna Marias") %> or to <%= render Ui::LinkComponent.new(href: "#", role: :place).with_content("Bremen") %>.</p>
+  <p>Cites <%= render Ui::LinkComponent.new(href: "#", role: :citation).with_content("the 1931 letter") %> as its source.</p>
+  <p>Held at <%= render Ui::LinkComponent.new(href: "https://example.org", role: :external).with_content("the county archive") %></p>
+  <p>Sold the field<%= render Ui::LinkComponent.new(href: "#note-3", role: :footnote).with_content("[3]") %> to pay passage.</p>
 </div>

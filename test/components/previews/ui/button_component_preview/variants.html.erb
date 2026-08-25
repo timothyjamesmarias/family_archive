@@ -1,8 +1,8 @@
 <div class="flex flex-wrap items-center gap-3">
-  <%= render Ui::ButtonComponent.new { "Upload artifact" } %>
-  <%= render Ui::ButtonComponent.new(variant: :secondary) { "Cancel" } %>
-  <%= render Ui::ButtonComponent.new(variant: :quiet) { "View all 214" } %>
-  <%= render Ui::ButtonComponent.new(variant: :danger) { "Delete record" } %>
-  <%= render Ui::ButtonComponent.new(disabled: true) { "Publish" } %>
-  <%= render Ui::ButtonComponent.new(variant: :secondary, href: "#") { "As a link" } %>
+  <%= render Ui::ButtonComponent.new.with_content("Upload artifact") %>
+  <%= render Ui::ButtonComponent.new(variant: :secondary).with_content("Cancel") %>
+  <%= render Ui::ButtonComponent.new(variant: :quiet).with_content("View all 214") %>
+  <%= render Ui::ButtonComponent.new(variant: :danger).with_content("Delete record") %>
+  <%= render Ui::ButtonComponent.new(disabled: true).with_content("Publish") %>
+  <%= render Ui::ButtonComponent.new(variant: :secondary, href: "#").with_content("As a link") %>
 </div>
