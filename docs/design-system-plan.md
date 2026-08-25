@@ -29,12 +29,14 @@ invent (see CLAUDE.md, "Design System").
   Grid/List switcher. The 1940s and Has-people pills are omitted until
   parsed dates and people tagging exist
 
+- Article show styled to foundations 08: prose recipes, specimen header
+  (mono kicker, excerpt as standfirst, mono dateline), class hooks for
+  editor's note and notes. Byline/source counts omitted — no data
+
 ## Up next (in order)
 
-1. **Article show** — apply the foundations rich-content spec (no page
-   mockup; foundations section 08 is the source)
-2. **Articles index** — no mockup yet; needs design before code
-3. **Family tree page chrome** (screen 6) — island untouched until the
+1. **Articles index** — no mockup yet; needs design before code
+2. **Family tree page chrome** (screen 6) — island untouched until the
    React rewrite
 
 ## Blocked / waiting on decisions
