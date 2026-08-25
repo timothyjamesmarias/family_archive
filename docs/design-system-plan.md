@@ -18,17 +18,20 @@ invent (see CLAUDE.md, "Design System").
 - Pages: home (four bands, search form, no Try links for now), collection
   hub (preview-strip cards), collection indexes (grid/list split)
 - `/search` placeholder endpoint only — feature architected separately
+- Written-record reader (screen 5) for letters/documents/ledgers: scan
+  pane with leaf switcher, transcription/translation/commentary/details
+  tabs. Drawn elements with no backing data are omitted, pending
+  decisions: people/places tags, medium field, review dates, Cite this
+  item, zoom/fullscreen, prev/next ordering, article↔artifact links
 
 ## Up next (in order)
 
-1. **Letter detail** (Pages screen 5) — reader layout, metadata list,
-   transcription block with view switcher, per-type detail dispatch
-2. **Collection index controls** (screens 3–4) — per-collection search,
+1. **Collection index controls** (screens 3–4) — per-collection search,
    sort, filter pills, Grid/List switcher; needs query/controller support
-3. **Article show** — apply the foundations rich-content spec (no page
+2. **Article show** — apply the foundations rich-content spec (no page
    mockup; foundations section 08 is the source)
-4. **Articles index** — no mockup yet; needs design before code
-5. **Family tree page chrome** (screen 6) — island untouched until the
+3. **Articles index** — no mockup yet; needs design before code
+4. **Family tree page chrome** (screen 6) — island untouched until the
    React rewrite
 
 ## Blocked / waiting on decisions
