@@ -1,6 +1,14 @@
-# Serves the designed error pages through exceptions_app. Must stay
-# resilient: these actions can run while the rest of the app is failing.
-class ErrorsController < ApplicationController
+# Serves the designed error pages through exceptions_app. Inherits
+# ActionController::Base, not ApplicationController: these actions must run
+# for exactly the requests the rest of the app refuses — a POST re-raising
+# InvalidAuthenticityToken inside the error dispatch would downgrade the
+# styled page to Rails' bare-text failsafe, and the allow_browser gate
+# would hand old browsers the 406 page instead of the error they hit.
+class ErrorsController < ActionController::Base
+  skip_forgery_protection
+
+  layout "public"
+
   def not_found
     render status: :not_found
   end

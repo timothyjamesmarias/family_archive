@@ -1,12 +1,8 @@
 <% title = @artifact.title || @type.untitled_label %>
 <% content_for :title, "#{title} – Marias Family Archive" %>
 
-<% if @type.written_record? %>
-  <%= render "reader", artifact: @artifact, type: @type, title: title, leaf: @leaf, tab: @tab %>
-<% elsif @type.key == "PHOTO" %>
-  <%= render "photo_reader", artifact: @artifact, type: @type, title: title, leaf: @leaf, tab: @tab %>
-<% elsif @type.key == "AUDIO" %>
-  <%= render "audio_reader", artifact: @artifact, type: @type, title: title %>
-<% elsif @type.key == "VIDEO" %>
-  <%= render "video_reader", artifact: @artifact, type: @type, title: title %>
+<%# Each type declares its own reader; extra locals are ignored by the
+    readers that take no leaf/tab. %>
+<% if @type.reader_partial %>
+  <%= render @type.reader_partial, artifact: @artifact, type: @type, title: title, leaf: @leaf, tab: @tab %>
 <% end %>

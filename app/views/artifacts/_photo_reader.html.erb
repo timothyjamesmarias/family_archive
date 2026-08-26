@@ -24,7 +24,7 @@
       <span class="font-mono text-xs text-taupe-600 dark:text-ink-200"><%= [ artifact.original_date_string, artifact.slug ].compact.join(" · ") %></span>
     </div>
     <h1 class="font-serif text-4xl leading-115 font-medium tracking-tight mb-4 max-w-[28ch]"><%= title %></h1>
-    <% if (primary = artifact.files.first) %>
+    <% if (primary = artifact.files.first)&.file&.attached? %>
       <div class="flex flex-wrap gap-2.5">
         <%= link_to "Download", rails_blob_path(primary.file, disposition: "attachment"),
               class: "font-sans text-sm font-medium text-taupe-700 bg-paper-sheet border border-taupe-300 px-4 h-10 inline-flex items-center no-underline hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-transparent dark:border-ink-400 dark:hover:border-ink-200 dark:hover:text-ink-50" %>
@@ -84,9 +84,8 @@
   <div class="bg-paper-sheet px-5 sm:px-7 pt-6 pb-7 dark:bg-ink-700">
     <div class="mb-5.5">
       <%= render Ui::TabsComponent.new do |tabs| %>
-        <% total_annotations = artifact.files.sum { |file| file.annotations.size } %>
-        <% if total_annotations.positive? %>
-          <% tabs.with_tab(label: "Annotations", href: "#{base_path}?leaf=#{leaf}&tab=annotations", active: tab == "annotations", count: total_annotations) %>
+        <% if annotations.any? %>
+          <% tabs.with_tab(label: "Annotations", href: "#{base_path}?leaf=#{leaf}&tab=annotations", active: tab == "annotations", count: annotations.size) %>
         <% end %>
         <% if artifact.commentaries.any? %>
           <% tabs.with_tab(label: "Commentary", href: "#{base_path}?leaf=#{leaf}&tab=commentary", active: tab == "commentary") %>

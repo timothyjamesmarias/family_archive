@@ -47,10 +47,24 @@ export default class MediaPlayerController extends Controller {
   seek(event: MouseEvent) {
     const { duration } = this.mediaTarget
     if (!Number.isFinite(duration)) return
+    // Keyboard activation dispatches a synthetic click with clientX 0,
+    // which would seek to the very start; arrows handle keyboard seeking.
+    if (event.detail === 0) return
 
     const bounds = this.trackTarget.getBoundingClientRect()
     const fraction = (event.clientX - bounds.left) / bounds.width
     this.mediaTarget.currentTime = Math.min(Math.max(fraction, 0), 1) * duration
+  }
+
+  seekKey(event: KeyboardEvent) {
+    const step = { ArrowLeft: -5, ArrowRight: 5 }[event.key]
+    if (!step || !Number.isFinite(this.mediaTarget.duration)) return
+
+    event.preventDefault()
+    this.mediaTarget.currentTime = Math.min(
+      Math.max(this.mediaTarget.currentTime + step, 0),
+      this.mediaTarget.duration
+    )
   }
 
   fullscreen() {

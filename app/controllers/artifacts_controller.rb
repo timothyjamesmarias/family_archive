@@ -18,7 +18,7 @@ class ArtifactsController < ApplicationController
     @artifact = ArtifactBrowse.display_scope(@type).includes(:commentaries).find_by(slug: params[:slug])
     return redirect_to "/#{@type.route_segment}" if @artifact.nil?
 
-    if @type.written_record? || @type.key == "PHOTO"
+    if @type.reader_tabs
       reader = ArtifactReaderState.new(artifact: @artifact, type: @type, params: params)
       @leaf = reader.leaf
       @tab = reader.tab

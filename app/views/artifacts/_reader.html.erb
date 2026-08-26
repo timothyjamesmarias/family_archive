@@ -28,7 +28,7 @@
       <span class="font-mono text-xs text-taupe-600 dark:text-ink-200"><%= artifact.slug %></span>
     </div>
     <h1 class="font-serif text-40 leading-115 font-medium tracking-tight mb-4.5 max-w-[26ch]"><%= title %></h1>
-    <% if (primary = artifact.files.first) %>
+    <% if (primary = artifact.files.first)&.file&.attached? %>
       <div class="flex flex-wrap gap-2.5 items-center">
         <%= link_to "Download scan", rails_blob_path(primary.file, disposition: "attachment"),
               class: "font-sans text-sm font-medium text-taupe-700 bg-paper-sheet border border-taupe-300 px-4 h-10 inline-flex items-center no-underline hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-transparent dark:border-ink-400 dark:hover:border-ink-200 dark:hover:text-ink-50" %>
@@ -40,7 +40,7 @@
 <div class="max-w-340 mx-auto grid grid-cols-1 lg:grid-cols-2 items-start">
   <div class="bg-taupe-100 lg:border-r border-b lg:border-b-0 border-taupe-200 p-6 lg:sticky lg:top-0 dark:bg-ink-600 dark:border-ink-500">
     <% current_file = artifact.files[leaf - 1] %>
-    <% if current_file %>
+    <% if current_file&.file&.attached? %>
       <div class="field-label mb-4">Scan &nbsp;·&nbsp; leaf <%= leaf %> of <%= artifact.files.size %></div>
       <div class="mat border border-taupe-300 p-3.5 dark:border-ink-400">
         <img src="<%= url_for(current_file.file) %>" alt="<%= title %>, leaf <%= leaf %>" class="max-w-full max-h-130 object-contain">
@@ -65,15 +65,15 @@
     <div class="mb-5.5">
       <%= render Ui::TabsComponent.new do |tabs| %>
         <% if artifact.transcription %>
-          <% tabs.with_tab(label: "Transcription", href: "#{base_path}?tab=transcription", active: tab == "transcription") %>
+          <% tabs.with_tab(label: "Transcription", href: "#{base_path}?leaf=#{leaf}&tab=transcription", active: tab == "transcription") %>
         <% end %>
         <% if artifact.transcription&.translations&.any? %>
-          <% tabs.with_tab(label: "Translation", href: "#{base_path}?tab=translation", active: tab == "translation") %>
+          <% tabs.with_tab(label: "Translation", href: "#{base_path}?leaf=#{leaf}&tab=translation", active: tab == "translation") %>
         <% end %>
         <% if artifact.commentaries.any? %>
-          <% tabs.with_tab(label: "Commentary", href: "#{base_path}?tab=commentary", active: tab == "commentary", count: artifact.commentaries.size) %>
+          <% tabs.with_tab(label: "Commentary", href: "#{base_path}?leaf=#{leaf}&tab=commentary", active: tab == "commentary", count: artifact.commentaries.size) %>
         <% end %>
-        <% tabs.with_tab(label: "Details", href: "#{base_path}?tab=details", active: tab == "details") %>
+        <% tabs.with_tab(label: "Details", href: "#{base_path}?leaf=#{leaf}&tab=details", active: tab == "details") %>
       <% end %>
     </div>
 

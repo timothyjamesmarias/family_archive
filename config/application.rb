@@ -21,8 +21,9 @@ module FamilyArchive
     config.view_component.previews.default_layout = "component_preview"
 
     # Error pages render through the app (screen 14) so they share the real
-    # layout and recipes; the static files in public/ remain only as the
-    # failsafe when Rails itself cannot respond.
+    # layout and recipes. There are no static fallback pages — they would
+    # shadow the /404 and /500 routes — so if the error pages themselves
+    # raise, ShowExceptions serves Rails' plain-text failsafe.
     config.exceptions_app = routes
 
     # The jobs dashboard inherits the admin gate (authenticate_user! +

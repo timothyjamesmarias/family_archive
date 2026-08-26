@@ -23,7 +23,7 @@ class ArtifactBrowse
   # Everything an artifact page displays, eager-loaded in one shape.
   def self.display_scope(type)
     attachment = { file_attachment: { blob: :variant_records } }
-    includes = type.key == "PHOTO" ? [ :annotations, attachment ] : [ attachment ]
+    includes = type.image? ? [ :annotations, attachment ] : [ attachment ]
     Artifact.of_type(type.key).includes({ files: includes }, transcription: :translations)
   end
 
@@ -32,7 +32,7 @@ class ArtifactBrowse
     @params = params
     @view = %w[grid list].include?(params[:view]) ? params[:view] : type.browse_layout.to_s
     @query = params[:q].to_s.strip
-    @sort = SORT_ORDERS.key?(params[:sort]) ? params[:sort] : default_sort
+    @sort = sort_options.include?(params[:sort]) ? params[:sort] : default_sort
     @filters = available_filters.select { |filter| params[filter] == "1" }
   end
 
@@ -48,10 +48,13 @@ class ArtifactBrowse
   end
 
   def available_filters
-    return [ "annotated" ] if type.key == "PHOTO"
-    return %w[transcribed translated] if type.written_record? || type.key == "AUDIO"
+    type.index_filters
+  end
 
-    []
+  # The photos mockup offers a title sort; the letters mockup only the two
+  # date orders — the select and the accepted URL state must agree.
+  def sort_options
+    type.grid? ? %w[newest oldest title] : %w[oldest newest]
   end
 
   def total_in_collection

@@ -1,6 +1,7 @@
 # Resolves a reader page's leaf and tab from the query string. Both fall
 # back rather than 404 so stale links still land on the artifact, and tabs
-# whose content doesn't exist fall through to Details.
+# whose content doesn't exist fall through to Details. Annotations are
+# leaf-scoped: the panel shows the current leaf's, so availability does too.
 class ArtifactReaderState
   TRANSCRIPTION = "transcription"
   TRANSLATION = "translation"
@@ -8,14 +9,16 @@ class ArtifactReaderState
   ANNOTATIONS = "annotations"
   DETAILS = "details"
 
-  WRITTEN_TABS = [ TRANSCRIPTION, TRANSLATION, COMMENTARY, DETAILS ].freeze
-  PHOTO_TABS = [ ANNOTATIONS, COMMENTARY, DETAILS ].freeze
+  TAB_SETS = {
+    written: [ TRANSCRIPTION, TRANSLATION, COMMENTARY, DETAILS ].freeze,
+    photo: [ ANNOTATIONS, COMMENTARY, DETAILS ].freeze
+  }.freeze
 
   attr_reader :leaf, :tab
 
   def initialize(artifact:, type:, params:)
     @artifact = artifact
-    tabs = type.key == "PHOTO" ? PHOTO_TABS : WRITTEN_TABS
+    tabs = TAB_SETS.fetch(type.reader_tabs)
     @leaf = params[:leaf].to_i.clamp(1, [ artifact.files.size, 1 ].max)
     @tab = params[:tab]
     @tab = tabs.first unless tabs.include?(@tab)
@@ -31,7 +34,7 @@ class ArtifactReaderState
     when TRANSCRIPTION then artifact.transcription.present?
     when TRANSLATION then artifact.transcription&.translations&.any?
     when COMMENTARY then artifact.commentaries.any?
-    when ANNOTATIONS then artifact.files.any? { |file| file.annotations.any? }
+    when ANNOTATIONS then artifact.files[leaf - 1]&.annotations&.any?
     else true
     end
   end

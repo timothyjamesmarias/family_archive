@@ -29,6 +29,16 @@ class ErrorPagesTest < ActionDispatch::IntegrationTest
     assert_match "422 &mdash; request rejected", response.body
   end
 
+  test "a stale-token POST still gets the styled 422 page" do
+    ActionController::Base.allow_forgery_protection = true
+    post user_session_path, params: { user: { email: "x@y.z", password: "nope" } }
+
+    assert_response :unprocessable_content
+    assert_match "request rejected", response.body
+  ensure
+    ActionController::Base.allow_forgery_protection = false
+  end
+
   test "an unpublished article renders the designed 404" do
     Article.create!(slug: "draft", title: "Unfinished", content: "<p>x</p>")
 

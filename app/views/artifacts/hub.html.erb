@@ -13,8 +13,9 @@
 <header class="mb-8">
   <h1 class="font-serif text-40 font-medium tracking-tight mb-3.5">Artifacts</h1>
   <p class="font-serif text-xl leading-170 text-taupe-700 max-w-[62ch] dark:text-ink-100">
+    <% browsable_total = ArtifactType.browsable.sum { |type| @counts.fetch(type.key, 0) } %>
     Everything the family kept, sorted by what it is.
-    Six collections, <%= @counts.values.sum %> <%= "item".pluralize(@counts.values.sum) %>.
+    Six collections, <%= browsable_total %> <%= "item".pluralize(browsable_total) %>.
   </p>
 </header>
 

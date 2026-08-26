@@ -47,4 +47,20 @@ class PhotoReaderTest < ActionDispatch::IntegrationTest
     assert_select "dl dt", text: "Identifier"
     assert_select "dd", text: /1 file/
   end
+
+  test "the annotations tab is scoped to the current leaf" do
+    artifact = ArtifactUploader.new.upload(
+      files: [ fixture_file_upload("artifact.png", "image/png"),
+               fixture_file_upload("artifact.png", "image/png") ],
+      artifact_type: "PHOTO", title: "Two leaves"
+    )
+    artifact.files.last.annotations.create!(annotation_text: "Only on leaf 2", x_coord: 0.5, y_coord: 0.5)
+
+    get "/photos/#{artifact.slug}"
+    assert_select "a.tab.tab-active", text: /Details/
+
+    get "/photos/#{artifact.slug}?leaf=2"
+    assert_select "a.tab.tab-active", text: /Annotations/
+    assert_select "button.annotation-row", text: /Only on leaf 2/
+  end
 end
