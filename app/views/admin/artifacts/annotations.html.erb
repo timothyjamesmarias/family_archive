@@ -2,6 +2,9 @@
 <% content_for :title, title %>
 <% content_for :head do %>
   <meta name="turbo-visit-control" content="reload">
+  <%# plugin-react needs its refresh preamble before any React module in
+      dev; without this tag the editor dies with "can't detect preamble". %>
+  <%= vite_react_refresh_tag %>
   <%= vite_javascript_tag "admin_annotations.tsx" %>
 <% end %>
 <div class="flex items-center justify-between mb-6">
