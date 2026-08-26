@@ -14,37 +14,34 @@
 <%# Every control link carries the rest of the state; pagination gets the
     same set minus page. %>
 <% base_url = "/#{@type.route_segment}" %>
-<% control_params = { q: @query.presence, sort: @sort, view: @view }.compact
-   @filters.each { |filter| control_params[filter] = "1" } %>
+<% control_params = @browse.control_params %>
 <% link_params = ->(overrides) { control_params.merge(overrides).compact.to_query } %>
 
 <header class="mb-6 flex flex-wrap gap-3 gap-x-6 items-baseline justify-between">
   <div>
     <h1 class="font-serif text-4xl font-medium tracking-[-0.015em] mb-2"><%= @type.plural_display_name %></h1>
-    <% if @artifacts.total.positive? %>
+    <% if @browse.artifacts.total.positive? %>
       <p class="text-taupe-700 dark:text-ink-100">
-        <% if @view == "grid" %>
-          <% from = (@artifacts.current_page - 1) * @artifacts.per_page + 1 %>
-          <%= @artifacts.total %> <%= "item".pluralize(@artifacts.total) %>
-          &nbsp;·&nbsp; showing <%= from %>&ndash;<%= from + @artifacts.records.size - 1 %>
+        <% if @browse.grid? %>
+          <% from = (@browse.artifacts.current_page - 1) * @browse.artifacts.per_page + 1 %>
+          <%= @browse.artifacts.total %> <%= "item".pluralize(@browse.artifacts.total) %>
+          &nbsp;·&nbsp; showing <%= from %>&ndash;<%= from + @browse.artifacts.records.size - 1 %>
         <% else %>
-          <%= @artifacts.total %> <%= "item".pluralize(@artifacts.total) %>
-          <% if @transcribed_count %>
-            &nbsp;·&nbsp; <%= @transcribed_count %> transcribed
-          <% end %>
+          <%= @browse.artifacts.total %> <%= "item".pluralize(@browse.artifacts.total) %>
+          &nbsp;·&nbsp; <%= @browse.transcribed_count %> transcribed
         <% end %>
       </p>
     <% end %>
   </div>
   <div class="flex border border-taupe-300 dark:border-ink-400">
-    <a href="<%= base_url %>?<%= link_params.call(view: "grid", page: nil) %>" class="<%= class_names("segment", "segment-active": @view == "grid") %>">Grid</a>
-    <a href="<%= base_url %>?<%= link_params.call(view: "list", page: nil) %>" class="<%= class_names("segment", "segment-active": @view == "list") %>">List</a>
+    <a href="<%= base_url %>?<%= link_params.call(view: "grid", page: nil) %>" class="<%= class_names("segment", "segment-active": @browse.view == "grid") %>">Grid</a>
+    <a href="<%= base_url %>?<%= link_params.call(view: "list", page: nil) %>" class="<%= class_names("segment", "segment-active": @browse.view == "list") %>">List</a>
   </div>
 </header>
 
 <div class="mb-6 flex flex-wrap gap-2.5 items-center">
   <%= form_with url: base_url, method: :get, data: { controller: "autosubmit" }, class: "contents" do %>
-    <input type="text" name="q" value="<%= @query %>"
+    <input type="text" name="q" value="<%= @browse.query %>"
            placeholder="<%= @type.grid? ? "Search #{@type.plural_display_name.downcase}" : "Search #{@type.plural_display_name.downcase} and transcriptions" %>"
            class="font-sans text-[15px] text-taupe-900 bg-paper-sheet border border-taupe-300 h-[42px] px-3 w-60 max-w-full dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400">
     <select name="sort" data-action="autosubmit#submit"
@@ -52,20 +49,20 @@
       <% sort_options = @type.grid? ? %w[newest oldest title] : %w[oldest newest] %>
       <% labels = { "newest" => "Newest first", "oldest" => "Oldest first", "title" => "Title A–Z" } %>
       <% sort_options.each do |sort| %>
-        <option value="<%= sort %>" <%= "selected" if @sort == sort %>><%= labels.fetch(sort) %></option>
+        <option value="<%= sort %>" <%= "selected" if @browse.sort == sort %>><%= labels.fetch(sort) %></option>
       <% end %>
     </select>
-    <input type="hidden" name="view" value="<%= @view %>">
-    <% @filters.each do |filter| %>
+    <input type="hidden" name="view" value="<%= @browse.view %>">
+    <% @browse.filters.each do |filter| %>
       <input type="hidden" name="<%= filter %>" value="1">
     <% end %>
   <% end %>
-  <% pills = available_filters %>
+  <% pills = @browse.available_filters %>
   <% if pills.any? %>
     <span class="w-px h-[26px] bg-taupe-200 dark:bg-ink-500" aria-hidden="true"></span>
     <% pill_labels = { "annotated" => "Annotated", "transcribed" => "Transcribed", "translated" => "Translated" } %>
     <% pills.each do |pill| %>
-      <% active = @filters.include?(pill) %>
+      <% active = @browse.filters.include?(pill) %>
       <a href="<%= base_url %>?<%= link_params.call(pill => active ? nil : "1", page: nil) %>"
          class="<%= class_names("pill", "pill-active": active) %>">
         <%= pill_labels.fetch(pill) %><% if active %><span class="text-verdigris-600 dark:text-verdigris-300" aria-hidden="true">&times;</span><% end %>
@@ -74,12 +71,12 @@
   <% end %>
 </div>
 
-<% if @artifacts.empty? %>
-  <% if @query.present? || @filters.any? %>
+<% if @browse.artifacts.empty? %>
+  <% if @browse.query.present? || @browse.filters.any? %>
     <%# Filtered-empty: name what excluded everything and offer the exit. %>
-    <% constraints = @filters.map { |f| { "annotated" => "Annotated", "transcribed" => "Transcribed", "translated" => "Translated" }.fetch(f) } %>
-    <% constraints << "“#{@query}”" if @query.present? %>
-    <% total = Artifact.of_type(@type.key).count %>
+    <% constraints = @browse.filters.map { |f| { "annotated" => "Annotated", "transcribed" => "Transcribed", "translated" => "Translated" }.fetch(f) } %>
+    <% constraints << "“#{@browse.query}”" if @browse.query.present? %>
+    <% total = @browse.total_in_collection %>
     <%= render Ui::EmptyStateComponent.new(title: "No #{@type.plural_display_name.downcase} match these filters") do |empty| %>
       <% empty.with_action do %>
         <p class="text-[15px] leading-[1.65] text-taupe-700 m-0 mx-auto mb-[18px] max-w-[52ch] dark:text-ink-100">
@@ -90,7 +87,7 @@
             <strong class="font-semibold text-taupe-900 dark:text-ink-50"><%= constraints.first %></strong> excludes all of them.
           <% end %>
         </p>
-        <a href="<%= base_url %>?<%= { sort: @sort, view: @view }.to_query %>" class="text-[15px] text-verdigris-700 underline dark:text-verdigris-300">Clear filters</a>
+        <a href="<%= base_url %>?<%= { sort: @browse.sort, view: @browse.view }.to_query %>" class="text-[15px] text-verdigris-700 underline dark:text-verdigris-300">Clear filters</a>
       <% end %>
     <% end %>
   <% else %>
@@ -107,9 +104,9 @@
       <% end %>
     <% end %>
   <% end %>
-<% elsif @view == "grid" %>
+<% elsif @browse.grid? %>
   <div class="grid grid-cols-[repeat(auto-fill,minmax(min(100%,230px),1fr))] gap-5">
-    <% @artifacts.records.each do |artifact| %>
+    <% @browse.artifacts.records.each do |artifact| %>
       <%= render ArtifactCardComponent.new(
             artifact: artifact,
             href: "#{base_url}/#{artifact.slug}",
@@ -119,7 +116,7 @@
   </div>
 <% else %>
   <div class="bg-paper-sheet border border-taupe-200 dark:bg-ink-700 dark:border-ink-500">
-    <% @artifacts.records.each do |artifact| %>
+    <% @browse.artifacts.records.each do |artifact| %>
       <%= render ArtifactRowComponent.new(
             artifact: artifact,
             href: "#{base_url}/#{artifact.slug}",
@@ -139,5 +136,5 @@
 <% end %>
 
 <div class="mt-8">
-  <%= render Ui::PaginationComponent.new(page: @artifacts, base_url: base_url, extra_params: control_params) %>
+  <%= render Ui::PaginationComponent.new(page: @browse.artifacts, base_url: base_url, extra_params: control_params) %>
 </div>
