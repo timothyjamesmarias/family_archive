@@ -1,0 +1,10 @@
+<%# Commentary in the heather editorial treatment — "us, not the record".
+    Locals: artifact. %>
+<% artifact.commentaries.each do |commentary| %>
+  <div class="bg-heather-50 border border-heather-200 px-6 py-5 mb-5.5 dark:bg-ink-600 dark:border-ink-500">
+    <div class="font-mono text-11 tracking-10 uppercase text-heather-700 mb-2 dark:text-heather-300"><%= commentary.commentary_type.presence || "Commentary" %></div>
+    <% commentary.commentary_text.split(/\n{2,}/).each do |paragraph| %>
+      <p class="text-base leading-170 text-heather-900 mb-3.5 last:mb-0 max-w-[66ch] whitespace-pre-line dark:text-ink-100"><%= paragraph %></p>
+    <% end %>
+  </div>
+<% end %>

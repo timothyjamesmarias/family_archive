@@ -4,6 +4,7 @@
 @plugin "@tailwindcss/typography";
 
 @source "../../views/**/*.erb";
+@source "../../components/**/*.{erb,rb}";
 @source "../**/*.{js,ts,jsx,tsx}";
 
 /* Dark mode is toggled by a `dark` class on <html>, not the OS preference. */
@@ -12,9 +13,140 @@
 @theme {
   --font-serif: "Lora", Georgia, "Times New Roman", serif;
   --font-sans: "Inter", "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   --leading-extra-relaxed: 1.75;
   --leading-super-relaxed: 1.8;
+
+  /* The mockups' literal type scale: text-11 is 11px, leading-165 is 1.65,
+     tracking-10 is 0.1em. Spacing needs no tokens — Tailwind's fractional
+     scale covers the drawn pixel values (px-5.5 = 22px). */
+  --text-10: 10px;
+  --text-11: 11px;
+  --text-13: 13px;
+  --text-15: 15px;
+  --text-17: 17px;
+  --text-19: 19px;
+  --text-21: 21px;
+  --text-22: 22px;
+  --text-23: 23px;
+  --text-26: 26px;
+  --text-27: 27px;
+  --text-30: 30px;
+  --text-34: 34px;
+  --text-38: 38px;
+  --text-40: 40px;
+  --text-54: 54px;
+
+  --tracking-6: 0.06em;
+  --tracking-8: 0.08em;
+  --tracking-10: 0.1em;
+  --tracking-12: 0.12em;
+  --tracking-14: 0.14em;
+  /* The design's negative heading tracking replaces Tailwind's defaults. */
+  --tracking-tight: -0.015em;
+  --tracking-tighter: -0.02em;
+
+  --leading-110: 1.1;
+  --leading-115: 1.15;
+  --leading-116: 1.16;
+  --leading-120: 1.2;
+  --leading-125: 1.25;
+  --leading-130: 1.3;
+  --leading-135: 1.35;
+  --leading-155: 1.55;
+  --leading-160: 1.6;
+  --leading-165: 1.65;
+  --leading-170: 1.7;
+  --leading-175: 1.75;
+  --leading-180: 1.8;
+  --leading-185: 1.85;
+
+  /* Page vs sheet: the two paper tones live between taupe-50 and white,
+     so surfaces read as sheets on a desk. */
+  --color-paper-base: #f4f2ef;
+  --color-paper-sheet: #fdfcfb;
+
+  /* Action colour: links, primary buttons, focus rings, current-state marks.
+     700 for text on paper; 300 for everything on dark. */
+  --color-verdigris-50: #f2f7f5;
+  --color-verdigris-100: #e1ece8;
+  --color-verdigris-200: #c3d9d1;
+  --color-verdigris-300: #92bfae;
+  --color-verdigris-400: #5f9c84;
+  --color-verdigris-500: #437a66;
+  --color-verdigris-600: #386a58;
+  --color-verdigris-700: #2f5d4b;
+  --color-verdigris-800: #294e40;
+  --color-verdigris-900: #244237;
+
+  /* Editorial voice: the archive's own writing, held apart from the record. */
+  --color-heather-50: #f7f5f8;
+  --color-heather-100: #ebe7ee;
+  --color-heather-200: #d9d2df;
+  --color-heather-300: #bdb1c6;
+  --color-heather-400: #9c8caa;
+  --color-heather-500: #7d6b8c;
+  --color-heather-600: #675874;
+  --color-heather-700: #564a61;
+  --color-heather-800: #4a4053;
+  --color-heather-900: #403848;
+
+  /* Dark-mode surfaces. Inverting taupe is not enough; lamplight gets its
+     own family, darkest first: 900 sits under primary buttons, 800 is the
+     page, 700 the sheet, 600 recessed/raised, 500 the hairline. The light
+     end carries text: 50 body, 100 secondary, 200 muted labels. */
+  --color-ink-50: #ece8e4;
+  --color-ink-100: #b9b0aa;
+  --color-ink-200: #9b918a;
+  --color-ink-300: #6e655f;
+  --color-ink-400: #574f4c;
+  --color-ink-500: #3f3937;
+  --color-ink-600: #332e2c;
+  --color-ink-700: #2a2624;
+  --color-ink-800: #211d1c;
+  --color-ink-900: #1b1817;
+
+  /* Functional colours, flat keys so they compose with the dark: variant.
+     -text is the mono label tone, -body the message copy. */
+  --color-success-bg: #e8f3e8;
+  --color-success-border: #c3ddc3;
+  --color-success-text: #3f6b3f;
+  --color-success-body: #3d613d;
+  --color-success-bg-dark: #2d3e2d;
+  --color-success-border-dark: #3f5540;
+  --color-success-text-dark: #7fb07f;
+  --color-success-body-dark: #cfe0cf;
+
+  --color-error-bg: #f5e8e8;
+  --color-error-border: #ddc3c3;
+  --color-error-text: #8c4a4a;
+  --color-error-body: #6f3b3b;
+  --color-error-bg-dark: #3e2d2d;
+  --color-error-border-dark: #553f3f;
+  --color-error-text-dark: #d69b9b;
+  --color-error-body-dark: #e0cfcf;
+
+  --color-warning-bg: #f5f0e8;
+  --color-warning-border: #ddd2c3;
+  --color-warning-text: #7a6a3d;
+  --color-warning-body: #6f613b;
+  --color-warning-bg-dark: #3e3a2d;
+  --color-warning-border-dark: #55503f;
+  --color-warning-text-dark: #c9b380;
+  --color-warning-body-dark: #e0dacf;
+
+  --color-info-bg: #e8eff5;
+  --color-info-border: #c3d2dd;
+  --color-info-text: #4a6b8c;
+  --color-info-body: #3b566f;
+  --color-info-bg-dark: #2d3640;
+  --color-info-border-dark: #3f4a55;
+  --color-info-text-dark: #809fc9;
+  --color-info-body-dark: #cfd8e0;
+
+  /* The only shadow in the system: hover on a browsable card, popovers. */
+  --shadow-lifted: 0 1px 2px rgba(70, 62, 60, 0.05), 0 8px 24px -12px rgba(70, 62, 60, 0.14);
 
   --color-sage-50: #f6f7f6;
   --color-sage-100: #e3e7e3;
@@ -74,74 +206,486 @@
   h6 {
     @apply font-serif;
   }
+
+  :focus-visible {
+    @apply outline-2 outline-verdigris-500 outline-offset-1 dark:outline-verdigris-400;
+  }
 }
 
-/* Custom classes must be @utility (not @layer components) to be usable
-   inside @apply under Tailwind v4. */
+/* Recipe classes are the design system's vocabulary: components (Ruby now,
+   React later) map props to these names and nothing else, so a restyle
+   touches this file once. Custom classes must be @utility (not
+   @layer components) to be usable inside @apply under Tailwind v4. */
+
 @utility btn {
-  @apply px-5 py-2.5 rounded-md font-sans font-medium transition-colors duration-150;
+  @apply inline-flex items-center justify-center font-sans font-medium
+         border transition-colors duration-150 cursor-pointer
+         h-11 px-5.5 text-15;
 }
 
 @utility card {
-  @apply bg-stone-50 border border-stone-200 rounded-md p-6
-         dark:bg-stone-900 dark:border-stone-800;
+  @apply bg-paper-sheet border border-taupe-200 p-6
+         dark:bg-ink-700 dark:border-ink-500;
 }
 
 @layer components {
+  /* Buttons — foundations 04/09. 52/44/36px heights, square corners. */
   .btn-primary {
-    @apply btn bg-transparent border border-stone-400 text-stone-700
-           hover:bg-stone-100 hover:border-stone-500
-           dark:border-stone-600 dark:text-stone-300 dark:hover:bg-stone-800;
+    @apply btn text-paper-sheet bg-verdigris-700 border-verdigris-700
+           hover:bg-verdigris-800 hover:border-verdigris-800
+           dark:text-ink-900 dark:bg-verdigris-300 dark:border-verdigris-300
+           dark:hover:bg-verdigris-200 dark:hover:border-verdigris-200;
   }
 
   .btn-secondary {
-    @apply text-stone-600 underline hover:text-stone-900 transition-colors
-           dark:text-stone-400 dark:hover:text-stone-100;
+    @apply btn text-taupe-700 bg-paper-sheet border-taupe-300
+           hover:bg-taupe-50 hover:border-taupe-700 hover:text-taupe-900
+           dark:text-ink-50 dark:bg-transparent dark:border-ink-400
+           dark:hover:bg-ink-600 dark:hover:border-ink-200;
   }
 
+  .btn-quiet {
+    @apply btn text-verdigris-700 bg-transparent border-transparent px-3.5
+           underline underline-offset-3
+           hover:text-verdigris-900 hover:bg-verdigris-50
+           dark:text-verdigris-300 dark:hover:text-verdigris-200 dark:hover:bg-ink-600;
+  }
+
+  .btn-danger {
+    @apply btn text-error-text bg-paper-sheet border-[#d9b3b3]
+           hover:bg-error-bg hover:border-error-text
+           dark:text-error-text-dark dark:bg-transparent dark:border-error-border-dark
+           dark:hover:bg-error-bg-dark;
+  }
+
+  .btn-lg {
+    @apply h-13 px-6.5 text-base;
+  }
+
+  .btn-sm {
+    @apply h-9 px-4 text-sm;
+  }
+
+  .btn-primary:disabled,
+  .btn-secondary:disabled,
+  .btn-quiet:disabled,
+  .btn-danger:disabled {
+    @apply text-taupe-600 bg-taupe-100 border-taupe-200 no-underline cursor-not-allowed
+           hover:text-taupe-600 hover:bg-taupe-100 hover:border-taupe-200
+           dark:text-ink-300 dark:bg-ink-700 dark:border-ink-500
+           dark:hover:text-ink-300 dark:hover:bg-ink-700 dark:hover:border-ink-500;
+  }
+
+  /* Links — foundations 08. Verdigris acts; terracotta names people and
+     places; citations are dotted; footnotes are mono brackets. */
   .link {
-    @apply text-sage-600 hover:underline transition-colors
-           dark:text-sage-400;
+    @apply text-verdigris-700 underline decoration-1 underline-offset-2
+           hover:text-verdigris-900 hover:bg-verdigris-100
+           dark:text-verdigris-300 dark:hover:text-verdigris-200 dark:hover:bg-transparent;
   }
 
-  .card-lg {
-    @apply card p-8;
+  .link-person {
+    @apply text-terracotta-700 underline decoration-1 decoration-terracotta-300 underline-offset-2
+           hover:bg-terracotta-100
+           dark:text-terracotta-300 dark:decoration-terracotta-600 dark:hover:bg-transparent;
   }
 
+  .link-citation {
+    @apply text-verdigris-700 underline decoration-1 decoration-dotted underline-offset-3
+           hover:decoration-solid
+           dark:text-verdigris-300;
+  }
+
+  .link-footnote {
+    @apply font-mono text-11 text-verdigris-700 no-underline align-super px-0.5
+           hover:bg-verdigris-100
+           dark:text-verdigris-300 dark:hover:bg-ink-600;
+  }
+
+  /* Chips — foundations 04. Type chips are mono small caps; tone is a
+     second, redundant channel next to the text. Dark tints are mixed from
+     the accent into the ink board (the foundations specimen shows only the
+     terracotta pair; the same mix reproduces it). */
+  .chip {
+    @apply inline-flex items-center gap-1.5 font-mono text-11 tracking-10 uppercase
+           border px-2.75 py-1.75;
+  }
+
+  .chip-sm {
+    @apply text-10 px-2 py-1;
+  }
+
+  .chip-terracotta {
+    @apply text-terracotta-700 bg-terracotta-100 border-terracotta-200 dark:text-terracotta-300;
+  }
+
+  .chip-sage {
+    @apply text-sage-700 bg-sage-100 border-sage-200 dark:text-sage-300;
+  }
+
+  .chip-dusty {
+    @apply text-dusty-700 bg-dusty-100 border-dusty-200 dark:text-dusty-300;
+  }
+
+  .chip-taupe {
+    @apply text-taupe-700 bg-taupe-50 border-taupe-200 dark:text-ink-100;
+  }
+
+  .dark .chip-terracotta {
+    background: color-mix(in oklab, var(--color-terracotta-500) 16%, var(--color-ink-800));
+    border-color: color-mix(in oklab, var(--color-terracotta-500) 34%, var(--color-ink-800));
+  }
+
+  .dark .chip-sage {
+    background: color-mix(in oklab, var(--color-sage-500) 16%, var(--color-ink-800));
+    border-color: color-mix(in oklab, var(--color-sage-500) 34%, var(--color-ink-800));
+  }
+
+  .dark .chip-dusty {
+    background: color-mix(in oklab, var(--color-dusty-500) 16%, var(--color-ink-800));
+    border-color: color-mix(in oklab, var(--color-dusty-500) 34%, var(--color-ink-800));
+  }
+
+  .dark .chip-taupe {
+    @apply bg-ink-600 border-ink-500;
+  }
+
+  /* Status chips speak Inter, not mono — they are the application talking. */
+  .chip-status {
+    @apply inline-flex items-center gap-1.5 font-sans text-13 border px-2.75 py-1.75
+           text-taupe-700 bg-taupe-50 border-taupe-200
+           dark:text-ink-100 dark:bg-ink-600 dark:border-ink-500;
+  }
+
+  .chip-status-attention {
+    @apply text-warning-text bg-warning-bg border-warning-border
+           dark:text-warning-text-dark dark:bg-warning-bg-dark dark:border-warning-border-dark;
+  }
+
+  /* Fields — foundations 04. Mono label, 44px control, hint below. */
+  .field {
+    @apply flex flex-col gap-2;
+  }
+
+  .field-label {
+    @apply font-mono text-11 tracking-10 uppercase text-taupe-600 dark:text-ink-200;
+  }
+
+  .field-input {
+    @apply font-sans text-base text-taupe-900 bg-paper-sheet border border-taupe-300
+           h-11 px-3 w-full
+           dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400;
+  }
+
+  .field-hint {
+    @apply text-13 leading-155 text-taupe-700 dark:text-ink-100;
+  }
+
+  .field-invalid .field-label,
+  .field-invalid .field-hint {
+    @apply text-error-text dark:text-error-text-dark;
+  }
+
+  .field-invalid .field-input {
+    @apply border-error-text dark:border-error-text-dark;
+  }
+
+  /* Mono metadata text — dates, counts, IDs beside titles. */
+  .meta {
+    @apply font-mono text-11 text-taupe-600 dark:text-ink-200;
+  }
+
+  /* The mat a scan sits on — recessed, never cropped edge-to-edge.
+     Scans keep a light mat in dark mode: the document is a physical
+     object and its tones must stay comparable. */
+  .mat {
+    @apply bg-taupe-100 flex items-center justify-center overflow-hidden dark:bg-ink-600;
+  }
+
+  .chip-status-sm {
+    @apply text-13 px-2.25 py-1;
+  }
+
+  /* Pagination — mono 40px cells, verdigris current page. */
+  .pager-cell {
+    @apply font-mono text-13 text-taupe-600 no-underline border border-taupe-200
+           min-w-10 h-10 inline-flex items-center justify-center px-3
+           hover:bg-taupe-50
+           dark:text-ink-100 dark:border-ink-500 dark:hover:bg-ink-600;
+  }
+
+  .pager-cell-current {
+    @apply text-paper-sheet bg-verdigris-700 border-verdigris-700 hover:bg-verdigris-700
+           dark:text-ink-900 dark:bg-verdigris-300 dark:border-verdigris-300 dark:hover:bg-verdigris-300;
+  }
+
+  .pager-cell-disabled {
+    @apply text-taupe-400 border-taupe-100 hover:bg-transparent cursor-default
+           dark:text-ink-300 dark:border-ink-600 dark:hover:bg-transparent;
+  }
+
+  /* Tabs — the active tab carries an inset verdigris underline. */
+  .tab {
+    @apply text-15 text-taupe-700 no-underline px-4.5 py-3
+           hover:text-verdigris-700 hover:bg-verdigris-50
+           dark:text-ink-100 dark:hover:text-verdigris-300 dark:hover:bg-ink-600;
+  }
+
+  .tab-active {
+    @apply font-medium text-taupe-900 shadow-[inset_0_-2px_0_var(--color-verdigris-700)]
+           hover:text-taupe-900 hover:bg-transparent
+           dark:text-ink-50 dark:shadow-[inset_0_-2px_0_var(--color-verdigris-400)]
+           dark:hover:text-ink-50 dark:hover:bg-transparent;
+  }
+
+  /* Messages — flash and inline notices, mono level label + body. */
+  .message {
+    @apply border px-5 py-4 flex gap-3.5 items-baseline;
+  }
+
+  .message-label {
+    @apply font-mono text-11 tracking-10 uppercase shrink-0;
+  }
+
+  .message-body {
+    @apply text-15 leading-relaxed;
+  }
+
+  .message-success {
+    @apply bg-success-bg border-success-border text-success-body
+           dark:bg-success-bg-dark dark:border-success-border-dark dark:text-success-body-dark;
+  }
+
+  .message-success .message-label {
+    @apply text-success-text dark:text-success-text-dark;
+  }
+
+  .message-error {
+    @apply bg-error-bg border-error-border text-error-body
+           dark:bg-error-bg-dark dark:border-error-border-dark dark:text-error-body-dark;
+  }
+
+  .message-error .message-label {
+    @apply text-error-text dark:text-error-text-dark;
+  }
+
+  .message-warning {
+    @apply bg-warning-bg border-warning-border text-warning-body
+           dark:bg-warning-bg-dark dark:border-warning-border-dark dark:text-warning-body-dark;
+  }
+
+  .message-warning .message-label {
+    @apply text-warning-text dark:text-warning-text-dark;
+  }
+
+  .message-info {
+    @apply bg-info-bg border-info-border text-info-body
+           dark:bg-info-bg-dark dark:border-info-border-dark dark:text-info-body-dark;
+  }
+
+  .message-info .message-label {
+    @apply text-info-text dark:text-info-text-dark;
+  }
+
+  /* Filter pills — collection index controls. Active pills wear the
+     verdigris wash and carry a dismiss glyph. */
+  .pill {
+    @apply font-sans text-sm text-taupe-700 no-underline bg-paper-sheet border border-taupe-200
+           px-3 py-2 inline-flex items-center gap-2
+           hover:border-taupe-500 hover:text-taupe-900
+           dark:text-ink-100 dark:bg-transparent dark:border-ink-500
+           dark:hover:border-ink-200 dark:hover:text-ink-50;
+  }
+
+  .pill-active {
+    @apply text-verdigris-700 bg-verdigris-100 border-verdigris-200
+           hover:border-verdigris-400 hover:text-verdigris-900
+           dark:text-verdigris-300 dark:bg-ink-600 dark:border-ink-400
+           dark:hover:text-verdigris-200;
+  }
+
+  /* Segmented control — Grid/List view switcher. */
+  .segment {
+    @apply font-sans text-sm font-medium text-taupe-600 no-underline bg-paper-sheet
+           h-10 px-4 inline-flex items-center border-r border-taupe-300 last:border-r-0
+           hover:bg-taupe-50
+           dark:text-ink-100 dark:bg-ink-700 dark:border-ink-400 dark:hover:bg-ink-600;
+  }
+
+  .segment-active {
+    @apply text-taupe-900 bg-taupe-100 hover:bg-taupe-100
+           dark:text-ink-50 dark:bg-ink-600 dark:hover:bg-ink-600;
+  }
+
+  /* Annotation dots — a ring, never a filled disc, so the face beneath
+     stays visible; selection fills it. The marker variant floats on the
+     photograph at normalized coordinates; the bare dot labels list rows. */
+  .annotation-dot {
+    @apply w-6.5 h-6.5 rounded-full shrink-0
+           border-2 border-terracotta-700 bg-paper-sheet/35
+           font-mono text-11 text-terracotta-900
+           inline-flex items-center justify-center p-0;
+  }
+
+  .annotation-marker {
+    @apply absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer;
+  }
+
+  .annotation-dot-selected {
+    @apply border-paper-sheet bg-terracotta-700 text-paper-sheet;
+  }
+
+  .annotation-row {
+    @apply grid grid-cols-[34px_minmax(0,1fr)] gap-3.5 px-2.5 py-3 items-start w-full
+           text-left cursor-pointer border border-transparent
+           hover:bg-terracotta-50 dark:hover:bg-ink-600;
+  }
+
+  .annotation-row-selected {
+    @apply bg-terracotta-100 border-terracotta-200
+           hover:bg-terracotta-100 dark:bg-ink-600 dark:border-ink-400;
+  }
+
+  /* The annotations visibility switch on the photo stage. */
+  .switch {
+    @apply inline-flex items-center w-8.5 h-5 border p-0.5 cursor-pointer
+           border-verdigris-700 bg-verdigris-700 justify-end
+           dark:border-verdigris-400 dark:bg-verdigris-400;
+  }
+
+  .switch[aria-checked="false"] {
+    @apply border-taupe-300 bg-paper-sheet justify-start
+           dark:border-ink-400 dark:bg-ink-900;
+  }
+
+  .switch-knob {
+    @apply block w-3.5 h-3.5 bg-paper-sheet;
+  }
+
+  .switch[aria-checked="false"] .switch-knob {
+    @apply bg-taupe-400 dark:bg-ink-300;
+  }
+
+  /* Masthead — the single sheet-toned bar every public page shares. */
+  .masthead-link {
+    @apply text-15 text-taupe-700 no-underline px-3.5 py-2.5
+           hover:text-verdigris-700 hover:bg-verdigris-50
+           dark:text-ink-100 dark:hover:text-verdigris-300 dark:hover:bg-ink-600;
+  }
+
+  .masthead-link-active {
+    @apply text-taupe-900 shadow-[inset_0_-2px_0_var(--color-verdigris-700)]
+           hover:text-taupe-900 hover:bg-transparent
+           dark:text-ink-50 dark:shadow-[inset_0_-2px_0_var(--color-verdigris-400)]
+           dark:hover:text-ink-50 dark:hover:bg-transparent;
+  }
+
+  /* Empty states carry a dashed rule, not an illustration. */
+  .empty-state {
+    @apply border border-dashed border-taupe-300 bg-taupe-50 text-center px-7 py-11
+           dark:border-ink-400 dark:bg-ink-700;
+  }
+
+  /* Rich content — foundations 08. The archive speaking in its own voice.
+     Applied to authored article HTML; the sanitizer allows class
+     attributes, so the drawn patterns (editor's note, notes, link roles)
+     are reachable from the editor via the classes below and the global
+     link recipes. */
   .prose-article {
-    @apply font-serif text-xl leading-extra-relaxed text-stone-900
-           dark:text-stone-50 max-w-3xl mx-auto;
+    @apply font-serif text-xl leading-super-relaxed text-taupe-900 dark:text-ink-50;
+    text-wrap: pretty;
   }
 
-  .prose-article h1 {
-    @apply text-4xl font-semibold leading-tight mb-6 text-stone-900 dark:text-stone-50;
+  .prose-article p,
+  .prose-article ul,
+  .prose-article ol {
+    @apply max-w-[68ch] mt-4 mb-0;
   }
 
+  .prose-article h1,
   .prose-article h2 {
-    @apply text-3xl font-semibold leading-snug mb-4 mt-8 text-stone-900 dark:text-stone-50;
+    @apply font-serif text-26 font-medium leading-125 mt-9.5 mb-0;
   }
 
-  .prose-article h3 {
-    @apply text-2xl font-semibold leading-snug mb-3 mt-6 text-stone-900 dark:text-stone-50;
-  }
-
-  .prose-article p {
-    @apply mb-6 text-stone-700 dark:text-stone-300;
+  .prose-article h3,
+  .prose-article h4 {
+    @apply font-serif text-21 font-medium leading-130 mt-9 mb-0;
   }
 
   .prose-article a {
-    @apply text-sage-600 hover:underline dark:text-sage-400;
+    @apply text-verdigris-700 underline decoration-1 underline-offset-2
+           hover:text-verdigris-900
+           dark:text-verdigris-300 dark:hover:text-verdigris-200;
   }
 
   .prose-article blockquote {
-    @apply border-l-4 border-stone-300 dark:border-stone-700 pl-6 italic text-stone-600 dark:text-stone-400;
+    @apply mt-8 mb-0 py-1 pl-6 border-l-2 border-terracotta-200;
+  }
+
+  .prose-article blockquote p {
+    @apply text-22 leading-170 italic max-w-[56ch];
+  }
+
+  .prose-article ul,
+  .prose-article ol {
+    @apply pl-6.5;
+  }
+
+  .prose-article li {
+    @apply mb-2;
   }
 
   .prose-article code {
-    @apply bg-stone-100 dark:bg-stone-800 px-2 py-1 rounded text-sm font-mono;
+    @apply font-mono text-base bg-taupe-50 border border-taupe-200 px-1.5 py-px
+           dark:bg-ink-600 dark:border-ink-500;
   }
 
   .prose-article pre {
-    @apply bg-stone-100 dark:bg-stone-800 p-4 rounded overflow-x-auto;
+    @apply font-mono text-sm bg-taupe-100 border border-taupe-200 p-4 mt-8 overflow-x-auto
+           dark:bg-ink-600 dark:border-ink-500;
+  }
+
+  .prose-article pre code {
+    @apply bg-transparent border-0 p-0;
+  }
+
+  .prose-article img {
+    @apply max-w-full border border-taupe-200 mt-9 dark:border-ink-500;
+  }
+
+  .prose-article hr {
+    @apply border-taupe-200 mt-9 dark:border-ink-500;
+  }
+
+  .prose-article table {
+    @apply font-sans text-base border-collapse mt-8 w-full;
+  }
+
+  .prose-article th {
+    @apply font-mono font-normal text-11 tracking-10 uppercase text-taupe-600 text-left
+           py-2.5 border-b border-taupe-200 dark:text-ink-200 dark:border-ink-500;
+  }
+
+  .prose-article td {
+    @apply py-2.5 border-b border-taupe-100 dark:border-ink-600;
+  }
+
+  /* Heather marks interpretation — clearly "us, not the record". */
+  .prose-article .editors-note {
+    @apply bg-heather-50 border border-heather-200 px-6 py-5 mt-8.5 font-sans
+           dark:bg-ink-600 dark:border-ink-500;
+  }
+
+  .prose-article .editors-note p {
+    @apply text-base leading-170 text-heather-900 max-w-[66ch] mt-2 first:mt-0 dark:text-ink-100;
+  }
+
+  .prose-article .notes {
+    @apply border-t border-taupe-200 mt-9 pt-5 dark:border-ink-500;
+  }
+
+  .prose-article .notes ol {
+    @apply font-sans text-15 leading-175 text-taupe-700 pl-6 max-w-[70ch] mt-3
+           dark:text-ink-100;
   }
 }

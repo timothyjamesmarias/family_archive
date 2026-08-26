@@ -1,0 +1,6 @@
+<div class="flex flex-wrap items-center gap-2.5">
+  <%= render Ui::StatusChipComponent.new.with_content("Transcribed") %>
+  <%= render Ui::StatusChipComponent.new.with_content("Annotated 4") %>
+  <%= render Ui::StatusChipComponent.new.with_content("Translated DE") %>
+  <%= render Ui::StatusChipComponent.new(tone: :attention).with_content("Needs transcription") %>
+</div>

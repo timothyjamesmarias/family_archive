@@ -1,0 +1,28 @@
+<div class="bg-paper-sheet border border-taupe-200 dark:bg-ink-700 dark:border-ink-500">
+  <%= render ArtifactRowComponent.new(
+        artifact: Artifact.new(artifact_type: "LETTER", slug: "anna-1931",
+                               title: "Letter from Anna Marias to her brother",
+                               original_date_string: "18 April 1931"),
+        href: "#",
+        snippet: "My dear brother — we leave on the fourteenth from Bremen if the papers hold. Mother has sold the smaller field"
+      ) do |row| %>
+    <% row.with_status { "Transcribed" } %>
+    <% row.with_status { "Translated DE" } %>
+  <% end %>
+  <%= render ArtifactRowComponent.new(
+        artifact: Artifact.new(artifact_type: "LETTER", slug: "josef-1934",
+                               title: "Josef Marias to his mother, from the coast",
+                               original_date_string: "2 September 1934"),
+        href: "#",
+        snippet: "The work is steady and the room is dry. I am sending what I can each month"
+      ) do |row| %>
+    <% row.with_status { "Transcribed" } %>
+  <% end %>
+  <%= render ArtifactRowComponent.new(
+        artifact: Artifact.new(artifact_type: "LETTER", slug: "unknown"),
+        href: "#",
+        fallback_note: "No transcription yet. Two pages, sender unidentified."
+      ) do |row| %>
+    <% row.with_status(tone: :attention) { "Needs transcription" } %>
+  <% end %>
+</div>

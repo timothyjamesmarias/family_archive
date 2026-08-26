@@ -9,6 +9,8 @@ class Artifact < ApplicationRecord
   validates :artifact_type, inclusion: { in: ArtifactType::KEYS }
 
   scope :of_type, ->(key) { where(artifact_type: key) }
+  # OTHER has no public route, so public listings must not link to it.
+  scope :browsable, -> { where(artifact_type: ArtifactType.browsable.map(&:key)) }
 
   def type
     ArtifactType.fetch(artifact_type)

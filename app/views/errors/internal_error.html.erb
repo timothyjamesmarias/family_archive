@@ -1,0 +1,15 @@
+<% content_for :title, "Something failed – Marias Family Archive" %>
+<% content_for :minimal_chrome, true %>
+
+<div class="max-w-[52ch] pt-8 pb-14">
+  <div class="font-mono text-xs tracking-14 uppercase text-error-text mb-4.5 dark:text-error-text-dark"><%= @status_code %> &mdash; <%= @status_label %></div>
+  <h1 class="font-serif text-34 font-medium leading-120 mb-3.5">Something failed on our side</h1>
+  <p class="text-17 leading-170 text-taupe-700 mb-6.5 dark:text-ink-100">
+    The records are safe; the page that reads them broke. It has been logged.
+    Try again in a moment.
+  </p>
+  <div class="flex flex-wrap gap-3">
+    <%= render Ui::ButtonComponent.new(href: request.original_fullpath.presence || root_path).with_content("Reload the page") %>
+    <%= render Ui::ButtonComponent.new(variant: :secondary, href: root_path).with_content("Back to home") %>
+  </div>
+</div>

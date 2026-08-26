@@ -10,6 +10,6 @@ class ArticlesController < ApplicationController
 
   def show
     @article = Article.find_by(slug: params[:slug])
-    head :not_found unless @article&.published?
+    raise ActiveRecord::RecordNotFound unless @article&.published?
   end
 end

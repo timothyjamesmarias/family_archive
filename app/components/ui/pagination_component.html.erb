@@ -1,0 +1,27 @@
+<nav class="flex flex-wrap gap-1.5 items-center" aria-label="Pagination">
+  <% if current_page > 1 %>
+    <a href="<%= url_for_page(current_page - 1) %>" class="pager-cell">Prev</a>
+  <% else %>
+    <span class="pager-cell pager-cell-disabled">Prev</span>
+  <% end %>
+
+  <% cells.each do |cell| %>
+    <% if cell == :ellipsis %>
+      <span class="font-mono text-13 text-taupe-600 px-1.5 dark:text-ink-200">&hellip;</span>
+    <% elsif cell == current_page %>
+      <span class="pager-cell pager-cell-current" aria-current="page"><%= cell %></span>
+    <% else %>
+      <a href="<%= url_for_page(cell) %>" class="pager-cell"><%= cell %></a>
+    <% end %>
+  <% end %>
+
+  <% if current_page < last_page %>
+    <a href="<%= url_for_page(current_page + 1) %>" class="pager-cell">Next</a>
+  <% else %>
+    <span class="pager-cell pager-cell-disabled">Next</span>
+  <% end %>
+
+  <% if count_label %>
+    <span class="meta ml-2.5"><%= count_label %></span>
+  <% end %>
+</nav>

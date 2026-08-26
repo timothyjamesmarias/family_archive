@@ -1,6 +1,8 @@
-<% title = @artifact.title || "Untitled #{@type.display_name}" %>
-<% content_for :title, title %>
-<div class="max-w-4xl mx-auto">
-  <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-8"><%= title %></h1>
-  <%= render "artifact_display", artifact: @artifact %>
-</div>
+<% title = @artifact.title || @type.untitled_label %>
+<% content_for :title, "#{title} – Marias Family Archive" %>
+
+<%# Each type declares its own reader; extra locals are ignored by the
+    readers that take no leaf/tab. %>
+<% if @type.reader_partial %>
+  <%= render @type.reader_partial, artifact: @artifact, type: @type, title: title, leaf: @leaf, tab: @tab %>
+<% end %>

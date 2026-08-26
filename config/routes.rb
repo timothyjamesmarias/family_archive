@@ -9,6 +9,11 @@ Rails.application.routes.draw do
   get "robots.txt" => "sitemaps#robots"
 
   get "artifacts" => "artifacts#hub", as: :artifacts_hub
+  get "search" => "searches#show", as: :search
+
+  match "/404", to: "errors#not_found", via: :all
+  match "/422", to: "errors#unprocessable", via: :all
+  match "/500", to: "errors#internal_error", via: :all
 
   # One typed collection per browsable artifact type: /photos, /photos/:slug, ...
   ArtifactType.browsable.each do |type|

@@ -4,7 +4,7 @@ class ArtifactAdminTest < ApplicationSystemTestCase
   FIXTURE = Rails.root.join("test/fixtures/files/artifact.png")
 
   def upload_photo(title:)
-    ArtifactUploader.new.upload(
+    Artifact::Uploader.new.upload(
       files: [ Rack::Test::UploadedFile.new(FIXTURE, "image/png") ],
       artifact_type: "PHOTO", title: title
     )
@@ -87,9 +87,9 @@ class ArtifactAdminTest < ApplicationSystemTestCase
     sign_in_as email: "boss@example.com", admin: true
 
     visit admin_root_path
-    click_on "Photos"
+    click_on "Photographs"
 
-    assert_selector "h1", text: "Photos"
+    assert_selector "h1", text: "Photographs"
     assert_text "Wedding day"
   end
 end

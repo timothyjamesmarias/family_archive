@@ -1,30 +1,53 @@
-<% content_for :title, "Articles" %>
-<div class="max-w-6xl mx-auto">
-  <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-8">Articles</h1>
-  <% if @articles.empty? %>
-    <div class="text-center py-12">
-      <p class="text-gray-500 dark:text-gray-400 text-lg">No articles published yet.</p>
-    </div>
-  <% else %>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-      <% @articles.records.each do |article| %>
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-          <a href="<%= article_path(article.slug) %>" class="block p-6">
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              <%= article.title %>
-            </h2>
-            <% if article.published_at %>
-              <p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
-                <%= article.published_at.strftime("%B %d, %Y") %>
-              </p>
-            <% end %>
-            <% if article.excerpt %>
-              <p class="text-gray-600 dark:text-gray-300 line-clamp-3"><%= article.excerpt %></p>
+<% content_for :title, "Articles – Marias Family Archive" %>
+<% content_for :full_bleed, true %>
+
+<header class="border-b border-taupe-200 dark:border-ink-500">
+  <div class="max-w-340 mx-auto px-5 sm:px-14 pt-12 pb-7">
+    <div class="font-mono text-11 tracking-12 uppercase text-heather-600 mb-3.5 dark:text-heather-300">Editorial &mdash; written by the family</div>
+    <h1 class="font-serif text-40 font-medium tracking-tight mb-3.5">Articles</h1>
+    <p class="font-serif text-xl leading-170 text-taupe-700 max-w-[62ch] dark:text-ink-100">
+      What we make of the records &mdash; interpretation, clearly separated from the sources it cites.
+      <%= @articles.total %> <%= "article".pluralize(@articles.total) %>.
+    </p>
+  </div>
+</header>
+
+<% if @articles.empty? %>
+  <div class="max-w-340 mx-auto px-5 sm:px-14 py-10">
+    <%= render Ui::EmptyStateComponent.new(title: "Nothing published yet", body: "The first article will appear here.") %>
+  </div>
+<% else %>
+  <div class="bg-paper-sheet dark:bg-ink-700">
+    <div class="max-w-340 mx-auto">
+      <% @articles.records.each_with_index do |article, index| %>
+        <% featured = index.zero? && @articles.current_page == 1 %>
+        <% if featured %>
+          <a href="/articles/<%= article.slug %>" class="block no-underline text-inherit px-5 sm:px-14 py-9 border-b border-taupe-100 border-l-3 border-l-heather-500 hover:bg-heather-50 dark:border-b-ink-600 dark:hover:bg-ink-600">
+            <div class="flex flex-wrap gap-x-4.5 gap-y-1.5 font-mono text-11 tracking-6 text-heather-600 mb-3 dark:text-heather-300">
+              <span>Latest</span>
+              <% if article.published_at %><span><%= article.published_at.strftime("%-d %B %Y") %></span><% end %>
+            </div>
+            <h2 class="font-serif text-30 font-medium leading-120 mb-3 max-w-[30ch] text-taupe-900 dark:text-ink-50"><%= article.title %></h2>
+            <% if article.excerpt.present? %>
+              <p class="font-serif text-19 leading-165 italic text-taupe-700 m-0 max-w-[58ch] dark:text-ink-100"><%= article.excerpt %></p>
             <% end %>
           </a>
-        </div>
+        <% else %>
+          <a href="/articles/<%= article.slug %>" class="block no-underline text-inherit px-5 sm:px-14 py-7 border-b border-taupe-100 last:border-b-0 hover:bg-heather-50 dark:border-ink-600 dark:hover:bg-ink-600">
+            <div class="flex flex-wrap gap-x-4.5 gap-y-1.5 font-mono text-11 tracking-6 text-heather-600 mb-2.5 dark:text-heather-300">
+              <% if article.published_at %><span><%= article.published_at.strftime("%-d %B %Y") %></span><% end %>
+            </div>
+            <h2 class="font-serif text-2xl font-medium leading-125 mb-2.5 max-w-[36ch] text-taupe-900 dark:text-ink-50"><%= article.title %></h2>
+            <% if article.excerpt.present? %>
+              <p class="text-base leading-165 text-taupe-700 m-0 max-w-[66ch] dark:text-ink-100"><%= article.excerpt %></p>
+            <% end %>
+          </a>
+        <% end %>
       <% end %>
     </div>
-  <% end %>
-  <%= render "shared/pagination", page: @articles, base_url: articles_path %>
-</div>
+  </div>
+
+  <div class="max-w-340 mx-auto px-5 sm:px-14 py-8">
+    <%= render Ui::PaginationComponent.new(page: @articles, base_url: articles_path) %>
+  </div>
+<% end %>

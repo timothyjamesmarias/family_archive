@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component preview</title>
+    <%= render "shared/theme_boot" %>
+    <%= vite_client_tag %>
+    <%= vite_stylesheet_tag "public" %>
+    <%= vite_javascript_tag "public.ts" %>
+  </head>
+  <body class="bg-paper-base dark:bg-ink-800 min-h-screen p-8">
+    <div class="max-w-4xl space-y-6">
+      <%= yield %>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+<label class="<%= class_names("field", "field-invalid": invalid?) %>">
+  <span class="field-label"><%= label %></span>
+  <%= content %>
+  <% if message %>
+    <span class="field-hint"><%= message %></span>
+  <% end %>
+</label>

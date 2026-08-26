@@ -1,0 +1,8 @@
+<%= render Ui::EmptyStateComponent.new(
+      title: "Nothing catalogued here yet",
+      body: "The archive is genuinely incomplete, and saying so plainly is more credible than filling the space."
+    ) do |empty| %>
+  <% empty.with_action do %>
+    <%= render Ui::ButtonComponent.new.with_content("Upload the first item") %>
+  <% end %>
+<% end %>

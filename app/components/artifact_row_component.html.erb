@@ -1,0 +1,27 @@
+<a href="<%= href %>" class="grid grid-cols-[84px_minmax(0,1fr)] sm:grid-cols-[84px_minmax(0,1fr)_150px] gap-x-5.5 gap-y-2 p-5 items-start no-underline text-inherit border-b border-taupe-100 last:border-b-0 hover:bg-verdigris-50 dark:border-ink-600 dark:hover:bg-ink-600">
+  <div class="mat h-26 border border-taupe-200 p-2 dark:border-ink-500">
+    <%= render ArtifactThumbnailComponent.new(artifact: artifact, icon_size: "w-8 h-8") %>
+  </div>
+  <div>
+    <div class="flex flex-wrap gap-2 items-center mb-2">
+      <%= render Ui::TypeChipComponent.new(artifact_type: artifact.type, size: :sm) %>
+      <span class="meta"><%= date_label %></span>
+    </div>
+    <% if title %>
+      <div class="font-serif text-xl leading-135 mb-2 text-taupe-900 dark:text-ink-50"><%= title %></div>
+    <% else %>
+      <div class="font-serif text-xl leading-135 mb-2 italic text-taupe-600 dark:text-ink-200"><%= untitled_label %></div>
+    <% end %>
+    <% if snippet %>
+      <p class="font-serif text-base leading-165 text-taupe-700 max-w-[74ch] m-0 dark:text-ink-100">&ldquo;<%= snippet %>&hellip;&rdquo;</p>
+    <% elsif fallback_note %>
+      <p class="text-15 leading-165 text-taupe-600 m-0 dark:text-ink-200"><%= fallback_note %></p>
+    <% end %>
+  </div>
+  <div class="col-start-2 sm:col-start-3 flex sm:flex-col flex-wrap gap-1.5 items-start">
+    <% statuses.each do |status| %>
+      <%= status %>
+    <% end %>
+    <span class="meta pt-0.5"><%= file_count_label %></span>
+  </div>
+</a>

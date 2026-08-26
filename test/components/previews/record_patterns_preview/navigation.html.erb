@@ -1,0 +1,19 @@
+<div class="space-y-8">
+  <%= render Ui::BreadcrumbsComponent.new do |trail| %>
+    <% trail.with_crumb(label: "Archive", href: "#") %>
+    <% trail.with_crumb(label: "Letters", href: "#") %>
+    <% trail.with_crumb(label: "Letter from Anna Marias, 1931") %>
+  <% end %>
+
+  <%= render Ui::TabsComponent.new do |tabs| %>
+    <% tabs.with_tab(label: "Scan", href: "#", active: true) %>
+    <% tabs.with_tab(label: "Transcription", href: "#") %>
+    <% tabs.with_tab(label: "Annotations", href: "#", count: 4) %>
+    <% tabs.with_tab(label: "Commentary", href: "#") %>
+  <% end %>
+
+  <%= render Ui::PaginationComponent.new(
+        page: Pagination.new(records: [], current_page: 9, per_page: 24, total: 424),
+        base_url: "#", noun: "artifact"
+      ) %>
+</div>

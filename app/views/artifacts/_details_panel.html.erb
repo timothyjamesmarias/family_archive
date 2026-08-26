@@ -1,0 +1,9 @@
+<%# The metadata rows every artifact can back today. Locals: artifact. %>
+<%= render MetadataListComponent.new do |list| %>
+  <% list.with_row(term: "Identifier") { tag.span(artifact.slug, class: "font-mono text-sm") } %>
+  <% if artifact.original_date_string %>
+    <% list.with_row(term: "Date as written") { artifact.original_date_string } %>
+  <% end %>
+  <% list.with_row(term: "Files") { "#{artifact.files.size} #{"file".pluralize(artifact.files.size)}" } %>
+  <% list.with_row(term: "Added") { artifact.uploaded_at.strftime("%-d %B %Y") } %>
+<% end %>

@@ -33,13 +33,17 @@ Seeds create `admin@example.com` / `password` in development.
 
 ## Architecture Notes
 
-- **Domain services live in `app/services`**, named after the domain
-  (`ArtifactUploader`, `FamilyTree::Mutations`, `IndividualEditor`) — no
-  `Service` suffix. Controllers validate, delegate, and shape the response.
-- **Recursive CTEs stay as SQL strings** in `app/queries/individual_queries.rb`
-  and `app/services/family_tree/metadata.rb`, executed through Active Record.
-  They walk parent/child edges to bounded depth; refactor deliberately, with
-  the tests in `test/services` as the safety net.
+- **Domain POROs are models.** There is no `app/services` — everything lives
+  in `app/models`, organized by domain namespace (`Artifact::Uploader`,
+  `Gedcom::Importer`, `Individual::Editor`, `FamilyTree::Mutations`); small
+  standalone concepts stay flat (`Pagination`, `SitemapEntries`). No
+  `Service` suffix, ever. Controllers validate, delegate, and shape the
+  response.
+- **Recursive CTEs stay as SQL strings** in
+  `app/models/individual/queries.rb` and `app/models/family_tree/metadata.rb`,
+  executed through Active Record. They walk parent/child edges to bounded
+  depth; refactor deliberately, with the tests in `test/models` as the
+  safety net.
 - **Soft deletes** (`SoftDeletable` concern) apply to individuals, families,
   and family_members via a default scope; `with_deleted` escapes it. GEDCOM id
   uniqueness checks must include deleted rows — the DB unique index does.
@@ -56,7 +60,7 @@ Seeds create `admin@example.com` / `password` in development.
   The `artifact_files` row carries only `file_sequence` and the annotation
   anchor. Development/test use Disk; production uses S3 (`amazon` service in
   `config/storage.yml`, configured by `AWS_*` env vars).
-- **Article HTML is sanitized twice**: `ArticleHtml.sanitize` on save, and the
+- **Article HTML is sanitized twice**: `Article::Html.sanitize` on save, and the
   `article_html` helper on render.
 - **Mission Control** at `/admin/jobs` (admin-gated) shows the Solid Queue
   jobs, including Active Storage's analyze/transform/purge jobs. Development
@@ -64,8 +68,8 @@ Seeds create `admin@example.com` / `password` in development.
   jobs only run under `bin/dev`, which starts the worker. Variant generation
   needs libvips (`brew install vips` locally; the Dockerfile has it).
 - **GEDCOM import parses via Node** — Ruby has no maintained GEDCOM parser,
-  so `GedcomReader` shells out to `script/gedcom-to-json.mjs` (the same
-  `read-gedcom` package the AdonisJS app used) and `GedcomImporter` owns all
+  so `Gedcom::Reader` shells out to `script/gedcom-to-json.mjs` (the same
+  `read-gedcom` package the AdonisJS app used) and `Gedcom::Importer` owns all
   domain logic: upsert by GEDCOM id, replace only BIRTH/DEATH/BAPTISM/BURIAL
   events, preserve hand-added members and events. Imports run through
   `GedcomImportJob`; the admin screen shows the last result from the cache.
@@ -74,6 +78,26 @@ Seeds create `admin@example.com` / `password` in development.
 - **Admin scaffolding**: `bin/rails g admin_scaffold <model> field:type …`
   generates an admin CRUD (controller + views) matching the aside-nav layout;
   add the nav link in `app/views/layouts/admin.html.erb` by hand.
+
+## Design System
+
+The public UI is specified by the claude.ai/design project ("Archive
+Foundations" and "Archive Pages"). **The design files are the spec — follow
+them literally.** Implementation glue is fine when genuinely needed to
+realize the design's logic (helpers, caching, pagination windowing,
+extrapolating dark mode from the ink table). What is not acceptable:
+writing copy the mockups don't contain, adding features or affordances
+that aren't drawn, or deviating from drawn sizes, labels, or structure
+without necessity. When the design is silent, ambiguous, or impossible to
+follow literally (missing backend, placeholder content), stop and ask —
+the design file may get updated instead. Hex values in the design are
+authoritative over its prose annotations.
+
+Design tokens and recipe classes live in
+`app/frontend/entrypoints/public.css`; ViewComponents
+(`app/components`, primitives under `Ui::`) are thin maps from props to
+those recipe classes so future React twins share the same vocabulary.
+Previews render at `/rails/view_components` in development.
 
 ## Frontend
 
@@ -125,7 +149,7 @@ Active Storage uploads go to S3 — set `AWS_ACCESS_KEY_ID`,
 
 ## Testing
 
-- `test/models`, `test/services` — domain behavior against the real schema.
+- `test/models` — domain behavior (records and POROs) against the real schema.
 - `test/integration` — public pages, the island's API contract, admin gating.
 - `test/system` — headless Chrome; guards the Vite/Tailwind/island pipeline.
 - `npm run test:frontend` — the island's Vitest suite (ported unchanged;

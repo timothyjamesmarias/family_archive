@@ -1,0 +1,56 @@
+<%# Video detail, Pages screen 12: the frame leads on the ink board —
+    lamplight in both themes, a film frame is dark — everything else sits
+    below it in reading order. Locals: artifact, type, title. The
+    description paragraph and People/Place/Medium rows wait on data. %>
+<% content_for :full_bleed, true %>
+<% content_for :breadcrumbs do %>
+  <div class="bg-taupe-100 border-b border-taupe-200 dark:bg-ink-600 dark:border-ink-500">
+    <div class="max-w-340 mx-auto">
+      <%= render Ui::BreadcrumbsComponent.new do |trail| %>
+        <% trail.with_crumb(label: "Archive", href: root_path) %>
+        <% trail.with_crumb(label: type.plural_display_name, href: "/#{type.route_segment}") %>
+        <% trail.with_crumb(label: title) %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% if (primary = artifact.files.first)&.file&.attached? %>
+  <div class="bg-ink-800 px-5 sm:px-10 py-7">
+    <div class="max-w-215 mx-auto" data-controller="media-player">
+      <div class="relative bg-ink-700 border border-ink-500" data-media-player-target="stage">
+        <video preload="metadata" src="<%= url_for(primary.file) %>" class="block w-full h-auto"
+               data-media-player-target="media" data-action="click->media-player#toggle"></video>
+        <button type="button" aria-label="Play"
+                class="absolute inset-0 m-auto w-18 h-18 bg-paper-sheet/90 border-0 cursor-pointer flex items-center justify-center hover:bg-paper-sheet"
+                data-media-player-target="playIcon" data-action="media-player#toggle">
+          <span class="block w-0 h-0 border-l-[22px] border-l-verdigris-700 border-y-[14px] border-y-transparent ml-1.5"></span>
+        </button>
+      </div>
+      <div class="flex flex-wrap gap-x-4.5 gap-y-3 items-center pt-3.5">
+        <button type="button" class="flex-1 min-w-50 h-2 bg-ink-600 border border-ink-500 p-0 cursor-pointer" aria-label="Seek"
+                data-media-player-target="track" data-action="media-player#seek keydown->media-player#seekKey">
+          <span class="block h-full bg-verdigris-300" style="width: 0%" data-media-player-target="fill"></span>
+        </button>
+        <span class="font-mono text-xs text-ink-200">
+          <span data-media-player-target="current">0:00</span> / <span data-media-player-target="duration">--:--</span>
+        </span>
+        <button type="button" class="font-sans text-13 text-ink-50 bg-transparent border border-ink-400 px-3 h-9 cursor-pointer hover:bg-ink-600"
+                data-action="media-player#fullscreen">Full screen</button>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<div class="bg-paper-sheet dark:bg-ink-700">
+  <div class="max-w-340 mx-auto px-5 sm:px-10 pt-8 pb-10">
+    <div class="flex flex-wrap gap-2 items-center mb-3.5">
+      <%= render Ui::TypeChipComponent.new(artifact_type: type) %>
+      <span class="font-mono text-xs text-taupe-600 dark:text-ink-200"><%= [ artifact.original_date_string, artifact.slug ].compact.join(" · ") %></span>
+    </div>
+    <h1 class="font-serif text-34 leading-115 font-medium tracking-tight mb-6 max-w-[28ch]"><%= title %></h1>
+    <div class="max-w-160">
+      <%= render "details_panel", artifact: artifact %>
+    </div>
+  </div>
+</div>
