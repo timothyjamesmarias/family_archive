@@ -7,7 +7,7 @@
 <% base_path = "/#{type.route_segment}/#{artifact.slug}" %>
 <% content_for :breadcrumbs do %>
   <div class="bg-taupe-100 border-b border-taupe-200 dark:bg-ink-600 dark:border-ink-500">
-    <div class="max-w-[1360px] mx-auto">
+    <div class="max-w-340 mx-auto">
       <%= render Ui::BreadcrumbsComponent.new do |trail| %>
         <% trail.with_crumb(label: "Archive", href: root_path) %>
         <% trail.with_crumb(label: type.plural_display_name, href: "/#{type.route_segment}") %>
@@ -18,12 +18,12 @@
 <% end %>
 
 <header class="border-b border-taupe-200 dark:border-ink-500">
-  <div class="max-w-[1360px] mx-auto px-5 sm:px-10 pt-9 pb-6">
+  <div class="max-w-340 mx-auto px-5 sm:px-10 pt-9 pb-6">
     <div class="flex flex-wrap gap-2 items-center mb-3.5">
       <%= render Ui::TypeChipComponent.new(artifact_type: type) %>
       <span class="font-mono text-xs text-taupe-600 dark:text-ink-200"><%= [ artifact.original_date_string, artifact.slug ].compact.join(" · ") %></span>
     </div>
-    <h1 class="font-serif text-4xl leading-[1.15] font-medium tracking-[-0.015em] mb-4 max-w-[28ch]"><%= title %></h1>
+    <h1 class="font-serif text-4xl leading-115 font-medium tracking-tight mb-4 max-w-[28ch]"><%= title %></h1>
     <% if (primary = artifact.files.first) %>
       <div class="flex flex-wrap gap-2.5">
         <%= link_to "Download", rails_blob_path(primary.file, disposition: "attachment"),
@@ -35,7 +35,7 @@
 
 <% current_file = artifact.files[leaf - 1] %>
 <% annotations = current_file ? current_file.annotations.sort_by(&:id) : [] %>
-<div class="max-w-[1360px] mx-auto grid grid-cols-1 lg:grid-cols-2 items-start" data-controller="photo-annotations">
+<div class="max-w-340 mx-auto grid grid-cols-1 lg:grid-cols-2 items-start" data-controller="photo-annotations">
   <div class="bg-taupe-100 lg:border-r border-b lg:border-b-0 border-taupe-200 p-6 lg:sticky lg:top-0 dark:bg-ink-600 dark:border-ink-500">
     <% if current_file&.file&.attached? %>
       <div class="flex flex-wrap gap-2 items-center mb-4">
@@ -43,7 +43,7 @@
         <% if annotations.any? %>
           <%# Not a <label>: label activation re-dispatches the click onto the
               button, firing the toggle twice and undoing itself. %>
-          <span class="flex gap-2 items-center text-[13px] text-taupe-700 dark:text-ink-100">
+          <span class="flex gap-2 items-center text-13 text-taupe-700 dark:text-ink-100">
             <button type="button" role="switch" aria-checked="true" aria-label="Show annotations"
                     class="switch" data-photo-annotations-target="switch" data-action="photo-annotations#toggle">
               <span class="switch-knob"></span>
@@ -51,11 +51,11 @@
             Annotations
           </span>
         <% end %>
-        <button type="button" class="font-sans text-[13px] text-taupe-700 bg-paper-sheet border border-taupe-300 px-3 h-9 cursor-pointer hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-ink-700 dark:border-ink-400"
+        <button type="button" class="font-sans text-13 text-taupe-700 bg-paper-sheet border border-taupe-300 px-3 h-9 cursor-pointer hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-ink-700 dark:border-ink-400"
                 data-action="photo-annotations#fullscreen">Full screen</button>
       </div>
       <div class="relative w-fit max-w-full mx-auto" data-photo-annotations-target="stage">
-        <img src="<%= url_for(current_file.file) %>" alt="<%= title %>" class="max-w-full max-h-[640px] object-contain border border-taupe-300 block dark:border-ink-400">
+        <img src="<%= url_for(current_file.file) %>" alt="<%= title %>" class="max-w-full max-h-160 object-contain border border-taupe-300 block dark:border-ink-400">
         <% annotations.each_with_index do |annotation, index| %>
           <button type="button" class="annotation-dot annotation-marker"
                   style="left: <%= (annotation.x_coord * 100).to_f %>%; top: <%= (annotation.y_coord * 100).to_f %>%;"
@@ -69,7 +69,7 @@
         <div class="flex flex-wrap gap-2.5 mt-3.5">
           <% artifact.files.each_with_index do |file, index| %>
             <a href="<%= base_path %>?leaf=<%= index + 1 %>&tab=<%= tab %>"
-               class="mat w-[54px] h-[72px] <%= index + 1 == leaf ? "border-2 border-verdigris-700 dark:border-verdigris-400" : "border border-taupe-300 dark:border-ink-400" %>"
+               class="mat w-13.5 h-18 <%= index + 1 == leaf ? "border-2 border-verdigris-700 dark:border-verdigris-400" : "border border-taupe-300 dark:border-ink-400" %>"
                aria-label="Photograph <%= index + 1 %>">
               <% if file.thumbnail? %>
                 <img src="<%= url_for(file.file.variant(:thumb)) %>" alt="" class="max-w-full max-h-full object-contain">
@@ -82,7 +82,7 @@
   </div>
 
   <div class="bg-paper-sheet px-5 sm:px-7 pt-6 pb-7 dark:bg-ink-700">
-    <div class="mb-[22px]">
+    <div class="mb-5.5">
       <%= render Ui::TabsComponent.new do |tabs| %>
         <% total_annotations = artifact.files.sum { |file| file.annotations.size } %>
         <% if total_annotations.positive? %>
@@ -104,7 +104,7 @@
                   data-annotation-id="<%= annotation.id %>"
                   data-action="photo-annotations#select">
             <span class="annotation-dot" aria-hidden="true"><%= index + 1 %></span>
-            <span class="text-[15px] leading-[1.55] text-taupe-900 pt-0.5 dark:text-ink-50"><%= annotation.annotation_text %></span>
+            <span class="text-15 leading-155 text-taupe-900 pt-0.5 dark:text-ink-50"><%= annotation.annotation_text %></span>
           </button>
         <% end %>
       </div>

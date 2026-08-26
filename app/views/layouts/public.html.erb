@@ -16,14 +16,14 @@
     <%# Login and error pages carry a wordmark-only masthead (screens 13–14). %>
     <% if content_for?(:minimal_chrome) %>
       <header class="bg-paper-sheet border-b border-taupe-200 dark:bg-ink-700 dark:border-ink-500">
-        <div class="max-w-[1360px] mx-auto px-5 sm:px-8 py-[18px]">
+        <div class="max-w-340 mx-auto px-5 sm:px-8 py-4.5">
           <%= link_to "Marias Family Archive", root_path,
                 class: "font-serif text-xl font-medium text-taupe-900 no-underline hover:text-verdigris-700 dark:text-ink-50 dark:hover:text-verdigris-300" %>
         </div>
       </header>
     <% else %>
     <header class="bg-paper-sheet border-b border-taupe-200 dark:bg-ink-700 dark:border-ink-500">
-      <div class="max-w-[1360px] mx-auto px-5 sm:px-8 py-[18px]">
+      <div class="max-w-340 mx-auto px-5 sm:px-8 py-4.5">
         <div class="flex justify-between items-center gap-8">
           <%= link_to "Marias Family Archive", root_path,
                 class: "font-serif text-xl font-medium text-taupe-900 no-underline hover:text-verdigris-700 dark:text-ink-50 dark:hover:text-verdigris-300" %>
@@ -38,8 +38,8 @@
             <%= link_to "Articles", articles_path,
                   class: class_names("masthead-link", "masthead-link-active": request.path.start_with?("/articles")) %>
             <%= link_to "Search", search_path,
-                  class: "font-mono text-xs tracking-[0.06em] text-taupe-700 no-underline px-3 py-2.5 border border-taupe-200 ml-2 hover:border-taupe-500 hover:text-verdigris-700 dark:text-ink-100 dark:border-ink-500 dark:hover:border-ink-200 dark:hover:text-verdigris-300" %>
-            <span class="w-px h-[22px] bg-taupe-200 mx-2 dark:bg-ink-500" aria-hidden="true"></span>
+                  class: "font-mono text-xs tracking-6 text-taupe-700 no-underline px-3 py-2.5 border border-taupe-200 ml-2 hover:border-taupe-500 hover:text-verdigris-700 dark:text-ink-100 dark:border-ink-500 dark:hover:border-ink-200 dark:hover:text-verdigris-300" %>
+            <span class="w-px h-5.5 bg-taupe-200 mx-2 dark:bg-ink-500" aria-hidden="true"></span>
             <%= render "shared/dark_mode_toggle" %>
             <% if user_signed_in? %>
               <%= link_to "Dashboard", admin_root_path, class: "masthead-link" %>
@@ -84,9 +84,9 @@
 
     <%# Banded pages (home) manage their own full-width sections; everything
         else renders inside the shared content container. %>
-    <main class="flex-grow <%= "w-full max-w-[1360px] mx-auto px-5 sm:px-8 py-10" unless content_for?(:full_bleed) %>">
+    <main class="flex-grow <%= "w-full max-w-340 mx-auto px-5 sm:px-8 py-10" unless content_for?(:full_bleed) %>">
       <% if content_for?(:full_bleed) %>
-        <div class="w-full max-w-[1360px] mx-auto px-5 sm:px-8"><%= render "layouts/flash" %></div>
+        <div class="w-full max-w-340 mx-auto px-5 sm:px-8"><%= render "layouts/flash" %></div>
       <% else %>
         <%= render "layouts/flash" %>
       <% end %>
@@ -94,7 +94,7 @@
     </main>
 
     <footer class="bg-paper-sheet border-t border-taupe-200 dark:bg-ink-700 dark:border-ink-500">
-      <div class="max-w-[1360px] mx-auto px-5 sm:px-8 py-6 flex flex-wrap gap-x-6 gap-y-2.5 items-center justify-between">
+      <div class="max-w-340 mx-auto px-5 sm:px-8 py-6 flex flex-wrap gap-x-6 gap-y-2.5 items-center justify-between">
         <span class="text-sm text-taupe-600 dark:text-ink-200">© Marias Family Archive</span>
         <span class="meta"><%= archive_holdings_summary %></span>
       </div>

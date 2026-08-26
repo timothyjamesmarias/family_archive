@@ -1,7 +1,7 @@
 <% content_for :title, "#{@article.title} – Marias Family Archive" %>
 <% content_for :breadcrumbs do %>
   <div class="bg-taupe-100 border-b border-taupe-200 dark:bg-ink-600 dark:border-ink-500">
-    <div class="max-w-[1360px] mx-auto">
+    <div class="max-w-340 mx-auto">
       <%= render Ui::BreadcrumbsComponent.new do |trail| %>
         <% trail.with_crumb(label: "Archive", href: root_path) %>
         <% trail.with_crumb(label: "Articles", href: articles_path) %>
@@ -11,13 +11,13 @@
   </div>
 <% end %>
 
-<article class="max-w-[900px] mx-auto bg-paper-sheet border border-taupe-200 px-6 sm:px-11 pt-10 pb-11 dark:bg-ink-700 dark:border-ink-500">
-  <div class="font-mono text-[11px] tracking-[0.12em] uppercase text-heather-600 mb-4 dark:text-heather-300">Article</div>
-  <h1 class="font-serif text-[38px] leading-[1.16] font-medium tracking-[-0.015em] mb-3.5 max-w-[30ch]"><%= @article.title %></h1>
+<article class="max-w-225 mx-auto bg-paper-sheet border border-taupe-200 px-6 sm:px-11 pt-10 pb-11 dark:bg-ink-700 dark:border-ink-500">
+  <div class="font-mono text-11 tracking-12 uppercase text-heather-600 mb-4 dark:text-heather-300">Article</div>
+  <h1 class="font-serif text-38 leading-116 font-medium tracking-tight mb-3.5 max-w-[30ch]"><%= @article.title %></h1>
   <% if @article.excerpt.present? %>
-    <p class="font-serif text-[21px] leading-[1.6] italic text-taupe-700 mb-[22px] max-w-[60ch] dark:text-ink-100"><%= @article.excerpt %></p>
+    <p class="font-serif text-21 leading-160 italic text-taupe-700 mb-5.5 max-w-[60ch] dark:text-ink-100"><%= @article.excerpt %></p>
   <% end %>
-  <div class="flex flex-wrap gap-x-[18px] gap-y-1.5 font-mono text-[11px] tracking-[0.06em] text-taupe-700 pb-[26px] border-b border-taupe-200 dark:text-ink-100 dark:border-ink-500">
+  <div class="flex flex-wrap gap-x-4.5 gap-y-1.5 font-mono text-11 tracking-6 text-taupe-700 pb-6.5 border-b border-taupe-200 dark:text-ink-100 dark:border-ink-500">
     <% if @article.published_at %>
       <span><%= @article.published_at.strftime("%-d %B %Y") %></span>
     <% end %>

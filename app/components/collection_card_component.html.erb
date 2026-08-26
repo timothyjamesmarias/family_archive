@@ -8,7 +8,7 @@
     </div>
   <% when :slate %>
     <div class="h-32 bg-dusty-50 border-b border-taupe-200 flex items-center justify-center p-4 dark:bg-ink-600 dark:border-ink-500" aria-hidden="true">
-      <div class="w-42 h-[94px] bg-dusty-100 border border-dusty-300 flex items-center justify-center dark:bg-ink-700 dark:border-ink-400">
+      <div class="w-42 h-23.5 bg-dusty-100 border border-dusty-300 flex items-center justify-center dark:bg-ink-700 dark:border-ink-400">
         <span class="block w-0 h-0 border-l-[16px] border-l-dusty-500 border-y-[11px] border-y-transparent dark:border-l-dusty-300"></span>
       </div>
     </div>
@@ -25,11 +25,11 @@
       <% end %>
     </div>
   <% end %>
-  <div class="px-[22px] pt-5 pb-[22px]">
+  <div class="px-5.5 pt-5 pb-5.5">
     <div class="flex items-baseline justify-between gap-3.5 mb-2">
-      <h3 class="font-serif text-[23px] font-medium m-0 text-taupe-900 dark:text-ink-50"><%= type.plural_display_name %></h3>
+      <h3 class="font-serif text-23 font-medium m-0 text-taupe-900 dark:text-ink-50"><%= type.plural_display_name %></h3>
       <span class="font-mono text-xs text-taupe-600 dark:text-ink-200"><%= count %></span>
     </div>
-    <p class="text-[15px] leading-[1.6] text-taupe-700 m-0 dark:text-ink-100"><%= type.description %></p>
+    <p class="text-15 leading-160 text-taupe-700 m-0 dark:text-ink-100"><%= type.description %></p>
   </div>
 </a>

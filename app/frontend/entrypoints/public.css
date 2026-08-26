@@ -18,6 +18,50 @@
   --leading-extra-relaxed: 1.75;
   --leading-super-relaxed: 1.8;
 
+  /* The mockups' literal type scale: text-11 is 11px, leading-165 is 1.65,
+     tracking-10 is 0.1em. Spacing needs no tokens — Tailwind's fractional
+     scale covers the drawn pixel values (px-5.5 = 22px). */
+  --text-10: 10px;
+  --text-11: 11px;
+  --text-13: 13px;
+  --text-15: 15px;
+  --text-17: 17px;
+  --text-19: 19px;
+  --text-21: 21px;
+  --text-22: 22px;
+  --text-23: 23px;
+  --text-26: 26px;
+  --text-27: 27px;
+  --text-30: 30px;
+  --text-34: 34px;
+  --text-38: 38px;
+  --text-40: 40px;
+  --text-54: 54px;
+
+  --tracking-6: 0.06em;
+  --tracking-8: 0.08em;
+  --tracking-10: 0.1em;
+  --tracking-12: 0.12em;
+  --tracking-14: 0.14em;
+  /* The design's negative heading tracking replaces Tailwind's defaults. */
+  --tracking-tight: -0.015em;
+  --tracking-tighter: -0.02em;
+
+  --leading-110: 1.1;
+  --leading-115: 1.15;
+  --leading-116: 1.16;
+  --leading-120: 1.2;
+  --leading-125: 1.25;
+  --leading-130: 1.3;
+  --leading-135: 1.35;
+  --leading-155: 1.55;
+  --leading-160: 1.6;
+  --leading-165: 1.65;
+  --leading-170: 1.7;
+  --leading-175: 1.75;
+  --leading-180: 1.8;
+  --leading-185: 1.85;
+
   /* Page vs sheet: the two paper tones live between taupe-50 and white,
      so surfaces read as sheets on a desk. */
   --color-paper-base: #f4f2ef;
@@ -176,7 +220,7 @@
 @utility btn {
   @apply inline-flex items-center justify-center font-sans font-medium
          border transition-colors duration-150 cursor-pointer
-         h-11 px-[22px] text-[15px];
+         h-11 px-5.5 text-15;
 }
 
 @utility card {
@@ -202,7 +246,7 @@
 
   .btn-quiet {
     @apply btn text-verdigris-700 bg-transparent border-transparent px-3.5
-           underline underline-offset-[3px]
+           underline underline-offset-3
            hover:text-verdigris-900 hover:bg-verdigris-50
            dark:text-verdigris-300 dark:hover:text-verdigris-200 dark:hover:bg-ink-600;
   }
@@ -215,7 +259,7 @@
   }
 
   .btn-lg {
-    @apply h-13 px-[26px] text-base;
+    @apply h-13 px-6.5 text-base;
   }
 
   .btn-sm {
@@ -247,13 +291,13 @@
   }
 
   .link-citation {
-    @apply text-verdigris-700 underline decoration-1 decoration-dotted underline-offset-[3px]
+    @apply text-verdigris-700 underline decoration-1 decoration-dotted underline-offset-3
            hover:decoration-solid
            dark:text-verdigris-300;
   }
 
   .link-footnote {
-    @apply font-mono text-[11px] text-verdigris-700 no-underline align-super px-0.5
+    @apply font-mono text-11 text-verdigris-700 no-underline align-super px-0.5
            hover:bg-verdigris-100
            dark:text-verdigris-300 dark:hover:bg-ink-600;
   }
@@ -263,12 +307,12 @@
      the accent into the ink board (the foundations specimen shows only the
      terracotta pair; the same mix reproduces it). */
   .chip {
-    @apply inline-flex items-center gap-1.5 font-mono text-[11px] tracking-[0.1em] uppercase
-           border px-[11px] py-[7px];
+    @apply inline-flex items-center gap-1.5 font-mono text-11 tracking-10 uppercase
+           border px-2.75 py-1.75;
   }
 
   .chip-sm {
-    @apply text-[10px] px-2 py-1;
+    @apply text-10 px-2 py-1;
   }
 
   .chip-terracotta {
@@ -308,7 +352,7 @@
 
   /* Status chips speak Inter, not mono — they are the application talking. */
   .chip-status {
-    @apply inline-flex items-center gap-1.5 font-sans text-[13px] border px-[11px] py-[7px]
+    @apply inline-flex items-center gap-1.5 font-sans text-13 border px-2.75 py-1.75
            text-taupe-700 bg-taupe-50 border-taupe-200
            dark:text-ink-100 dark:bg-ink-600 dark:border-ink-500;
   }
@@ -324,7 +368,7 @@
   }
 
   .field-label {
-    @apply font-mono text-[11px] tracking-[0.1em] uppercase text-taupe-600 dark:text-ink-200;
+    @apply font-mono text-11 tracking-10 uppercase text-taupe-600 dark:text-ink-200;
   }
 
   .field-input {
@@ -334,7 +378,7 @@
   }
 
   .field-hint {
-    @apply text-[13px] leading-[1.55] text-taupe-700 dark:text-ink-100;
+    @apply text-13 leading-155 text-taupe-700 dark:text-ink-100;
   }
 
   .field-invalid .field-label,
@@ -348,7 +392,7 @@
 
   /* Mono metadata text — dates, counts, IDs beside titles. */
   .meta {
-    @apply font-mono text-[11px] text-taupe-600 dark:text-ink-200;
+    @apply font-mono text-11 text-taupe-600 dark:text-ink-200;
   }
 
   /* The mat a scan sits on — recessed, never cropped edge-to-edge.
@@ -359,12 +403,12 @@
   }
 
   .chip-status-sm {
-    @apply text-[13px] px-[9px] py-1;
+    @apply text-13 px-2.25 py-1;
   }
 
   /* Pagination — mono 40px cells, verdigris current page. */
   .pager-cell {
-    @apply font-mono text-[13px] text-taupe-600 no-underline border border-taupe-200
+    @apply font-mono text-13 text-taupe-600 no-underline border border-taupe-200
            min-w-10 h-10 inline-flex items-center justify-center px-3
            hover:bg-taupe-50
            dark:text-ink-100 dark:border-ink-500 dark:hover:bg-ink-600;
@@ -382,7 +426,7 @@
 
   /* Tabs — the active tab carries an inset verdigris underline. */
   .tab {
-    @apply text-[15px] text-taupe-700 no-underline px-[18px] py-3
+    @apply text-15 text-taupe-700 no-underline px-4.5 py-3
            hover:text-verdigris-700 hover:bg-verdigris-50
            dark:text-ink-100 dark:hover:text-verdigris-300 dark:hover:bg-ink-600;
   }
@@ -400,11 +444,11 @@
   }
 
   .message-label {
-    @apply font-mono text-[11px] tracking-[0.1em] uppercase shrink-0;
+    @apply font-mono text-11 tracking-10 uppercase shrink-0;
   }
 
   .message-body {
-    @apply text-[15px] leading-relaxed;
+    @apply text-15 leading-relaxed;
   }
 
   .message-success {
@@ -477,9 +521,9 @@
      stays visible; selection fills it. The marker variant floats on the
      photograph at normalized coordinates; the bare dot labels list rows. */
   .annotation-dot {
-    @apply w-[26px] h-[26px] rounded-full shrink-0
+    @apply w-6.5 h-6.5 rounded-full shrink-0
            border-2 border-terracotta-700 bg-paper-sheet/35
-           font-mono text-[11px] text-terracotta-900
+           font-mono text-11 text-terracotta-900
            inline-flex items-center justify-center p-0;
   }
 
@@ -504,7 +548,7 @@
 
   /* The annotations visibility switch on the photo stage. */
   .switch {
-    @apply inline-flex items-center w-[34px] h-5 border p-0.5 cursor-pointer
+    @apply inline-flex items-center w-8.5 h-5 border p-0.5 cursor-pointer
            border-verdigris-700 bg-verdigris-700 justify-end
            dark:border-verdigris-400 dark:bg-verdigris-400;
   }
@@ -524,7 +568,7 @@
 
   /* Masthead — the single sheet-toned bar every public page shares. */
   .masthead-link {
-    @apply text-[15px] text-taupe-700 no-underline px-3.5 py-2.5
+    @apply text-15 text-taupe-700 no-underline px-3.5 py-2.5
            hover:text-verdigris-700 hover:bg-verdigris-50
            dark:text-ink-100 dark:hover:text-verdigris-300 dark:hover:bg-ink-600;
   }
@@ -560,12 +604,12 @@
 
   .prose-article h1,
   .prose-article h2 {
-    @apply font-serif text-[26px] font-medium leading-[1.25] mt-[38px] mb-0;
+    @apply font-serif text-26 font-medium leading-125 mt-9.5 mb-0;
   }
 
   .prose-article h3,
   .prose-article h4 {
-    @apply font-serif text-[21px] font-medium leading-[1.3] mt-9 mb-0;
+    @apply font-serif text-21 font-medium leading-130 mt-9 mb-0;
   }
 
   .prose-article a {
@@ -579,12 +623,12 @@
   }
 
   .prose-article blockquote p {
-    @apply text-[22px] leading-[1.7] italic max-w-[56ch];
+    @apply text-22 leading-170 italic max-w-[56ch];
   }
 
   .prose-article ul,
   .prose-article ol {
-    @apply pl-[26px];
+    @apply pl-6.5;
   }
 
   .prose-article li {
@@ -618,7 +662,7 @@
   }
 
   .prose-article th {
-    @apply font-mono font-normal text-[11px] tracking-[0.1em] uppercase text-taupe-600 text-left
+    @apply font-mono font-normal text-11 tracking-10 uppercase text-taupe-600 text-left
            py-2.5 border-b border-taupe-200 dark:text-ink-200 dark:border-ink-500;
   }
 
@@ -628,12 +672,12 @@
 
   /* Heather marks interpretation — clearly "us, not the record". */
   .prose-article .editors-note {
-    @apply bg-heather-50 border border-heather-200 px-6 py-5 mt-[34px] font-sans
+    @apply bg-heather-50 border border-heather-200 px-6 py-5 mt-8.5 font-sans
            dark:bg-ink-600 dark:border-ink-500;
   }
 
   .prose-article .editors-note p {
-    @apply text-base leading-[1.7] text-heather-900 max-w-[66ch] mt-2 first:mt-0 dark:text-ink-100;
+    @apply text-base leading-170 text-heather-900 max-w-[66ch] mt-2 first:mt-0 dark:text-ink-100;
   }
 
   .prose-article .notes {
@@ -641,7 +685,7 @@
   }
 
   .prose-article .notes ol {
-    @apply font-sans text-[15px] leading-[1.75] text-taupe-700 pl-6 max-w-[70ch] mt-3
+    @apply font-sans text-15 leading-175 text-taupe-700 pl-6 max-w-[70ch] mt-3
            dark:text-ink-100;
   }
 }

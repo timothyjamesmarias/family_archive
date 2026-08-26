@@ -1,7 +1,7 @@
 <% content_for :title, "#{@type.plural_display_name} – Marias Family Archive" %>
 <% content_for :breadcrumbs do %>
   <div class="bg-taupe-100 border-b border-taupe-200 dark:bg-ink-600 dark:border-ink-500">
-    <div class="max-w-[1360px] mx-auto">
+    <div class="max-w-340 mx-auto">
       <%= render Ui::BreadcrumbsComponent.new do |trail| %>
         <% trail.with_crumb(label: "Archive", href: root_path) %>
         <% trail.with_crumb(label: "Artifacts", href: artifacts_hub_path) %>
@@ -19,7 +19,7 @@
 
 <header class="mb-6 flex flex-wrap gap-3 gap-x-6 items-baseline justify-between">
   <div>
-    <h1 class="font-serif text-4xl font-medium tracking-[-0.015em] mb-2"><%= @type.plural_display_name %></h1>
+    <h1 class="font-serif text-4xl font-medium tracking-tight mb-2"><%= @type.plural_display_name %></h1>
     <% if @browse.artifacts.total.positive? %>
       <p class="text-taupe-700 dark:text-ink-100">
         <% if @browse.grid? %>
@@ -43,9 +43,9 @@
   <%= form_with url: base_url, method: :get, data: { controller: "autosubmit" }, class: "contents" do %>
     <input type="text" name="q" value="<%= @browse.query %>"
            placeholder="<%= @type.grid? ? "Search #{@type.plural_display_name.downcase}" : "Search #{@type.plural_display_name.downcase} and transcriptions" %>"
-           class="font-sans text-[15px] text-taupe-900 bg-paper-sheet border border-taupe-300 h-[42px] px-3 w-60 max-w-full dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400">
+           class="font-sans text-15 text-taupe-900 bg-paper-sheet border border-taupe-300 h-10.5 px-3 w-60 max-w-full dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400">
     <select name="sort" data-action="autosubmit#submit"
-            class="font-sans text-[15px] text-taupe-900 bg-paper-sheet border border-taupe-300 h-[42px] px-3 dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400">
+            class="font-sans text-15 text-taupe-900 bg-paper-sheet border border-taupe-300 h-10.5 px-3 dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400">
       <% sort_options = @type.grid? ? %w[newest oldest title] : %w[oldest newest] %>
       <% labels = { "newest" => "Newest first", "oldest" => "Oldest first", "title" => "Title A–Z" } %>
       <% sort_options.each do |sort| %>
@@ -59,7 +59,7 @@
   <% end %>
   <% pills = @browse.available_filters %>
   <% if pills.any? %>
-    <span class="w-px h-[26px] bg-taupe-200 dark:bg-ink-500" aria-hidden="true"></span>
+    <span class="w-px h-6.5 bg-taupe-200 dark:bg-ink-500" aria-hidden="true"></span>
     <% pill_labels = { "annotated" => "Annotated", "transcribed" => "Transcribed", "translated" => "Translated" } %>
     <% pills.each do |pill| %>
       <% active = @browse.filters.include?(pill) %>
@@ -79,7 +79,7 @@
     <% total = @browse.total_in_collection %>
     <%= render Ui::EmptyStateComponent.new(title: "No #{@type.plural_display_name.downcase} match these filters") do |empty| %>
       <% empty.with_action do %>
-        <p class="text-[15px] leading-[1.65] text-taupe-700 m-0 mx-auto mb-[18px] max-w-[52ch] dark:text-ink-100">
+        <p class="text-15 leading-165 text-taupe-700 m-0 mx-auto mb-4.5 max-w-[52ch] dark:text-ink-100">
           <%= total %> <%= @type.plural_display_name.downcase %> exist;
           <% if constraints.size > 1 %>
             the combination of <%= safe_join(constraints.map { |c| tag.strong(c, class: "font-semibold text-taupe-900 dark:text-ink-50") }, " and ") %> excludes all of them.
@@ -87,7 +87,7 @@
             <strong class="font-semibold text-taupe-900 dark:text-ink-50"><%= constraints.first %></strong> excludes all of them.
           <% end %>
         </p>
-        <a href="<%= base_url %>?<%= { sort: @browse.sort, view: @browse.view }.to_query %>" class="text-[15px] text-verdigris-700 underline dark:text-verdigris-300">Clear filters</a>
+        <a href="<%= base_url %>?<%= { sort: @browse.sort, view: @browse.view }.to_query %>" class="text-15 text-verdigris-700 underline dark:text-verdigris-300">Clear filters</a>
       <% end %>
     <% end %>
   <% else %>

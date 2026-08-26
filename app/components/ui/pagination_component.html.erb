@@ -7,7 +7,7 @@
 
   <% cells.each do |cell| %>
     <% if cell == :ellipsis %>
-      <span class="font-mono text-[13px] text-taupe-600 px-1.5 dark:text-ink-200">&hellip;</span>
+      <span class="font-mono text-13 text-taupe-600 px-1.5 dark:text-ink-200">&hellip;</span>
     <% elsif cell == current_page %>
       <span class="pager-cell pager-cell-current" aria-current="page"><%= cell %></span>
     <% else %>

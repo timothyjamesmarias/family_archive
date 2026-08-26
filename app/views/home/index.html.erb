@@ -2,25 +2,25 @@
 <% content_for :full_bleed, true %>
 
 <section class="bg-paper-sheet border-b border-taupe-200 dark:bg-ink-700 dark:border-ink-500">
-  <div class="max-w-[1360px] mx-auto px-5 sm:px-14 pt-14 sm:pt-[76px] pb-14 sm:pb-16">
-    <div class="max-w-[1100px] grid grid-cols-1 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] gap-10 lg:gap-14 items-end">
+  <div class="max-w-340 mx-auto px-5 sm:px-14 pt-14 sm:pt-19 pb-14 sm:pb-16">
+    <div class="max-w-275 grid grid-cols-1 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] gap-10 lg:gap-14 items-end">
       <div>
         <div class="field-label mb-5">Est. 1908 &mdash; present &nbsp;·&nbsp; <%= @total_artifacts %> items catalogued</div>
-        <h1 class="font-serif text-[40px] sm:text-[54px] leading-[1.1] font-medium tracking-[-0.02em] mb-[22px] max-w-[18ch]">The paper the family kept.</h1>
-        <p class="font-serif text-[21px] leading-[1.7] text-taupe-700 mb-[30px] max-w-[54ch] dark:text-ink-100">
+        <h1 class="font-serif text-40 sm:text-54 leading-110 font-medium tracking-tighter mb-5.5 max-w-[18ch]">The paper the family kept.</h1>
+        <p class="font-serif text-21 leading-170 text-taupe-700 mb-7.5 max-w-[54ch] dark:text-ink-100">
           Letters, ledgers, photographs and recordings, scanned and transcribed.
           Every item here is a primary source &mdash; the originals, not a retelling of them.
         </p>
 
-        <%= form_with url: search_path, method: :get, class: "flex max-w-[520px] mb-[26px]" do %>
+        <%= form_with url: search_path, method: :get, class: "flex max-w-130 mb-6.5" do %>
           <input type="text" name="q" placeholder="Search names, places, transcriptions"
                  class="font-sans text-base text-taupe-900 bg-paper-sheet border border-taupe-500 border-r-0 h-13 px-4 flex-1 min-w-0 dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400">
           <button type="submit" class="btn-primary h-13 px-6 flex-shrink-0">Search</button>
         <% end %>
 
         <div class="flex flex-wrap gap-3">
-          <a href="<%= artifacts_hub_path %>" class="font-sans text-[15px] font-medium text-taupe-700 bg-paper-sheet border border-taupe-300 px-6 h-12 inline-flex items-center no-underline hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-transparent dark:border-ink-400 dark:hover:border-ink-200 dark:hover:text-ink-50">Browse the collections</a>
-          <a href="<%= family_tree_path %>" class="font-sans text-[15px] font-medium text-taupe-700 bg-paper-sheet border border-taupe-300 px-6 h-12 inline-flex items-center no-underline hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-transparent dark:border-ink-400 dark:hover:border-ink-200 dark:hover:text-ink-50">Open the family tree</a>
+          <a href="<%= artifacts_hub_path %>" class="font-sans text-15 font-medium text-taupe-700 bg-paper-sheet border border-taupe-300 px-6 h-12 inline-flex items-center no-underline hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-transparent dark:border-ink-400 dark:hover:border-ink-200 dark:hover:text-ink-50">Browse the collections</a>
+          <a href="<%= family_tree_path %>" class="font-sans text-15 font-medium text-taupe-700 bg-paper-sheet border border-taupe-300 px-6 h-12 inline-flex items-center no-underline hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-transparent dark:border-ink-400 dark:hover:border-ink-200 dark:hover:text-ink-50">Open the family tree</a>
         </div>
       </div>
       <% if @featured %>
@@ -33,11 +33,11 @@
 </section>
 
 <section class="border-b border-taupe-200 dark:border-ink-500">
-  <div class="max-w-[1360px] mx-auto px-5 sm:px-14 py-11">
+  <div class="max-w-340 mx-auto px-5 sm:px-14 py-11">
     <div class="field-label mb-5">Six collections</div>
     <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,200px),1fr))] gap-px bg-taupe-200 border border-taupe-200 dark:bg-ink-500 dark:border-ink-500">
       <% ArtifactType.browsable.each do |type| %>
-        <a href="/<%= type.route_segment %>" class="block bg-paper-sheet px-5 pt-[22px] pb-6 no-underline text-inherit hover:bg-verdigris-50 dark:bg-ink-700 dark:hover:bg-ink-600">
+        <a href="/<%= type.route_segment %>" class="block bg-paper-sheet px-5 pt-5.5 pb-6 no-underline text-inherit hover:bg-verdigris-50 dark:bg-ink-700 dark:hover:bg-ink-600">
           <div class="font-serif text-xl font-medium mb-1.5 text-taupe-900 dark:text-ink-50"><%= type.plural_display_name %></div>
           <div class="font-mono text-xs text-taupe-600 dark:text-ink-200"><%= @counts.fetch(type.key, 0) %> items</div>
         </a>
@@ -46,7 +46,7 @@
   </div>
 </section>
 
-<div class="max-w-[1360px] mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+<div class="max-w-340 mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
   <section class="px-5 sm:px-14 py-11 lg:border-r border-taupe-200 dark:border-ink-500">
     <% if @recent_artifacts.empty? %>
       <div class="flex flex-wrap gap-x-5 gap-y-2.5 items-baseline justify-between">
@@ -58,17 +58,17 @@
       <div class="field-label">Recently added</div>
       <%= render Ui::LinkComponent.new(href: artifacts_hub_path, class: "text-sm").with_content("All artifacts") %>
     </div>
-    <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,190px),1fr))] gap-[18px]">
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,190px),1fr))] gap-4.5">
       <% @recent_artifacts.each do |artifact| %>
         <a href="/<%= artifact.type.route_segment %>/<%= artifact.slug %>" class="block no-underline text-inherit">
-          <div class="mat h-[150px] border border-taupe-200 p-3.5 mb-3 dark:border-ink-500">
+          <div class="mat h-37.5 border border-taupe-200 p-3.5 mb-3 dark:border-ink-500">
             <%= render ArtifactThumbnailComponent.new(artifact: artifact, icon_size: "w-8 h-8") %>
           </div>
           <div class="flex gap-2 items-center mb-1.5">
             <%= render Ui::TypeChipComponent.new(artifact_type: artifact.type, size: :sm) %>
             <span class="meta"><%= artifact.original_date_string %></span>
           </div>
-          <div class="font-serif text-[17px] leading-[1.35] text-taupe-900 dark:text-ink-50">
+          <div class="font-serif text-17 leading-135 text-taupe-900 dark:text-ink-50">
             <%= artifact.title || artifact.type.untitled_label %>
           </div>
         </a>
@@ -80,20 +80,20 @@
   <section class="bg-heather-50 px-5 sm:px-10 py-11 dark:bg-ink-700">
     <% if @recent_articles.empty? %>
       <div class="flex flex-wrap gap-x-5 gap-y-2.5 items-baseline justify-between">
-        <div class="font-mono text-[11px] tracking-[0.12em] uppercase text-heather-700 dark:text-heather-300">From the articles</div>
+        <div class="font-mono text-11 tracking-12 uppercase text-heather-700 dark:text-heather-300">From the articles</div>
         <span class="text-sm text-heather-700 dark:text-heather-300">Nothing published yet &mdash; the first article will appear here.</span>
       </div>
     <% else %>
     <div class="flex flex-wrap gap-x-5 gap-y-2.5 items-baseline justify-between mb-5">
-      <div class="font-mono text-[11px] tracking-[0.12em] uppercase text-heather-700 dark:text-heather-300">From the articles</div>
+      <div class="font-mono text-11 tracking-12 uppercase text-heather-700 dark:text-heather-300">From the articles</div>
       <a href="<%= articles_path %>" class="text-sm text-heather-700 underline dark:text-heather-300">All</a>
     </div>
     <% @recent_articles.each_with_index do |article, index| %>
-      <a href="/articles/<%= article.slug %>" class="block no-underline text-inherit <%= "pb-[18px] border-b border-heather-200 mb-[18px] dark:border-ink-500" unless index == @recent_articles.length - 1 %>">
-        <div class="font-serif text-[21px] leading-[1.3] mb-2 text-taupe-900 dark:text-ink-50"><%= article.title %></div>
-        <div class="font-mono text-[11px] text-heather-600 dark:text-heather-300 <%= "mb-2.5" if index.zero? && article.excerpt %>"><%= article.published_at.strftime("%-d %B %Y") %></div>
+      <a href="/articles/<%= article.slug %>" class="block no-underline text-inherit <%= "pb-4.5 border-b border-heather-200 mb-4.5 dark:border-ink-500" unless index == @recent_articles.length - 1 %>">
+        <div class="font-serif text-21 leading-130 mb-2 text-taupe-900 dark:text-ink-50"><%= article.title %></div>
+        <div class="font-mono text-11 text-heather-600 dark:text-heather-300 <%= "mb-2.5" if index.zero? && article.excerpt %>"><%= article.published_at.strftime("%-d %B %Y") %></div>
         <% if index.zero? && article.excerpt %>
-          <p class="text-[15px] leading-[1.6] text-heather-800 m-0 dark:text-ink-100"><%= article.excerpt %></p>
+          <p class="text-15 leading-160 text-heather-800 m-0 dark:text-ink-100"><%= article.excerpt %></p>
         <% end %>
       </a>
     <% end %>

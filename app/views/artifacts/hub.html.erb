@@ -1,7 +1,7 @@
 <% content_for :title, "Artifacts – Marias Family Archive" %>
 <% content_for :breadcrumbs do %>
   <div class="bg-taupe-100 border-b border-taupe-200 dark:bg-ink-600 dark:border-ink-500">
-    <div class="max-w-[1360px] mx-auto">
+    <div class="max-w-340 mx-auto">
       <%= render Ui::BreadcrumbsComponent.new do |trail| %>
         <% trail.with_crumb(label: "Archive", href: root_path) %>
         <% trail.with_crumb(label: "Artifacts") %>
@@ -11,8 +11,8 @@
 <% end %>
 
 <header class="mb-8">
-  <h1 class="font-serif text-[40px] font-medium tracking-[-0.015em] mb-3.5">Artifacts</h1>
-  <p class="font-serif text-xl leading-[1.7] text-taupe-700 max-w-[62ch] dark:text-ink-100">
+  <h1 class="font-serif text-40 font-medium tracking-tight mb-3.5">Artifacts</h1>
+  <p class="font-serif text-xl leading-170 text-taupe-700 max-w-[62ch] dark:text-ink-100">
     Everything the family kept, sorted by what it is.
     Six collections, <%= @counts.values.sum %> <%= "item".pluralize(@counts.values.sum) %>.
   </p>
