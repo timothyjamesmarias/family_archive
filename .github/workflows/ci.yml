@@ -110,6 +110,11 @@ jobs:
       - name: Install JavaScript dependencies
         run: npm ci
 
+      # Build once up front: relying on vite_ruby's auto-build lets parallel
+      # test workers race the manifest write and read it half-written.
+      - name: Build assets
+        run: bin/vite build
+
       - name: Run tests
         run: bin/rails db:test:prepare test
 
