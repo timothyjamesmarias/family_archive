@@ -6,17 +6,20 @@ const PLAYBACK_RATES = [1, 1.25, 1.5, 2]
 // play/pause, a clickable progress track, elapsed/total time, and a cycling
 // speed button. The media element itself stays the source of truth.
 export default class MediaPlayerController extends Controller {
-  static targets = ['media', 'playIcon', 'pauseIcon', 'fill', 'track', 'current', 'duration', 'rate']
+  static targets = ['media', 'playIcon', 'pauseIcon', 'fill', 'track', 'current', 'duration', 'rate', 'stage']
 
   declare readonly mediaTarget: HTMLMediaElement
   declare readonly playIconTarget: HTMLElement
   declare readonly pauseIconTarget: HTMLElement
+  declare readonly hasPauseIconTarget: boolean
   declare readonly fillTarget: HTMLElement
   declare readonly trackTarget: HTMLElement
   declare readonly currentTarget: HTMLElement
   declare readonly durationTarget: HTMLElement
   declare readonly rateTarget: HTMLElement
   declare readonly hasRateTarget: boolean
+  declare readonly stageTarget: HTMLElement
+  declare readonly hasStageTarget: boolean
 
   connect() {
     this.mediaTarget.addEventListener('timeupdate', this.sync)
@@ -50,6 +53,11 @@ export default class MediaPlayerController extends Controller {
     this.mediaTarget.currentTime = Math.min(Math.max(fraction, 0), 1) * duration
   }
 
+  fullscreen() {
+    const stage = this.hasStageTarget ? this.stageTarget : this.mediaTarget
+    stage.requestFullscreen?.()
+  }
+
   cycleRate() {
     if (!this.hasRateTarget) return
     const next = PLAYBACK_RATES[(PLAYBACK_RATES.indexOf(this.mediaTarget.playbackRate) + 1) % PLAYBACK_RATES.length]
@@ -60,7 +68,7 @@ export default class MediaPlayerController extends Controller {
   private sync = () => {
     const { currentTime, duration, paused } = this.mediaTarget
     this.playIconTarget.classList.toggle('hidden', !paused)
-    this.pauseIconTarget.classList.toggle('hidden', paused)
+    if (this.hasPauseIconTarget) this.pauseIconTarget.classList.toggle('hidden', paused)
     this.currentTarget.textContent = formatTime(currentTime)
     this.durationTarget.textContent = Number.isFinite(duration) ? formatTime(duration) : '--:--'
     if (Number.isFinite(duration) && duration > 0) {

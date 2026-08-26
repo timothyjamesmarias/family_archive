@@ -7,9 +7,6 @@
   <%= render "photo_reader", artifact: @artifact, type: @type, title: title, leaf: @leaf, tab: @tab %>
 <% elsif @type.key == "AUDIO" %>
   <%= render "audio_reader", artifact: @artifact, type: @type, title: title %>
-<% else %>
-  <div class="max-w-4xl mx-auto">
-    <h1 class="font-serif text-4xl font-medium tracking-[-0.015em] mb-8"><%= title %></h1>
-    <%= render "artifact_display", artifact: @artifact %>
-  </div>
+<% elsif @type.key == "VIDEO" %>
+  <%= render "video_reader", artifact: @artifact, type: @type, title: title %>
 <% end %>

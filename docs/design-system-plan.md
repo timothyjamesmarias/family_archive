@@ -43,10 +43,10 @@ instruction until they can be built dynamically.
 
 Done from this batch: empty states (screen 15), articles index (9),
 login (13), 404/500 via exceptions_app (14, static pages deleted),
-photo detail (10), and audio detail (11 — media-player Stimulus controller around a native audio element; timestamped transcript still waits on data).
-
-1. **Video detail** (screen 12) — dark player band; description/metadata
-   blocked
+photo detail (10), audio detail (11), and video detail (12) — the media-player
+Stimulus controller drives both players; timestamped transcripts,
+descriptions, and people/place/medium still wait on data. The
+unreachable stone-era artifact_display fallback is deleted.
 
 ## Data model needs the new screens surfaced (Tim's call)
 
