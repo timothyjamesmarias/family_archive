@@ -47,12 +47,13 @@ class ArtifactReaderTest < ActionDispatch::IntegrationTest
     assert_select "a.tab", text: /Transcription/, count: 0
   end
 
-  test "photos keep the gallery display" do
+  test "a photo without annotations opens on details" do
     photo = Artifact.create!(slug: "farm", artifact_type: "PHOTO", title: "Farmhouse")
 
     get "/photos/#{photo.slug}"
 
     assert_response :success
-    assert_select "a.tab", count: 0
+    assert_select "a.tab.tab-active", text: /Details/
+    assert_select "a.tab", text: /Annotations/, count: 0
   end
 end

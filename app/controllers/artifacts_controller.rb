@@ -35,14 +35,15 @@ class ArtifactsController < ApplicationController
     @transcribed_count = Artifact.of_type(@type.key).joins(:transcription).count unless @type.grid?
   end
 
-  READER_TABS = %w[transcription translation commentary details].freeze
+  WRITTEN_TABS = %w[transcription translation commentary details].freeze
+  PHOTO_TABS = %w[annotations commentary details].freeze
 
   def show
     @type = artifact_type
     @artifact = scope_for(@type).includes(:commentaries).find_by(slug: params[:slug])
     return redirect_to "/#{@type.route_segment}" if @artifact.nil?
 
-    prepare_reader if @type.written_record?
+    prepare_reader if @type.written_record? || @type.key == "PHOTO"
   end
 
   private
@@ -55,9 +56,10 @@ class ArtifactsController < ApplicationController
   # The reader's leaf and tab come from the query string; both fall back
   # rather than 404 so stale links still land on the artifact.
   def prepare_reader
+    tabs = @type.key == "PHOTO" ? PHOTO_TABS : WRITTEN_TABS
     @leaf = params[:leaf].to_i.clamp(1, [ @artifact.files.size, 1 ].max)
     @tab = params[:tab]
-    @tab = "transcription" unless READER_TABS.include?(@tab)
+    @tab = tabs.first unless tabs.include?(@tab)
     @tab = "details" unless reader_tab_has_content?(@tab)
   end
 
@@ -66,6 +68,7 @@ class ArtifactsController < ApplicationController
     when "transcription" then @artifact.transcription.present?
     when "translation" then @artifact.transcription&.translations&.any?
     when "commentary" then @artifact.commentaries.any?
+    when "annotations" then @artifact.files.any? { |file| file.annotations.any? }
     else true
     end
   end

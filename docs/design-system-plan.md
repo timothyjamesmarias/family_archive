@@ -41,20 +41,15 @@ unchanged except the masthead, unified to the implemented chrome. The
 hero Try links remain in the design but stay out of the code by Tim's
 instruction until they can be built dynamically.
 
-1. **Empty states retrofit** (screen 15) — drawn copy for true-empty
-   (upload button signed-in only), filtered-empty (count + Clear
-   filters), and home bands collapsing to a single line
-2. **Articles index** (screen 9) — heather reading list with a featured
-   Latest row; "Sources: N artifacts" omitted (no association);
-   pagination kept though not drawn
-3. **Login** (screen 13) — sheet card, drawn error, wordmark-only chrome
-4. **404/500** (screen 14) — needs a mechanism decision: static files
-   with inlined styles vs exceptions_app through the layout
-5. **Photo detail** (screen 10) — annotations tab + marker/list sync via
-   the AnnotatedPhoto island; person links/attributions/metadata blocked
-6. **Audio detail** (screen 11) — player + plain transcript; timestamped
+Done from this batch: empty states (screen 15), articles index (9),
+login (13), 404/500 via exceptions_app (14, static pages deleted),
+photo detail (10 — SSR markers + a photo-annotations Stimulus
+controller for marker/list sync, toggle, fullscreen; the old
+AnnotatedPhoto/PhotoGallery island is deleted).
+
+1. **Audio detail** (screen 11) — player + plain transcript; timestamped
    seeking blocked on a transcript data model
-7. **Video detail** (screen 12) — dark player band; description/metadata
+2. **Video detail** (screen 12) — dark player band; description/metadata
    blocked
 
 ## Data model needs the new screens surfaced (Tim's call)

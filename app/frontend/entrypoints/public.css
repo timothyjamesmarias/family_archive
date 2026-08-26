@@ -473,6 +473,55 @@
            dark:text-ink-50 dark:bg-ink-600 dark:hover:bg-ink-600;
   }
 
+  /* Annotation dots — a ring, never a filled disc, so the face beneath
+     stays visible; selection fills it. The marker variant floats on the
+     photograph at normalized coordinates; the bare dot labels list rows. */
+  .annotation-dot {
+    @apply w-[26px] h-[26px] rounded-full shrink-0
+           border-2 border-terracotta-700 bg-paper-sheet/35
+           font-mono text-[11px] text-terracotta-900
+           inline-flex items-center justify-center p-0;
+  }
+
+  .annotation-marker {
+    @apply absolute -translate-x-1/2 -translate-y-1/2 cursor-pointer;
+  }
+
+  .annotation-dot-selected {
+    @apply border-paper-sheet bg-terracotta-700 text-paper-sheet;
+  }
+
+  .annotation-row {
+    @apply grid grid-cols-[34px_minmax(0,1fr)] gap-3.5 px-2.5 py-3 items-start w-full
+           text-left cursor-pointer border border-transparent
+           hover:bg-terracotta-50 dark:hover:bg-ink-600;
+  }
+
+  .annotation-row-selected {
+    @apply bg-terracotta-100 border-terracotta-200
+           hover:bg-terracotta-100 dark:bg-ink-600 dark:border-ink-400;
+  }
+
+  /* The annotations visibility switch on the photo stage. */
+  .switch {
+    @apply inline-flex items-center w-[34px] h-5 border p-0.5 cursor-pointer
+           border-verdigris-700 bg-verdigris-700 justify-end
+           dark:border-verdigris-400 dark:bg-verdigris-400;
+  }
+
+  .switch[aria-checked="false"] {
+    @apply border-taupe-300 bg-paper-sheet justify-start
+           dark:border-ink-400 dark:bg-ink-900;
+  }
+
+  .switch-knob {
+    @apply block w-3.5 h-3.5 bg-paper-sheet;
+  }
+
+  .switch[aria-checked="false"] .switch-knob {
+    @apply bg-taupe-400 dark:bg-ink-300;
+  }
+
   /* Masthead — the single sheet-toned bar every public page shares. */
   .masthead-link {
     @apply text-[15px] text-taupe-700 no-underline px-3.5 py-2.5

@@ -101,23 +101,9 @@
         </div>
       <% end %>
     <% when "commentary" %>
-      <% artifact.commentaries.each do |commentary| %>
-        <div class="bg-heather-50 border border-heather-200 px-6 py-5 mb-[22px] dark:bg-ink-600 dark:border-ink-500">
-          <div class="font-mono text-[11px] tracking-[0.1em] uppercase text-heather-700 mb-2 dark:text-heather-300"><%= commentary.commentary_type.presence || "Commentary" %></div>
-          <% commentary.commentary_text.split(/\n{2,}/).each do |paragraph| %>
-            <p class="text-base leading-[1.7] text-heather-900 mb-3.5 last:mb-0 max-w-[66ch] whitespace-pre-line dark:text-ink-100"><%= paragraph %></p>
-          <% end %>
-        </div>
-      <% end %>
+      <%= render "commentary_panel", artifact: artifact %>
     <% when "details" %>
-      <%= render MetadataListComponent.new do |list| %>
-        <% list.with_row(term: "Identifier") { tag.span(artifact.slug, class: "font-mono text-sm") } %>
-        <% if artifact.original_date_string %>
-          <% list.with_row(term: "Date as written") { artifact.original_date_string } %>
-        <% end %>
-        <% list.with_row(term: "Files") { "#{artifact.files.size} #{"file".pluralize(artifact.files.size)}" } %>
-        <% list.with_row(term: "Added") { artifact.uploaded_at.strftime("%-d %B %Y") } %>
-      <% end %>
+      <%= render "details_panel", artifact: artifact %>
     <% end %>
   </div>
 </div>
