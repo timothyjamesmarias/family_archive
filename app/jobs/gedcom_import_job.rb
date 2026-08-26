@@ -6,7 +6,7 @@ class GedcomImportJob < ApplicationJob
   RESULT_CACHE_KEY = "gedcom_import:last_result"
 
   def perform(file_path)
-    result = GedcomImporter.new.import_file(file_path)
+    result = Gedcom::Importer.new.import_file(file_path)
     write_result(result)
   rescue StandardError => error
     write_result(success: false, errors: [ error.message ])

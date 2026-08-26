@@ -67,7 +67,7 @@ module Api
     private
 
     def editor
-      IndividualEditor.new
+      Individual::Editor.new
     end
 
     def mutations

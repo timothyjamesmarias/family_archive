@@ -4,7 +4,7 @@ class GedcomImporterTest < ActiveSupport::TestCase
   FIXTURE = Rails.root.join("test/fixtures/files/family_tree.ged").to_s
 
   def import
-    GedcomImporter.new.import_file(FIXTURE)
+    Gedcom::Importer.new.import_file(FIXTURE)
   end
 
   test "imports every individual, family, and event from the file" do
@@ -89,7 +89,7 @@ class GedcomImporterTest < ActiveSupport::TestCase
       file.flush
 
       error = assert_raises(InvalidArgumentError) do
-        GedcomImporter.new.import_file(file.path)
+        Gedcom::Importer.new.import_file(file.path)
       end
       assert_equal "file", error.field
     end

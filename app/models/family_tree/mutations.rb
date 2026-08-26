@@ -18,7 +18,7 @@ module FamilyTree
           Family.find_by(id: parent_family_id) ||
             raise(NotFoundError, "Family with ID #{parent_family_id} not found")
         else
-          Family.create!(gedcom_id: GedcomIds.next_family_id).tap do |created|
+          Family.create!(gedcom_id: Gedcom::Ids.next_family_id).tap do |created|
             FamilyMember.create!(family_id: created.id, individual_id: parent.id,
               role: parent_role(parent))
           end
@@ -37,7 +37,7 @@ module FamilyTree
       spouse = create_individual(spouse_data)
 
       family = Family.create!(
-        gedcom_id: GedcomIds.next_family_id,
+        gedcom_id: Gedcom::Ids.next_family_id,
         marriage_date_string: marriage_data&.dig(:marriageDateString),
         divorce_date_string: marriage_data&.dig(:divorceDateString)
       )
@@ -101,7 +101,7 @@ module FamilyTree
     private
 
     def create_individual(data)
-      gedcom_id = data[:gedcomId].presence || GedcomIds.next_individual_id
+      gedcom_id = data[:gedcomId].presence || Gedcom::Ids.next_individual_id
       if Individual.exists?(gedcom_id: gedcom_id)
         raise ConflictError.new("Individual with GEDCOM ID '#{gedcom_id}' already exists",
           field: "gedcomId")
@@ -133,7 +133,7 @@ module FamilyTree
       family_id = FamilyMember.children.where(individual_id: child_id).pick(:family_id)
 
       if family_id.nil?
-        family = Family.create!(gedcom_id: GedcomIds.next_family_id)
+        family = Family.create!(gedcom_id: Gedcom::Ids.next_family_id)
         FamilyMember.create!(family_id: family.id, individual_id: child_id, role: "CHILD")
         return family
       end

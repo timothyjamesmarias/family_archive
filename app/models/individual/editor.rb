@@ -1,10 +1,10 @@
 # Creates and updates individuals from the tree island's form payloads, keeping
 # their single BIRTH/DEATH events in sync, and guards deletion.
-class IndividualEditor
+class Individual::Editor
   MAX_DESCENDANT_GENERATIONS = 10
 
   def create_from_request(data)
-    gedcom_id = data[:gedcomId].presence || GedcomIds.next_individual_id
+    gedcom_id = data[:gedcomId].presence || Gedcom::Ids.next_individual_id
     if Individual.exists?(gedcom_id: gedcom_id)
       raise ConflictError.new("Individual with GEDCOM ID '#{gedcom_id}' already exists",
         field: "gedcomId")
@@ -59,7 +59,7 @@ class IndividualEditor
 
     # The recursive query's anchor row is the person themselves, so they always
     # appear in the result and must be excluded.
-    descendants = IndividualQueries.descendants(id, MAX_DESCENDANT_GENERATIONS)
+    descendants = Individual::Queries.descendants(id, MAX_DESCENDANT_GENERATIONS)
       .reject { |d| d.id == id }
     if descendants.any?
       return { valid: false,

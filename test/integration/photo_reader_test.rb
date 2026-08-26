@@ -2,7 +2,7 @@ require "test_helper"
 
 class PhotoReaderTest < ActionDispatch::IntegrationTest
   def photo_with_annotations
-    artifact = ArtifactUploader.new.upload(
+    artifact = Artifact::Uploader.new.upload(
       files: [ fixture_file_upload("artifact.png", "image/png") ],
       artifact_type: "PHOTO", title: "Family gathered outside the farmhouse"
     )
@@ -49,7 +49,7 @@ class PhotoReaderTest < ActionDispatch::IntegrationTest
   end
 
   test "the annotations tab is scoped to the current leaf" do
-    artifact = ArtifactUploader.new.upload(
+    artifact = Artifact::Uploader.new.upload(
       files: [ fixture_file_upload("artifact.png", "image/png"),
                fixture_file_upload("artifact.png", "image/png") ],
       artifact_type: "PHOTO", title: "Two leaves"

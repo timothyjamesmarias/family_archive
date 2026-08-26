@@ -4,7 +4,7 @@ class ArtifactAdminTest < ApplicationSystemTestCase
   FIXTURE = Rails.root.join("test/fixtures/files/artifact.png")
 
   def upload_photo(title:)
-    ArtifactUploader.new.upload(
+    Artifact::Uploader.new.upload(
       files: [ Rack::Test::UploadedFile.new(FIXTURE, "image/png") ],
       artifact_type: "PHOTO", title: title
     )

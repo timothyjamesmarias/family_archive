@@ -1,7 +1,7 @@
 # Recursive-CTE traversals over individuals/family_members. Kept as SQL strings
 # executed through ActiveRecord: the queries walk parent/child edges to a
 # bounded depth, which Active Record cannot express.
-module IndividualQueries
+module Individual::Queries
   INDIVIDUAL_COLUMNS = <<~SQL.squish.freeze
     i.id, i.gedcom_id, i.given_name, i.surname, i.sex, i.is_tree_root,
     i.gedcom_raw_data, i.created_at, i.updated_at, i.last_imported_at, i.deleted_at

@@ -49,7 +49,7 @@ module Admin
         end
       end
 
-      artifact = ArtifactUploader.new.upload(
+      artifact = Artifact::Uploader.new.upload(
         files: files,
         artifact_type: type.key,
         title: params.dig(:artifact, :title).presence,
@@ -93,7 +93,7 @@ module Admin
         return
       end
 
-      ArtifactUploader.new.add_files(params[:id].to_i, files)
+      Artifact::Uploader.new.add_files(params[:id].to_i, files)
       redirect_to admin_artifact_path(params[:id]), notice: "Files added."
     rescue DomainError => e
       redirect_to admin_artifact_path(params[:id]), alert: e.message

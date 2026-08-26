@@ -22,6 +22,6 @@ module ApplicationHelper
   # the guarantee even for content written outside the admin flow.
   def article_html(article)
     sanitize article.content,
-      tags: ArticleHtml::ALLOWED_TAGS, attributes: ArticleHtml::ALLOWED_ATTRIBUTES
+      tags: Article::Html::ALLOWED_TAGS, attributes: Article::Html::ALLOWED_ATTRIBUTES
   end
 end

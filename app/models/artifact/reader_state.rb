@@ -2,7 +2,7 @@
 # back rather than 404 so stale links still land on the artifact, and tabs
 # whose content doesn't exist fall through to Details. Annotations are
 # leaf-scoped: the panel shows the current leaf's, so availability does too.
-class ArtifactReaderState
+class Artifact::ReaderState
   TRANSCRIPTION = "transcription"
   TRANSLATION = "translation"
   COMMENTARY = "commentary"

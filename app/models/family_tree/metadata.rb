@@ -1,7 +1,7 @@
 module FamilyTree
   # Per-individual relationship metadata for a tree response, in one query.
   #
-  # The recursive CTEs in IndividualQueries decide *who* is in the tree. This
+  # The recursive CTEs in Individual::Queries decide *who* is in the tree. This
   # answers a different question about the result: for each loaded individual,
   # what is one hop away, and is any of it outside the set we are returning?
   # The frontend uses the `hasUnloaded*` flags to decide where to draw expand

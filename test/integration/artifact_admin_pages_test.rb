@@ -4,7 +4,7 @@ class ArtifactAdminPagesTest < ActionDispatch::IntegrationTest
   setup { sign_in create_admin }
 
   def upload(type:, title:)
-    ArtifactUploader.new.upload(
+    Artifact::Uploader.new.upload(
       files: [ fixture_file_upload("artifact.png", "image/png") ],
       artifact_type: type, title: title
     )

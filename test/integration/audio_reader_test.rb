@@ -3,7 +3,7 @@ require "test_helper"
 class AudioReaderTest < ActionDispatch::IntegrationTest
   def interview(with_file: true)
     if with_file
-      artifact = ArtifactUploader.new.upload(
+      artifact = Artifact::Uploader.new.upload(
         files: [ fixture_file_upload("artifact.png", "image/png") ],
         artifact_type: "AUDIO", title: "Interview with Katharina Marias"
       )

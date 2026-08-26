@@ -69,7 +69,7 @@ module Admin
     def article_params
       attributes = params.expect(article: [ :slug, :title, :excerpt, :content, :published_at ])
       attributes.merge(
-        content: ArticleHtml.sanitize(attributes[:content]),
+        content: Article::Html.sanitize(attributes[:content]),
         published_at: attributes[:published_at].presence
       )
     end

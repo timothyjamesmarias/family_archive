@@ -1,7 +1,7 @@
 # Reads a GEDCOM file by shelling out to script/gedcom-to-json.mjs, which
 # wraps the read-gedcom parser the archive has always used. Ruby only ever
 # sees the resulting record tree.
-module GedcomReader
+module Gedcom::Reader
   CLI = "script/gedcom-to-json.mjs"
 
   Node = Data.define(:tag, :pointer, :value, :children) do

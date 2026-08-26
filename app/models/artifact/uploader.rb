@@ -1,7 +1,7 @@
 # Ingests uploaded files: creates the artifact with its files on upload, or
 # appends files to an existing artifact. Storage and thumbnails are Active
 # Storage's job — attaching enqueues the preprocessed :thumb variant.
-class ArtifactUploader
+class Artifact::Uploader
   MAX_SLUG_ATTEMPTS = 10
 
   def upload(files:, artifact_type:, title: nil, original_date_string: nil)

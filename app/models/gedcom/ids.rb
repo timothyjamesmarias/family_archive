@@ -2,7 +2,7 @@
 #
 # Counts soft-deleted rows deliberately: their ids stay reserved, so skipping
 # them would hand out a number that already exists.
-module GedcomIds
+module Gedcom::Ids
   INDIVIDUALS_MAX_SQL = <<~SQL.freeze
     SELECT MAX(CAST(SUBSTRING(gedcom_id FROM '@I([0-9]+)@') AS INTEGER))
     FROM individuals

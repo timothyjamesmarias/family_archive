@@ -2,7 +2,7 @@
 # stripping the qualifier and parsing the remainder; for ranges (BET x AND y)
 # takes the first date. Returns nil when unparseable — the original date
 # string is always preserved separately.
-module GedcomDate
+module Gedcom::Date
   MONTHS = {
     "JAN" => 1, "FEB" => 2, "MAR" => 3, "APR" => 4, "MAY" => 5, "JUN" => 6,
     "JUL" => 7, "AUG" => 8, "SEP" => 9, "OCT" => 10, "NOV" => 11, "DEC" => 12
@@ -31,7 +31,7 @@ module GedcomDate
   def build_date(year, month, day)
     return nil unless month && year.match?(/\A\d+\z/) && day.match?(/\A\d+\z/)
 
-    Date.new(year.to_i, month, day.to_i)
+    ::Date.new(year.to_i, month, day.to_i)
   rescue Date::Error
     nil
   end

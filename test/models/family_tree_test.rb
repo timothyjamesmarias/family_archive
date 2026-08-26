@@ -62,10 +62,10 @@ class FamilyTreeTest < ActiveSupport::TestCase
     peter = Individual.find_by(given_name: "Peter")
     @mutations.add_sibling(person_id: peter.id, sibling_data: { givenName: "Anna" })
 
-    assert_equal %w[Anna], IndividualQueries.siblings(peter.id).map(&:given_name)
-    assert_equal %w[Peter John], IndividualQueries.ancestors(peter.id, 5).map(&:given_name)
+    assert_equal %w[Anna], Individual::Queries.siblings(peter.id).map(&:given_name)
+    assert_equal %w[Peter John], Individual::Queries.ancestors(peter.id, 5).map(&:given_name)
 
     Individual.find_by(given_name: "Anna").destroy
-    assert_empty IndividualQueries.siblings(peter.id)
+    assert_empty Individual::Queries.siblings(peter.id)
   end
 end

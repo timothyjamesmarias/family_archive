@@ -2,7 +2,7 @@ module FamilyTree
   # Assembles the `{ individuals:, families: }` payload the tree island renders.
   class Builder
     def root_individuals
-      IndividualQueries.most_recent_generation_by_surname(PRIMARY_SURNAME)
+      Individual::Queries.most_recent_generation_by_surname(PRIMARY_SURNAME)
     end
 
     def initial_tree
@@ -51,13 +51,13 @@ module FamilyTree
         root = Individual.find_by(id: root_id)
         loaded[root.id] = root if root
         if generations_up.positive?
-          IndividualQueries.ancestors(root_id, generations_up).each { |a| loaded[a.id] = a }
+          Individual::Queries.ancestors(root_id, generations_up).each { |a| loaded[a.id] = a }
         end
         if generations_down.positive?
-          IndividualQueries.descendants(root_id, generations_down).each { |d| loaded[d.id] = d }
+          Individual::Queries.descendants(root_id, generations_down).each { |d| loaded[d.id] = d }
         end
         if include_siblings
-          IndividualQueries.siblings(root_id).each { |s| loaded[s.id] = s }
+          Individual::Queries.siblings(root_id).each { |s| loaded[s.id] = s }
         end
       end
 

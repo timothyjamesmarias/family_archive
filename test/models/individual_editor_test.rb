@@ -1,7 +1,7 @@
 require "test_helper"
 
 class IndividualEditorTest < ActiveSupport::TestCase
-  setup { @editor = IndividualEditor.new }
+  setup { @editor = Individual::Editor.new }
 
   test "create builds birth and death events with places" do
     response = @editor.create_from_request(

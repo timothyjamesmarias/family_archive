@@ -4,7 +4,7 @@ class VideoReaderTest < ActionDispatch::IntegrationTest
   def film(with_file: true)
     return Artifact.create!(slug: "reel", artifact_type: "VIDEO", title: "The store, filmed on 8mm") unless with_file
 
-    ArtifactUploader.new.upload(
+    Artifact::Uploader.new.upload(
       files: [ fixture_file_upload("artifact.png", "image/png") ],
       artifact_type: "VIDEO", title: "The store, filmed on 8mm"
     )

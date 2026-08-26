@@ -1,7 +1,7 @@
 # Imports a GEDCOM file: upserts individuals and families by their GEDCOM id,
 # links family members, and replaces the events the file describes. Runs in a
 # single transaction — any failure rolls back every write.
-class GedcomImporter
+class Gedcom::Importer
   # Event types this importer creates. Re-import replaces only these, so
   # events an archivist added by hand — MARRIAGE, OCCUPATION, RESIDENCE and
   # the rest — survive re-importing the same file.
@@ -14,7 +14,7 @@ class GedcomImporter
   IMPORTED_EVENT_TYPES = EVENT_TAGS.values.freeze
 
   def import_file(path)
-    records = GedcomReader.read(path)
+    records = Gedcom::Reader.read(path)
     individuals = records.select { |record| record.tag == "INDI" && record.pointer }
     families = records.select { |record| record.tag == "FAM" && record.pointer }
 
@@ -80,7 +80,7 @@ class GedcomImporter
       family = Family.with_deleted.find_or_initialize_by(gedcom_id: fam.pointer)
       family.update!(
         marriage_date_string: marriage_date,
-        marriage_date_parsed: GedcomDate.parse(marriage_date),
+        marriage_date_parsed: Gedcom::Date.parse(marriage_date),
         marriage_place_id: Place.find_or_create_named(marriage&.child_value("PLAC"))&.id,
         gedcom_raw_data: { "children" => [ fam.to_raw ] },
         last_imported_at: Time.current
@@ -136,7 +136,7 @@ class GedcomImporter
           individual.events.create!(
             event_type: event_type,
             date_string: date,
-            date_parsed: GedcomDate.parse(date),
+            date_parsed: Gedcom::Date.parse(date),
             place_id: Place.find_or_create_named(event.child_value("PLAC"))&.id
           )
         end.size

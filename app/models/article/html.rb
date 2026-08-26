@@ -3,7 +3,7 @@
 # editor restrictions are a convenience and are bypassed by posting directly.
 #
 # The allowlist covers what a rich-text toolbar produces and nothing else.
-module ArticleHtml
+module Article::Html
   ALLOWED_TAGS = %w[
     p br hr span div h1 h2 h3 h4 h5 h6
     strong b em i u s strike sub sup

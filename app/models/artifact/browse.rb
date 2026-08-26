@@ -2,7 +2,7 @@
 # sort, collection search, filter pills, and the paginated scope. The
 # controller hands over the type and params; the view reads everything else
 # from here.
-class ArtifactBrowse
+class Artifact::Browse
   PER_PAGE = 24
 
   SORT_ORDERS = {
