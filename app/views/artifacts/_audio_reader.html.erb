@@ -1,0 +1,74 @@
+<%# Audio detail, Pages screen 11: a thin player band over the transcript,
+    which is the artifact here. Locals: artifact, type, title. Timestamped
+    seeking waits on a transcript data model; the description line,
+    speakers/duration/medium rows, and the auto-generated provenance note
+    are omitted — no fields back them. %>
+<% content_for :full_bleed, true %>
+<% content_for :breadcrumbs do %>
+  <div class="bg-taupe-100 border-b border-taupe-200 dark:bg-ink-600 dark:border-ink-500">
+    <div class="max-w-[1360px] mx-auto">
+      <%= render Ui::BreadcrumbsComponent.new do |trail| %>
+        <% trail.with_crumb(label: "Archive", href: root_path) %>
+        <% trail.with_crumb(label: type.plural_display_name, href: "/#{type.route_segment}") %>
+        <% trail.with_crumb(label: title) %>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<header>
+  <div class="max-w-[1360px] mx-auto px-5 sm:px-10 pt-9 pb-6">
+    <div class="flex flex-wrap gap-2 items-center mb-3.5">
+      <%= render Ui::TypeChipComponent.new(artifact_type: type) %>
+      <span class="font-mono text-xs text-taupe-600 dark:text-ink-200"><%= [ ("Recorded #{artifact.original_date_string}" if artifact.original_date_string), artifact.slug ].compact.join(" · ") %></span>
+    </div>
+    <h1 class="font-serif text-4xl leading-[1.15] font-medium tracking-[-0.015em] mb-2 max-w-[28ch]"><%= title %></h1>
+  </div>
+</header>
+
+<% if (primary = artifact.files.first)&.file&.attached? %>
+  <div class="max-w-[1360px] mx-auto px-5 sm:px-10 pb-7">
+    <div class="bg-paper-sheet border border-taupe-200 px-[22px] py-[18px] flex flex-wrap gap-x-[18px] gap-y-3.5 items-center dark:bg-ink-700 dark:border-ink-500" data-controller="media-player">
+      <audio preload="metadata" src="<%= url_for(primary.file) %>" data-media-player-target="media"></audio>
+      <button type="button" aria-label="Play"
+              class="w-13 h-13 bg-verdigris-700 border border-verdigris-700 cursor-pointer flex items-center justify-center flex-shrink-0 hover:bg-verdigris-800 dark:bg-verdigris-300 dark:border-verdigris-300 dark:hover:bg-verdigris-200"
+              data-action="media-player#toggle">
+        <span class="block w-0 h-0 border-l-[16px] border-l-paper-sheet border-y-[10px] border-y-transparent ml-1 dark:border-l-ink-900" data-media-player-target="playIcon"></span>
+        <span class="hidden inline-flex items-center gap-1" data-media-player-target="pauseIcon">
+          <span class="block w-1 h-4 bg-paper-sheet dark:bg-ink-900"></span><span class="block w-1 h-4 bg-paper-sheet dark:bg-ink-900"></span>
+        </span>
+      </button>
+      <div class="flex-1 min-w-[220px]">
+        <button type="button" class="block w-full h-2 bg-taupe-100 border border-taupe-200 mb-2 p-0 cursor-pointer dark:bg-ink-600 dark:border-ink-500" aria-label="Seek"
+                data-media-player-target="track" data-action="media-player#seek">
+          <span class="block h-full bg-verdigris-700 dark:bg-verdigris-400" style="width: 0%" data-media-player-target="fill"></span>
+        </button>
+        <div class="flex justify-between font-mono text-xs text-taupe-600 dark:text-ink-200">
+          <span data-media-player-target="current">0:00</span>
+          <span data-media-player-target="duration">--:--</span>
+        </div>
+      </div>
+      <div class="flex gap-2 items-center">
+        <button type="button" class="font-mono text-xs text-taupe-700 bg-paper-sheet border border-taupe-300 px-3 h-[38px] cursor-pointer hover:border-taupe-500 dark:text-ink-100 dark:bg-ink-700 dark:border-ink-400"
+                data-media-player-target="rate" data-action="media-player#cycleRate">1&times;</button>
+        <%= link_to "Download", rails_blob_path(primary.file, disposition: "attachment"),
+              class: "font-sans text-[13px] text-taupe-700 bg-paper-sheet border border-taupe-300 px-3 h-[38px] inline-flex items-center no-underline hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-ink-700 dark:border-ink-400 dark:hover:border-ink-200 dark:hover:text-ink-50" %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<div class="max-w-[1360px] mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] items-start border-t border-taupe-200 dark:border-ink-500">
+  <div class="bg-paper-sheet lg:border-r border-b lg:border-b-0 border-taupe-200 px-5 sm:px-8 pt-[26px] pb-8 dark:bg-ink-700 dark:border-ink-500">
+    <% if artifact.transcription %>
+      <div class="field-label mb-4">Transcript</div>
+      <% artifact.transcription.transcription_text.split(/\n{2,}/).each do |paragraph| %>
+        <p class="font-serif text-[19px] leading-[1.8] text-taupe-900 mb-3.5 last:mb-0 max-w-[58ch] whitespace-pre-line dark:text-ink-50"><%= paragraph %></p>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="bg-paper-sheet px-5 sm:px-7 pt-[26px] pb-7 dark:bg-ink-700">
+    <%= render "details_panel", artifact: artifact %>
+  </div>
+</div>

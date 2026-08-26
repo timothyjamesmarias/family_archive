@@ -43,13 +43,9 @@ instruction until they can be built dynamically.
 
 Done from this batch: empty states (screen 15), articles index (9),
 login (13), 404/500 via exceptions_app (14, static pages deleted),
-photo detail (10 — SSR markers + a photo-annotations Stimulus
-controller for marker/list sync, toggle, fullscreen; the old
-AnnotatedPhoto/PhotoGallery island is deleted).
+photo detail (10), and audio detail (11 — media-player Stimulus controller around a native audio element; timestamped transcript still waits on data).
 
-1. **Audio detail** (screen 11) — player + plain transcript; timestamped
-   seeking blocked on a transcript data model
-2. **Video detail** (screen 12) — dark player band; description/metadata
+1. **Video detail** (screen 12) — dark player band; description/metadata
    blocked
 
 ## Data model needs the new screens surfaced (Tim's call)
