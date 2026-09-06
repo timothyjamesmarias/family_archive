@@ -1,5 +1,5 @@
 class Artifact < ApplicationRecord
-  MAX_FILE_SIZE_BYTES = 50 * 1024 * 1024
+  MAX_FILE_SIZE_BYTES = 150 * 1024 * 1024
 
   has_one :transcription, dependent: :destroy
   has_many :commentaries, dependent: :destroy
