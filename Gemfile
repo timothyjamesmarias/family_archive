@@ -32,6 +32,7 @@ gem "view_component"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 
 # Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
+gem "sqlite3", ">= 2.1"
 gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"

@@ -13,15 +13,47 @@ local: &local
   username: <%= ENV.fetch("POSTGRES_USER", "postgres") %>
   password: <%= ENV.fetch("POSTGRES_PASSWORD", "postgres") %>
 
+# The Solid stack (cache, queue, cable) lives in per-concern SQLite files
+# rather than Postgres. Their contents are ephemeral by nature, which keeps
+# the Postgres dump to domain data and leaves a clean path to Sidekiq/Redis.
+sqlite: &sqlite
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  timeout: 5000
+
 development:
-  <<: *local
-  database: family_archive_development
+  primary:
+    <<: *local
+    database: family_archive_development
+  queue:
+    <<: *sqlite
+    database: storage/development_queue.sqlite3
+    migrations_paths: db/queue_migrate
 
 test:
   <<: *local
   database: family_archive_test
 
-# Production connection details come entirely from DATABASE_URL (set by Render).
 production:
-  <<: *default
-  database: family_archive_production
+  # Connection details come from DATABASE_URL, which Rails merges into the
+  # primary config. It points at PgBouncer in transaction-pooling mode, so
+  # session-scoped features are off: Rails' migration advisory lock would be
+  # taken and released on different server connections, and prepared
+  # statements would be prepared on one and executed on another.
+  primary:
+    <<: *default
+    database: family_archive_production
+    advisory_locks: false
+    prepared_statements: false
+  cache:
+    <<: *sqlite
+    database: storage/production_cache.sqlite3
+    migrations_paths: db/cache_migrate
+  queue:
+    <<: *sqlite
+    database: storage/production_queue.sqlite3
+    migrations_paths: db/queue_migrate
+  cable:
+    <<: *sqlite
+    database: storage/production_cable.sqlite3
+    migrations_paths: db/cable_migrate

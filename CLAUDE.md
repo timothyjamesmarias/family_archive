@@ -140,12 +140,18 @@ production, defaulted in development).
 
 ## Deploy
 
-Render via `render.yaml` (Docker). Solid Queue runs inside Puma
-(`SOLID_QUEUE_IN_PUMA`); production databases arrive via `DATABASE_URL`.
-Active Storage uploads go to S3 — set `AWS_ACCESS_KEY_ID`,
-`AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, and `AWS_S3_BUCKET` in Render
-(declared `sync: false` in the blueprint). `AWS_S3_KEY_PREFIX` (default
-`production`) namespaces blob keys under a folder in the bucket.
+Home NixOS server (`~/projects/nixos-server`, `apps/personal/family-archive.nix`).
+Pushing to `master` runs `.github/workflows/deploy.yml`: build the image to
+GHCR, SSH in, `scripts/deploy.sh family-archive <digest>`. Env comes from
+sops via that nix file; `DATABASE_URL` points at PgBouncer in transaction
+mode, so production `database.yml` disables advisory locks and prepared
+statements. The Solid stack (cache/queue/cable) lives in SQLite files under
+`storage/` on a Docker volume, not in Postgres; Sidekiq on the server's
+Redis is the planned replacement. Active Storage uploads go to S3
+(`AWS_*` env vars); `AWS_S3_KEY_PREFIX` (default `production`) namespaces
+blob keys under a folder in the bucket. Cutover runbook:
+`nixos-server/docs/FAMILY-ARCHIVE-CUTOVER.md`. `render.yaml` is the old
+Render deployment and goes away once Render is deleted.
 
 ## Testing
 
