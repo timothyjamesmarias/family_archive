@@ -15,24 +15,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_210742) do
   enable_extension "pg_catalog.plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
-    t.string "name", null: false
-    t.bigint "record_id", null: false
-    t.string "record_type", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
 
   create_table "active_storage_blobs", force: :cascade do |t|
-    t.bigint "byte_size", null: false
-    t.string "checksum"
-    t.string "content_type"
-    t.datetime "created_at", null: false
-    t.string "filename", null: false
     t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
     t.text "metadata"
     t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
@@ -43,22 +43,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_210742) do
   end
 
   create_table "annotations", force: :cascade do |t|
-    t.text "annotation_text", null: false
     t.bigint "artifact_file_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.text "annotation_text", null: false
     t.decimal "x_coord", precision: 10, scale: 6
     t.decimal "y_coord", precision: 10, scale: 6
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["artifact_file_id"], name: "index_annotations_on_artifact_file_id"
   end
 
   create_table "articles", force: :cascade do |t|
-    t.text "content", null: false
-    t.datetime "created_at", null: false
-    t.string "excerpt", limit: 1000
-    t.datetime "published_at"
     t.string "slug", null: false
     t.string "title", limit: 500, null: false
+    t.string "excerpt", limit: 1000
+    t.text "content", null: false
+    t.datetime "published_at"
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["slug"], name: "index_articles_on_slug", unique: true
@@ -66,21 +66,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_210742) do
 
   create_table "artifact_files", force: :cascade do |t|
     t.bigint "artifact_id", null: false
-    t.datetime "created_at", null: false
     t.integer "file_sequence", null: false
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["artifact_id", "file_sequence"], name: "index_artifact_files_on_artifact_id_and_file_sequence", unique: true
     t.index ["artifact_id"], name: "index_artifact_files_on_artifact_id"
   end
 
   create_table "artifacts", force: :cascade do |t|
-    t.string "artifact_type", limit: 50, null: false
-    t.datetime "created_at", null: false
-    t.string "original_date_string"
     t.string "slug", null: false
+    t.string "artifact_type", limit: 50, null: false
     t.string "title", limit: 500
-    t.datetime "updated_at", null: false
     t.datetime "uploaded_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string "original_date_string"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["artifact_type"], name: "index_artifacts_on_artifact_type"
     t.index ["slug"], name: "index_artifacts_on_slug", unique: true
   end
@@ -95,16 +95,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_210742) do
   end
 
   create_table "families", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "deleted_at"
-    t.datetime "divorce_date_parsed"
-    t.string "divorce_date_string"
     t.string "gedcom_id", limit: 50
+    t.string "marriage_date_string"
+    t.datetime "marriage_date_parsed"
+    t.bigint "marriage_place_id"
+    t.string "divorce_date_string"
+    t.datetime "divorce_date_parsed"
     t.jsonb "gedcom_raw_data"
     t.datetime "last_imported_at"
-    t.datetime "marriage_date_parsed"
-    t.string "marriage_date_string"
-    t.bigint "marriage_place_id"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_families_on_deleted_at", where: "(deleted_at IS NULL)"
     t.index ["gedcom_id"], name: "index_families_on_gedcom_id", unique: true
@@ -114,28 +114,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_210742) do
   end
 
   create_table "family_members", primary_key: ["family_id", "individual_id", "role"], force: :cascade do |t|
-    t.integer "child_order"
-    t.datetime "created_at", null: false
-    t.datetime "deleted_at"
     t.bigint "family_id", null: false
     t.bigint "individual_id", null: false
     t.string "role", limit: 20, null: false
+    t.integer "child_order"
+    t.datetime "created_at", null: false
+    t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_family_members_on_deleted_at", where: "(deleted_at IS NULL)"
     t.index ["family_id", "child_order"], name: "index_family_members_on_family_id_and_child_order", where: "((role)::text = 'CHILD'::text)"
     t.index ["family_id", "role"], name: "index_family_members_on_family_id_and_role"
     t.index ["individual_id"], name: "index_family_members_on_individual_id"
-    t.check_constraint "role::text = ANY (ARRAY['FATHER'::character varying::text, 'MOTHER'::character varying::text, 'CHILD'::character varying::text])", name: "chk_role"
+    t.check_constraint "role::text = ANY (ARRAY['FATHER'::character varying, 'MOTHER'::character varying, 'CHILD'::character varying]::text[])", name: "chk_role"
   end
 
   create_table "individual_events", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "date_parsed"
-    t.string "date_string"
-    t.text "description"
-    t.string "event_type", limit: 50, null: false
-    t.jsonb "gedcom_raw_data"
     t.bigint "individual_id", null: false
+    t.string "event_type", limit: 50, null: false
+    t.string "date_string"
+    t.datetime "date_parsed"
     t.bigint "place_id"
+    t.text "description"
+    t.jsonb "gedcom_raw_data"
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["date_parsed"], name: "index_individual_events_on_date_parsed"
     t.index ["gedcom_raw_data"], name: "index_individual_events_on_gedcom_raw_data", using: :gin
@@ -144,15 +144,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_210742) do
   end
 
   create_table "individuals", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "deleted_at"
     t.string "gedcom_id", limit: 50
-    t.jsonb "gedcom_raw_data"
     t.string "given_name"
-    t.boolean "is_tree_root", default: false, null: false
-    t.datetime "last_imported_at"
-    t.string "sex", limit: 1
     t.string "surname"
+    t.string "sex", limit: 1
+    t.boolean "is_tree_root", default: false, null: false
+    t.jsonb "gedcom_raw_data"
+    t.datetime "last_imported_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index "to_tsvector('english'::regconfig, (((COALESCE(given_name, ''::character varying))::text || ' '::text) || (COALESCE(surname, ''::character varying))::text))", name: "idx_individuals_name_search", using: :gin
     t.index ["deleted_at"], name: "index_individuals_on_deleted_at", where: "(deleted_at IS NULL)"
@@ -164,15 +164,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_210742) do
   end
 
   create_table "places", force: :cascade do |t|
-    t.string "city"
-    t.string "country"
-    t.datetime "created_at", null: false
-    t.jsonb "gedcom_raw_data"
-    t.decimal "latitude", precision: 10, scale: 8
-    t.decimal "longitude", precision: 11, scale: 8
     t.string "name", limit: 500, null: false
     t.string "normalized_name", limit: 500
+    t.string "city"
     t.string "state_province"
+    t.string "country"
+    t.decimal "latitude", precision: 10, scale: 8
+    t.decimal "longitude", precision: 11, scale: 8
+    t.jsonb "gedcom_raw_data"
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index "to_tsvector('english'::regconfig, (name)::text)", name: "idx_places_search", using: :gin
     t.index ["city"], name: "index_places_on_city"
@@ -183,30 +183,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_08_210742) do
 
   create_table "transcriptions", force: :cascade do |t|
     t.bigint "artifact_id", null: false
-    t.datetime "created_at", null: false
     t.text "transcription_text", null: false
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["artifact_id"], name: "index_transcriptions_on_artifact_id"
   end
 
   create_table "translations", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "target_language", limit: 10, null: false
     t.bigint "transcription_id", null: false
     t.text "translated_text", null: false
+    t.string "target_language", limit: 10, null: false
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["transcription_id"], name: "index_translations_on_transcription_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.boolean "admin", default: false, null: false
-    t.datetime "created_at", null: false
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "name", default: "", null: false
-    t.datetime "remember_created_at"
-    t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.boolean "admin", default: false, null: false
+    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
