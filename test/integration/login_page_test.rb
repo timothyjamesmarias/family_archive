@@ -12,6 +12,7 @@ class LoginPageTest < ActionDispatch::IntegrationTest
     assert_select "nav[aria-label='Primary']", count: 0
     assert_select "input#user_email.field-input"
     assert_select "input[type='submit'][value='Sign in']"
+    assert_select ".message-error", count: 0
   end
 
   test "a failed attempt shows the error inside the card, once" do
@@ -21,5 +22,6 @@ class LoginPageTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
     assert_select ".message-error .message-label", text: "Error", count: 1
+    assert_select ".message-error p", text: "Invalid email or password."
   end
 end
