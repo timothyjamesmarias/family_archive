@@ -44,7 +44,9 @@ gem "bootsnap", require: false
 gem "thruster", require: false
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
-gem "image_processing", "~> 1.2"
+gem "image_processing", "~> 2.0"
+# image_processing 2.x no longer pulls in a backend; Active Storage variants use libvips.
+gem "ruby-vips", require: false # loaded on demand by Active Storage, so boot works without libvips
 
 # S3 storage for Active Storage in production (Render's disk is ephemeral)
 gem "aws-sdk-s3", require: false
