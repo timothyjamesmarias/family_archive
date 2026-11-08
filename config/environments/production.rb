@@ -59,7 +59,7 @@ Rails.application.configure do
 
   # Set host to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = {
-    host: ENV["APP_HOST"] || ENV["RENDER_EXTERNAL_HOSTNAME"] || "example.com",
+    host: ENV.fetch("APP_HOST", "example.com"),
     protocol: "https"
   }
 
@@ -91,9 +91,8 @@ Rails.application.configure do
 
   # Enable DNS rebinding protection and other `Host` header attacks.
   # APP_HOST is the app's own domain; the leading dot also admits its
-  # subdomains (www). RENDER_EXTERNAL_HOSTNAME is set by Render.
+  # subdomains (www).
   config.hosts << ".#{ENV["APP_HOST"]}" if ENV["APP_HOST"].present?
-  config.hosts << ENV["RENDER_EXTERNAL_HOSTNAME"] if ENV["RENDER_EXTERNAL_HOSTNAME"].present?
 
   # Skip DNS rebinding protection for the default health check endpoint.
   config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
