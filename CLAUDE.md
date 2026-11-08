@@ -150,8 +150,7 @@ statements. The Solid stack (cache/queue/cable) lives in SQLite files under
 Redis is the planned replacement. Active Storage uploads go to S3
 (`AWS_*` env vars); `AWS_S3_KEY_PREFIX` (default `production`) namespaces
 blob keys under a folder in the bucket. Cutover runbook:
-`nixos-server/docs/FAMILY-ARCHIVE-CUTOVER.md`. `render.yaml` is the old
-Render deployment and goes away once Render is deleted.
+`nixos-server/docs/FAMILY-ARCHIVE-CUTOVER.md`.
 
 ## Testing
 

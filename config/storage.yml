@@ -6,7 +6,7 @@ local:
   service: Disk
   root: <%= Rails.root.join("storage") %>
 
-# Production uploads. The env vars come from render.yaml; ENV[] rather than
+# Production uploads. The env vars come from the server's nix module; ENV[] rather than
 # ENV.fetch because this file is ERB-evaluated in every environment.
 amazon:
   service: S3

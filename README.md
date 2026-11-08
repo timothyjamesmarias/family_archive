@@ -44,7 +44,9 @@ Thumbnail generation needs libvips locally (`brew install vips`).
 
 ## Deploy
 
-Render, via `render.yaml`. Set `ADMIN_EMAIL`/`ADMIN_PASSWORD` (seeds the admin
-account) and the S3 vars for Active Storage uploads: `AWS_ACCESS_KEY_ID`,
+Home NixOS server (`~/projects/nixos-server`, `apps/personal/family-archive.nix`);
+pushing to `master` builds the image and deploys it. Set `APP_HOST`,
+`SECRET_KEY_BASE`, `ADMIN_EMAIL`/`ADMIN_PASSWORD` (seeds the admin account)
+and the S3 vars for Active Storage uploads: `AWS_ACCESS_KEY_ID`,
 `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `AWS_S3_BUCKET`, and
 `AWS_S3_KEY_PREFIX` (the folder blob keys are generated under).
