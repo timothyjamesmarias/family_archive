@@ -2,8 +2,10 @@
 <% content_for :minimal_chrome, true %>
 
 <%# The failed-attempt alert renders inside the card (screen 13), so pull it
-    out of the flash before the layout's global flash renders it too. %>
-<% alert_message = flash.delete(:alert) %>
+    out of the flash before the layout's global flash renders it too.
+    FlashHash#delete returns the hash, not the value, hence the two steps. %>
+<% alert_message = flash[:alert] %>
+<% flash.delete(:alert) %>
 
 <div class="flex justify-center pt-8 pb-16">
   <div class="w-100 max-w-full">
