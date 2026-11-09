@@ -22,8 +22,8 @@
 
       <%# Plain full-page post: Turbo intermittently re-renders the form after
           autofill/system tests fill it, submitting empty fields. %>
-      <%= form_for(resource, as: resource_name, url: session_path(resource_name),
-            html: { data: { turbo: false } }) do |f| %>
+      <%= form_with(model: resource, scope: resource_name, url: session_path(resource_name),
+            data: { turbo: false }) do |f| %>
         <label class="field mb-4.5">
           <span class="field-label">Email</span>
           <%# No autofocus: Chrome applies it after load, and in system tests it

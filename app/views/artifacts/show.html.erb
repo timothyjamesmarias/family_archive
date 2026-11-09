@@ -6,5 +6,6 @@
 <% if @type.reader_partial %>
   <% reader_locals = { artifact: @artifact, type: @type, title: title } %>
   <% reader_locals.merge!(leaf: @leaf, tab: @tab) if @type.reader_tabs %>
-  <%= render @type.reader_partial, **reader_locals %>
+  <%# ArtifactType picks the reader, so Herb cannot resolve the partial here. %>
+  <%= render @type.reader_partial, **reader_locals %><%# herb:disable actionview-no-implicit-partial %>
 <% end %>

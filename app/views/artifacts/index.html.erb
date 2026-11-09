@@ -41,7 +41,7 @@
 
 <div class="mb-6 flex flex-wrap gap-2.5 items-center">
   <%= form_with url: base_url, method: :get, data: { controller: "autosubmit" }, class: "contents" do %>
-    <input type="text" name="q" value="<%= @browse.query %>"
+    <input type="text" name="q" autocomplete="off" value="<%= @browse.query %>"
            placeholder="<%= @type.grid? ? "Search #{@type.plural_display_name.downcase}" : "Search #{@type.plural_display_name.downcase} and transcriptions" %>"
            class="font-sans text-15 text-taupe-900 bg-paper-sheet border border-taupe-300 h-10.5 px-3 w-60 max-w-full dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400">
     <select name="sort" data-action="autosubmit#submit"

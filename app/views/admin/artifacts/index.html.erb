@@ -34,7 +34,7 @@
       <% @artifacts.records.each do |artifact| %>
         <tr class="hover:bg-slate-50 dark:hover:bg-slate-800">
           <td class="px-4 py-2 w-16">
-            <%= render "thumbnail", file: artifact.files.first %>
+            <%= render "admin/artifacts/thumbnail", file: artifact.files.first %>
           </td>
           <td class="px-4 py-3"><%= artifact.title || "Untitled" %></td>
           <% unless @type_page %>

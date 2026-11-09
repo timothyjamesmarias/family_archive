@@ -9,7 +9,7 @@
     Nothing has been deleted &mdash; the archive keeps everything.
   </p>
   <%= form_with url: search_path, method: :get, class: "flex max-w-105 mb-4.5" do %>
-    <input type="text" name="q" placeholder="Search the archive instead"
+    <input type="text" name="q" autocomplete="off" placeholder="Search the archive instead"
            class="font-sans text-15 text-taupe-900 bg-paper-sheet border border-taupe-500 border-r-0 h-11.5 px-3.5 flex-1 min-w-0 dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400">
     <button type="submit" class="btn-primary h-11.5 px-4.5 flex-shrink-0">Search</button>
   <% end %>
