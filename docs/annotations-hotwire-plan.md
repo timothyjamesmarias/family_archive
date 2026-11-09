@@ -155,3 +155,29 @@ Each step is a commit; 1–3 are shippable without 4.
   admin has no islands left once the Uppy uploader is checked for morph
   safety (it mounts on `DOMContentLoaded` — may need `data-turbo-permanent`
   or a Stimulus wrapper; verify in step 1).
+
+## As built
+
+Where the shipped code (PR #31) differs from the plan above. The code and
+CLAUDE.md are current; this plan is the record of intent.
+
+- **Forms submit inside the frame, not `_top`.** In Turbo 8, a 422 from a
+  `_top` form renders as the whole page. Inside the frame a 422 stays in the
+  popover; on a redirect the Stimulus controller replays the frame's
+  response as a replace visit, which morphs the page and shows the flash
+  without a second request.
+- **Morph is per page**, via `turbo_refreshes_with` on the annotations page,
+  not in the admin layout.
+- **ViewComponents instead of partials**: `Admin::Annotations::*` on top of
+  `Admin::{Button,Panel,Tabs}Component`. The owner's call during review.
+- **"Add annotation"** opens the popover at the photo's centre, where the
+  new dot goes; with JavaScript off it places the dot at the centre.
+- **The popover is clamped** inside the stage panel.
+- **Also removed**: `@testing-library/react`, `@testing-library/dom`,
+  `@types/react`, `@types/react-dom`, and the JSX settings in `tsconfig.json`
+  and `vitest.config.mts`.
+- **`Annotation#left_percent` / `#top_percent`** are the one
+  coordinate-to-CSS mapping, shared with the public photo reader; a missing
+  coordinate renders at the edge instead of raising.
+- The Stimulus controller runs about 80 lines with comments, past the
+  50-line target; it still builds no HTML and fetches nothing.

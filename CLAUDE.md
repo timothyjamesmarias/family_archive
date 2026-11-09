@@ -2,6 +2,12 @@
 
 Guidance for Claude Code when working in this repository.
 
+These docs (this file, `docs/`, plans) are the owner's own notes: they
+record decisions so far and bind agents' independent choices, not the
+owner. When the owner asks for something they contradict, do it and update
+the doc in the same change. Reviewers: a change the owner asked for is not
+a violation of these docs — flag the stale doc instead.
+
 ## What This Is
 
 A family archive application for genealogical data and family history, ported
@@ -114,6 +120,15 @@ Three Vite entrypoint groups:
 Pages that mount an island set `turbo-visit-control: reload` in `:head` so
 Turbo never restores a stale mount from its snapshot cache.
 
+The admin annotations editor (`/admin/artifacts/:id/annotations`) is the
+Hotwire pattern for interactive admin pages: server-rendered markup, the
+form in a Turbo Frame (`annotation_form`) so a 422 re-renders in place, and
+one small Stimulus controller (`annotation_editor`) that only positions and
+closes the popover. A save redirects back to the page; the controller
+replays that response as a replace visit, and the page opts into morphing
+with `turbo_refreshes_with method: :morph, scroll: :preserve` — per page,
+not in the admin layout.
+
 Tailwind v4 notes: dark mode is a `dark` class on `<html>` (applied and
 toggled by the `dark-mode` Stimulus controller, which both layouts share —
 the admin uses it too), custom classes that other classes `@apply` must be
@@ -125,10 +140,19 @@ ERB is linted by [Herb](https://herb-tools.dev) (`.herb.yml`, `npm run
 herb:lint`, part of `bin/ci`). In development and test, ReActionView renders
 `.html.erb` through `Herb::Engine`, so mis-nested or unclosed markup raises in
 tests and shows an overlay in the browser; production stays on Erubi until
-Rails 8.2 makes Herb the default. Every partial opens with a strict-locals
-declaration (`<%# locals: (artifact:, type:) %>`) and uses no instance
-variables — a partial is a component with a checked signature, which is why
-most page-specific markup is a partial, not a ViewComponent.
+Rails 8.2 makes Herb the default.
+
+Prefer ViewComponents over partials and view helpers for new markup —
+including page-specific pieces, so a page template reads as its information
+structure (`render Admin::Annotations::EditorComponent.new(file:)`). Public primitives
+live under `Ui::` (recipe classes from `public.css`); admin primitives under
+`Admin::` (`ButtonComponent`, `PanelComponent`, `TabsComponent`, with the
+admin's slate classes) share the same prop vocabulary. Page-specific
+components nest under the page's namespace (`Admin::Annotations::*`).
+Components call app helpers through `helpers.` (e.g.
+`helpers.turbo_frame_tag`). Existing partials stay until they're touched;
+each opens with a strict-locals declaration (`<%# locals: (artifact:,
+type:) %>`) and uses no instance variables.
 
 ## Style
 
