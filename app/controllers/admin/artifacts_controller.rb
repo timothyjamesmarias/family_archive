@@ -107,9 +107,9 @@ module Admin
     end
 
     def annotations
-      @artifact = Artifact.includes(files: [ :annotations, { file_attachment: { blob: :variant_records } } ])
-                          .find(params[:id])
-      @payload = annotations_payload(@artifact)
+      @artifact = Artifact.includes(files: [ :annotations, { file_attachment: :blob } ]).find(params[:id])
+      @files = @artifact.files.select { |file| file.file.attached? }
+      @file = @files.find { |file| file.id == params[:file].to_i } || @files.first
     end
 
     private

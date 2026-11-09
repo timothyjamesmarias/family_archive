@@ -73,6 +73,10 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :artifact_files, only: [] do
+      resources :annotations, only: %i[new create edit update destroy]
+    end
+
     # One collection page per artifact type (/admin/artifacts/photos, ...),
     # mirroring the public typed routes. Same index action with the type pinned.
     get "artifacts/:segment", to: "artifacts#index", as: :typed_artifacts,

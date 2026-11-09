@@ -51,16 +51,17 @@ class ArtifactAdminPagesTest < ActionDispatch::IntegrationTest
     assert_match(/not an allowed file type/, response.parsed_body.dig("errors", "files"))
   end
 
-  test "the annotations page embeds the editor payload" do
+  test "the annotations page renders markers and list rows" do
     artifact = upload(type: "PHOTO", title: "Group portrait")
     file = artifact.primary_file
-    file.annotations.create!(annotation_text: "Grandmother", x_coord: 0.25, y_coord: 0.75)
+    annotation = file.annotations.create!(annotation_text: "Grandmother", x_coord: 0.25, y_coord: 0.75)
 
     get annotations_admin_artifact_path(artifact)
 
     assert_response :success
-    assert_select "#annotations-editor[data-payload]"
-    assert_match "Grandmother", response.body
+    assert_select "a[data-photo-annotations-target=marker][href=?][style*='left: 25.0%']",
+                  edit_admin_artifact_file_annotation_path(file, annotation), text: "1"
+    assert_select "[data-photo-annotations-target=row]", text: /Grandmother/
     assert_match "rails/active_storage", response.body
   end
 
