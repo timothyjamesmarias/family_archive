@@ -46,8 +46,6 @@ Rails.application.routes.draw do
 
     get "individuals/root", to: "individuals#roots"
     get "individuals/:id", to: "individuals#show", id: /\d+/
-
-    put "artifact-files/:file_id/annotations", to: "annotations#replace", file_id: /\d+/
   end
 
   namespace :admin do

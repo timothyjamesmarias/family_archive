@@ -114,34 +114,6 @@ module Admin
 
     private
 
-    # The shape the annotations editor island expects; mirrors the Adonis
-    # /api/admin/artifacts/:id/annotations payload, with `url` in place of
-    # `storagePath` now that files live in Active Storage.
-    def annotations_payload(artifact)
-      {
-        id: artifact.id,
-        title: artifact.title,
-        slug: artifact.slug,
-        artifactType: artifact.artifact_type,
-        files: artifact.files.select { |file| file.file.attached? }.map do |file|
-          {
-            id: file.id,
-            url: url_for(file.file),
-            mimeType: file.file.blob.content_type,
-            fileSequence: file.file_sequence,
-            annotations: file.annotations.map do |annotation|
-              {
-                id: annotation.id,
-                annotationText: annotation.annotation_text,
-                xCoord: annotation.x_coord.to_f,
-                yCoord: annotation.y_coord.to_f
-              }
-            end
-          }
-        end
-      }
-    end
-
     def search(scope)
       pattern = "%#{Artifact.sanitize_sql_like(params[:q])}%"
       clauses = SEARCH_COLUMNS.map { |column| "#{column} ILIKE :pattern" }.join(" OR ")

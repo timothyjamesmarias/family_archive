@@ -110,10 +110,6 @@ Three Vite entrypoint groups:
 - `family_tree.(ts|css)` — the family-tree island, loaded only on /family-tree.
 - `admin_artifact_upload.ts` — the Uppy dashboard on the artifact upload page
   (multi-file, "save and add another"; posts FormData to the JSON create).
-- `admin_annotations.tsx` — the React + MUI annotations editor
-  (`app/frontend/apps/annotations`, ported from the Adonis admin; the page
-  embeds its payload in `data-payload` and saves via
-  `PUT /api/artifact-files/:id/annotations`).
 
 Pages that mount an island set `turbo-visit-control: reload` in `:head` so
 Turbo never restores a stale mount from its snapshot cache.
