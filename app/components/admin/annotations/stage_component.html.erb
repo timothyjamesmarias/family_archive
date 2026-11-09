@@ -1,0 +1,11 @@
+<div class="relative w-fit max-w-full">
+  <%= image_tag url_for(file.file), alt: "File #{file.file_sequence}",
+        class: "block h-auto max-w-full cursor-crosshair rounded",
+        data: { action: "click->annotation-editor#place" } %>
+  <% annotations.each.with_index(1) do |annotation, number| %>
+    <%= render Admin::Annotations::MarkerComponent.new(
+          annotation: annotation, number: number,
+          href: edit_admin_artifact_file_annotation_path(file, annotation)
+        ) %>
+  <% end %>
+</div>

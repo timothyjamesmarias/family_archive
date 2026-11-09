@@ -1,3 +1,4 @@
 web: bin/rails server
+herb: bin/bundle exec herb dev
 vite: bin/vite dev
 jobs: bin/jobs
