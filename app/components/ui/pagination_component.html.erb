@@ -1,6 +1,6 @@
 <nav class="flex flex-wrap gap-1.5 items-center" aria-label="Pagination">
   <% if current_page > 1 %>
-    <a href="<%= url_for_page(current_page - 1) %>" class="pager-cell">Prev</a>
+    <%= link_to "Prev", url_for_page(current_page - 1), class: "pager-cell" %>
   <% else %>
     <span class="pager-cell pager-cell-disabled">Prev</span>
   <% end %>
@@ -11,12 +11,12 @@
     <% elsif cell == current_page %>
       <span class="pager-cell pager-cell-current" aria-current="page"><%= cell %></span>
     <% else %>
-      <a href="<%= url_for_page(cell) %>" class="pager-cell"><%= cell %></a>
+      <%= link_to cell, url_for_page(cell), class: "pager-cell" %>
     <% end %>
   <% end %>
 
   <% if current_page < last_page %>
-    <a href="<%= url_for_page(current_page + 1) %>" class="pager-cell">Next</a>
+    <%= link_to "Next", url_for_page(current_page + 1), class: "pager-cell" %>
   <% else %>
     <span class="pager-cell pager-cell-disabled">Next</span>
   <% end %>

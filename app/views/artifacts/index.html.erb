@@ -48,7 +48,7 @@
             class="font-sans text-15 text-taupe-900 bg-paper-sheet border border-taupe-300 h-10.5 px-3 dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400">
       <% labels = { "newest" => "Newest first", "oldest" => "Oldest first", "title" => "Title A–Z" } %>
       <% @browse.sort_options.each do |sort| %>
-        <option value="<%= sort %>" <%= "selected" if @browse.sort == sort %>><%= labels.fetch(sort) %></option>
+        <option value="<%= sort %>" <% if @browse.sort == sort %>selected<% end %>><%= labels.fetch(sort) %></option>
       <% end %>
     </select>
     <input type="hidden" name="view" value="<%= @browse.view %>">

@@ -14,8 +14,8 @@
     <button type="submit" class="btn-primary h-11.5 px-4.5 flex-shrink-0">Search</button>
   <% end %>
   <div class="flex flex-wrap gap-x-5 gap-y-2">
-    <a href="<%= artifacts_hub_path %>" class="text-15 text-verdigris-700 underline dark:text-verdigris-300">All artifacts</a>
-    <a href="<%= family_tree_path %>" class="text-15 text-verdigris-700 underline dark:text-verdigris-300">Family tree</a>
-    <a href="<%= root_path %>" class="text-15 text-verdigris-700 underline dark:text-verdigris-300">Home</a>
+    <%= link_to "All artifacts", artifacts_hub_path, class: "text-15 text-verdigris-700 underline dark:text-verdigris-300" %>
+    <%= link_to "Family tree", family_tree_path, class: "text-15 text-verdigris-700 underline dark:text-verdigris-300" %>
+    <%= link_to "Home", root_path, class: "text-15 text-verdigris-700 underline dark:text-verdigris-300" %>
   </div>
 </div>

@@ -1,8 +1,10 @@
 <% title = @artifact.title || @type.untitled_label %>
 <% content_for :title, "#{title} – Marias Family Archive" %>
 
-<%# Each type declares its own reader; extra locals are ignored by the
-    readers that take no leaf/tab. %>
+<%# Each type declares its own reader; leaf and tab exist only for the types
+    with reader tabs, and their readers are the only ones that take them. %>
 <% if @type.reader_partial %>
-  <%= render @type.reader_partial, artifact: @artifact, type: @type, title: title, leaf: @leaf, tab: @tab %>
+  <% reader_locals = { artifact: @artifact, type: @type, title: title } %>
+  <% reader_locals.merge!(leaf: @leaf, tab: @tab) if @type.reader_tabs %>
+  <%= render @type.reader_partial, **reader_locals %>
 <% end %>
