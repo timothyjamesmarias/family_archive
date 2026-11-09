@@ -132,8 +132,7 @@ tests and shows an overlay in the browser; production stays on Erubi until
 Rails 8.2 makes Herb the default. Every partial opens with a strict-locals
 declaration (`<%# locals: (artifact:, type:) %>`) and uses no instance
 variables — a partial is a component with a checked signature, which is why
-most page-specific markup is a partial, not a ViewComponent. Install the Herb
-language server in your editor (`.vscode/extensions.json` recommends it).
+most page-specific markup is a partial, not a ViewComponent.
 
 ## Style
 
