@@ -1,0 +1,3 @@
+<%= turbo_frame_tag "annotation_form" do %>
+  <%= render Admin::Annotations::FormComponent.new(file: @file, annotation: @annotation) %>
+<% end %>

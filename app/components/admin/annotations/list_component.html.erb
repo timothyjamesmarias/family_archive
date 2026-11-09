@@ -1,0 +1,9 @@
+<h2 class="mb-2 text-sm font-semibold text-slate-900 dark:text-slate-100">Annotations (<%= annotations.size %>)</h2>
+<% if annotations.empty? %>
+  <p class="text-sm text-slate-500 dark:text-slate-400">No annotations on this file.</p>
+<% end %>
+<div class="flex flex-col gap-1">
+  <% annotations.each.with_index(1) do |annotation, number| %>
+    <%= render Admin::Annotations::RowComponent.new(annotation: annotation, number: number) %>
+  <% end %>
+</div>

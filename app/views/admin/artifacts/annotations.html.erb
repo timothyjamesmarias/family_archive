@@ -1,16 +1,23 @@
 <% title = "Annotations — #{@artifact.title || @artifact.slug}" %>
 <% content_for :title, title %>
-<% content_for :head do %>
-  <meta name="turbo-visit-control" content="reload">
-  <%# plugin-react needs its refresh preamble before any React module in
-      dev; without this tag the editor dies with "can't detect preamble". %>
-  <%= vite_react_refresh_tag %>
-  <%= vite_javascript_tag "admin_annotations.tsx" %>
-<% end %>
-<div class="flex items-center justify-between mb-6">
+<%# Saves redirect back here; morphing keeps the scroll position and the
+    selected file instead of repainting the page. %>
+<% turbo_refreshes_with method: :morph, scroll: :preserve %>
+<div class="mb-6 flex items-center justify-between">
   <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100"><%= title %></h1>
-  <%= link_to "Back to artifact", admin_artifact_path(@artifact),
-        class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
+  <%= render Admin::ButtonComponent.new(variant: :secondary, href: admin_artifact_path(@artifact)).with_content("Back to artifact") %>
 </div>
 
-<div id="annotations-editor" data-payload="<%= @payload.to_json %>"></div>
+<% if @file %>
+  <% if @files.size > 1 %>
+    <%= render Admin::TabsComponent.new(current: annotations_admin_artifact_path(@artifact, file: @file.id)) do |tabs| %>
+      <% @files.each do |file| %>
+        <% tabs.with_tab(label: "File #{file.file_sequence} (#{file.annotations.size})",
+                         href: annotations_admin_artifact_path(@artifact, file: file.id)) %>
+      <% end %>
+    <% end %>
+  <% end %>
+  <%= render Admin::Annotations::EditorComponent.new(file: @file) %>
+<% else %>
+  <p class="text-sm text-slate-500 dark:text-slate-400">This artifact has no files to annotate.</p>
+<% end %>

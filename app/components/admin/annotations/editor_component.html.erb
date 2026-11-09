@@ -1,0 +1,23 @@
+<%= tag.div data: {
+      controller: "photo-annotations annotation-editor",
+      annotation_editor_new_url_value: new_admin_artifact_file_annotation_path(file),
+      action: ACTIONS
+    } do %>
+  <div class="mb-4">
+    <%= render Admin::ButtonComponent.new(
+          to: new_admin_artifact_file_annotation_path(file), method: :get, params: { x: 0.5, y: 0.5 },
+          form: { data: { turbo_frame: "annotation_form" } },
+          data: { action: "annotation-editor#center" }
+        ).with_content("Add annotation") %>
+  </div>
+
+  <div class="flex flex-col items-start gap-4 md:flex-row">
+    <%= render Admin::PanelComponent.new(class: "relative min-w-0 flex-1", data: { annotation_editor_target: "stage" }) do %>
+      <%= render Admin::Annotations::StageComponent.new(file: file, annotations: annotations) %>
+      <%= helpers.turbo_frame_tag "annotation_form", class: "absolute z-10 w-80", data: { annotation_editor_target: "frame" } %>
+    <% end %>
+    <%= render Admin::PanelComponent.new(class: "w-full shrink-0 md:w-80") do %>
+      <%= render Admin::Annotations::ListComponent.new(annotations: annotations) %>
+    <% end %>
+  </div>
+<% end %>

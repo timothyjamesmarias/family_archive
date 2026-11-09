@@ -107,40 +107,12 @@ module Admin
     end
 
     def annotations
-      @artifact = Artifact.includes(files: [ :annotations, { file_attachment: { blob: :variant_records } } ])
-                          .find(params[:id])
-      @payload = annotations_payload(@artifact)
+      @artifact = Artifact.includes(files: [ :annotations, { file_attachment: :blob } ]).find(params[:id])
+      @files = @artifact.files.select { |file| file.file.attached? }
+      @file = @files.find { |file| file.id == params[:file].to_i } || @files.first
     end
 
     private
-
-    # The shape the annotations editor island expects; mirrors the Adonis
-    # /api/admin/artifacts/:id/annotations payload, with `url` in place of
-    # `storagePath` now that files live in Active Storage.
-    def annotations_payload(artifact)
-      {
-        id: artifact.id,
-        title: artifact.title,
-        slug: artifact.slug,
-        artifactType: artifact.artifact_type,
-        files: artifact.files.select { |file| file.file.attached? }.map do |file|
-          {
-            id: file.id,
-            url: url_for(file.file),
-            mimeType: file.file.blob.content_type,
-            fileSequence: file.file_sequence,
-            annotations: file.annotations.map do |annotation|
-              {
-                id: annotation.id,
-                annotationText: annotation.annotation_text,
-                xCoord: annotation.x_coord.to_f,
-                yCoord: annotation.y_coord.to_f
-              }
-            end
-          }
-        end
-      }
-    end
 
     def search(scope)
       pattern = "%#{Artifact.sanitize_sql_like(params[:q])}%"

@@ -1,0 +1,26 @@
+<%= render Admin::PanelComponent.new(class: "w-80 space-y-3 shadow-lg") do %>
+  <h2 class="text-sm font-semibold text-slate-900 dark:text-slate-100"><%= heading %></h2>
+  <%= form_with model: [ :admin, file, annotation ], class: "space-y-3" do |form| %>
+    <%= render "admin/shared/form_errors", record: annotation %>
+    <div>
+      <%= form.label :annotation_text, class: "mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300" %>
+      <%= form.text_field :annotation_text, autofocus: true, placeholder: "Enter description…",
+            class: "w-full rounded border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" %>
+    </div>
+    <%# The position the marker shows, so a row stored without one saves. %>
+    <%= form.hidden_field :x_coord, value: annotation.x_coord.to_f %>
+    <%= form.hidden_field :y_coord, value: annotation.y_coord.to_f %>
+    <div class="flex justify-end gap-2">
+      <%= render Admin::ButtonComponent.new(variant: :secondary, href: editor_path,
+            data: { action: "annotation-editor#close:prevent" }).with_content("Cancel") %>
+      <%= render Admin::ButtonComponent.new(type: "submit").with_content("Save") %>
+    </div>
+  <% end %>
+  <% if annotation.persisted? %>
+    <%# Outside the form above: forms cannot nest. %>
+    <%= render Admin::ButtonComponent.new(
+          variant: :danger, to: admin_artifact_file_annotation_path(file, annotation), method: :delete,
+          data: { turbo_confirm: "Delete this annotation?" }
+        ).with_content("Delete") %>
+  <% end %>
+<% end %>

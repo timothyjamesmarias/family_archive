@@ -1,0 +1,8 @@
+<button type="button"
+        class="flex cursor-pointer items-start gap-2 rounded p-1 text-left hover:bg-slate-100 dark:hover:bg-slate-800 [&.annotation-row-selected]:bg-slate-200 dark:[&.annotation-row-selected]:bg-slate-700"
+        data-photo-annotations-target="row"
+        data-annotation-id="<%= annotation.id %>"
+        data-action="photo-annotations#select">
+  <span class="flex size-5.5 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs text-white" aria-hidden="true"><%= number %></span>
+  <span class="text-sm text-slate-900 dark:text-slate-100"><%= annotation.annotation_text %></span>
+</button>

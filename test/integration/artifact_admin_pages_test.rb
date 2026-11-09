@@ -51,48 +51,17 @@ class ArtifactAdminPagesTest < ActionDispatch::IntegrationTest
     assert_match(/not an allowed file type/, response.parsed_body.dig("errors", "files"))
   end
 
-  test "the annotations page embeds the editor payload" do
+  test "the annotations page renders markers and list rows" do
     artifact = upload(type: "PHOTO", title: "Group portrait")
     file = artifact.primary_file
-    file.annotations.create!(annotation_text: "Grandmother", x_coord: 0.25, y_coord: 0.75)
+    annotation = file.annotations.create!(annotation_text: "Grandmother", x_coord: 0.25, y_coord: 0.75)
 
     get annotations_admin_artifact_path(artifact)
 
     assert_response :success
-    assert_select "#annotations-editor[data-payload]"
-    assert_match "Grandmother", response.body
+    assert_select "a[data-photo-annotations-target=marker][href=?][style*='left: 25.0%']",
+                  edit_admin_artifact_file_annotation_path(file, annotation), text: "1"
+    assert_select "[data-photo-annotations-target=row]", text: /Grandmother/
     assert_match "rails/active_storage", response.body
-  end
-
-  test "replacing a file's annotations creates, updates, and deletes in one request" do
-    artifact = upload(type: "PHOTO", title: "Annotated")
-    file = artifact.primary_file
-    doomed = file.annotations.create!(annotation_text: "Old", x_coord: 0.1, y_coord: 0.1)
-    kept = file.annotations.create!(annotation_text: "Keep", x_coord: 0.2, y_coord: 0.2)
-
-    put "/api/artifact-files/#{file.id}/annotations", as: :json, params: {
-      annotations: [
-        { id: kept.id, annotationText: "Kept and renamed", xCoord: 0.2, yCoord: 0.2 },
-        { id: nil, annotationText: "Brand new", xCoord: 0.5, yCoord: 0.5 }
-      ]
-    }
-
-    assert_response :success
-    texts = file.annotations.reload.map(&:annotation_text).sort
-    assert_equal [ "Brand new", "Kept and renamed" ], texts
-    assert_not file.annotations.exists?(doomed.id)
-    assert_equal 2, response.parsed_body["annotations"].size
-  end
-
-  test "an out-of-range coordinate is rejected" do
-    artifact = upload(type: "PHOTO", title: "Bounds")
-    file = artifact.primary_file
-
-    put "/api/artifact-files/#{file.id}/annotations", as: :json, params: {
-      annotations: [ { annotationText: "off the image", xCoord: 1.5, yCoord: 0.5 } ]
-    }
-
-    assert_response :bad_request
-    assert_equal 0, file.annotations.count
   end
 end

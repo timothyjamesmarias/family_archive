@@ -59,7 +59,7 @@
         <%= image_tag url_for(current_file.file), alt: title, class: "max-w-full max-h-160 object-contain border border-taupe-300 block dark:border-ink-400" %>
         <% annotations.each_with_index do |annotation, index| %>
           <button type="button" class="annotation-dot annotation-marker"
-                  style="left: <%= (annotation.x_coord * 100).to_f %>%; top: <%= (annotation.y_coord * 100).to_f %>%;"
+                  style="left: <%= annotation.left_percent %>%; top: <%= annotation.top_percent %>%;"
                   data-photo-annotations-target="marker"
                   data-annotation-id="<%= annotation.id %>"
                   data-action="photo-annotations#select"

@@ -46,8 +46,6 @@ Rails.application.routes.draw do
 
     get "individuals/root", to: "individuals#roots"
     get "individuals/:id", to: "individuals#show", id: /\d+/
-
-    put "artifact-files/:file_id/annotations", to: "annotations#replace", file_id: /\d+/
   end
 
   namespace :admin do
@@ -71,6 +69,10 @@ Rails.application.routes.draw do
         delete "files/:file_id", action: :destroy_file, as: :file, file_id: /\d+/
         get :annotations
       end
+    end
+
+    resources :artifact_files, only: [] do
+      resources :annotations, only: %i[new create edit update destroy]
     end
 
     # One collection page per artifact type (/admin/artifacts/photos, ...),
