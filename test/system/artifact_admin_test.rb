@@ -34,7 +34,7 @@ class ArtifactAdminTest < ApplicationSystemTestCase
     assert_equal 2, Artifact.of_type("LETTER").count
   end
 
-  test "the annotations editor renders markers and saves a deletion" do
+  test "deleting an annotation from its marker's popover" do
     artifact = upload_photo(title: "Group portrait")
     file = artifact.primary_file
     file.annotations.create!(annotation_text: "Grandmother", x_coord: 0.25, y_coord: 0.5)
@@ -42,24 +42,22 @@ class ArtifactAdminTest < ApplicationSystemTestCase
     sign_in_as email: "boss@example.com", admin: true
 
     visit annotations_admin_artifact_path(artifact)
-    assert_selector "[data-testid='annotation-marker']", count: 2
+    assert_selector "[data-photo-annotations-target='marker']", count: 2
 
-    # Deleting through the marker's popover needs no typing, so it exercises
-    # the full edit-and-save loop without the chromedriver keystroke flake.
-    # A real click first hovers, the hover opens the MUI tooltip, and the
-    # tooltip then intercepts the click — so dispatch it directly.
-    find("[data-testid='annotation-marker']", match: :first)
-    page.execute_script("document.querySelector('[data-testid=annotation-marker]').click()")
-    click_on "Delete"
-    assert_text "Delete this annotation?"
-    within(".MuiPopover-root") { click_on "Delete" }
+    # Deletion needs no typing, so it exercises the popover-and-morph loop
+    # without the chromedriver keystroke flake; typing is covered by the
+    # integration tests.
+    # The fixture image is a few pixels wide, so marker 2 sits on top of 1.
+    find("[aria-label='Annotation 2']").click
+    within("turbo-frame#annotation_form") do
+      assert_text "Edit annotation"
+      accept_confirm { click_on "Delete" }
+    end
 
-    assert_text "Unsaved changes"
-    click_on "Save annotations"
-    assert_text "Annotations saved"
-
-    assert_equal [ "Grandfather" ], file.annotations.reload.map(&:annotation_text)
-    assert_selector "[data-testid='annotation-marker']", count: 1
+    assert_text "Annotation deleted."
+    assert_selector "[data-photo-annotations-target='marker']", count: 1
+    assert_no_selector "turbo-frame#annotation_form form"
+    assert_equal [ "Grandmother" ], file.annotations.reload.map(&:annotation_text)
   end
 
   test "adding a file through the details page and deleting it again" do

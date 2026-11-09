@@ -2,13 +2,15 @@
 <%# Coordinates are fractions of the image, so percentage offsets keep each
     marker in place at any rendered size. %>
 <div class="relative w-fit max-w-full">
-  <%= image_tag url_for(file.file), alt: "File #{file.file_sequence}", class: "block max-w-full h-auto rounded" %>
+  <%= image_tag url_for(file.file), alt: "File #{file.file_sequence}", class: "block max-w-full h-auto rounded cursor-crosshair",
+        data: { action: "click->annotation-editor#place" } %>
   <% annotations.each_with_index do |annotation, index| %>
     <%= link_to index + 1, edit_admin_artifact_file_annotation_path(file, annotation),
           style: "left: #{(annotation.x_coord * 100).to_f}%; top: #{(annotation.y_coord * 100).to_f}%;",
           title: annotation.annotation_text,
           aria: { label: "Annotation #{index + 1}" },
-          data: { photo_annotations_target: "marker", annotation_id: annotation.id, action: "photo-annotations#select" },
+          data: { turbo_frame: "annotation_form", photo_annotations_target: "marker", annotation_id: annotation.id,
+                  action: "photo-annotations#select annotation-editor#anchor" },
           class: "absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center size-8 rounded-full border-3 border-white bg-slate-900 text-[13px] font-semibold text-white shadow hover:scale-115 [&.annotation-dot-selected]:border-amber-400" %>
   <% end %>
 </div>

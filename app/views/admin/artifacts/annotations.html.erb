@@ -21,13 +21,18 @@
 
   <div class="mb-4">
     <%= button_to "Add annotation", new_admin_artifact_file_annotation_path(@file), method: :get,
-          params: { x: 0.5, y: 0.5 },
+          params: { x: 0.5, y: 0.5 }, form: { data: { turbo_frame: "annotation_form" } },
           class: "rounded bg-slate-900 dark:bg-slate-700 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 dark:hover:bg-slate-600 cursor-pointer" %>
   </div>
 
-  <div class="flex flex-col md:flex-row gap-4 items-start" data-controller="photo-annotations">
-    <div class="flex-1 min-w-0 rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
+  <div class="flex flex-col md:flex-row gap-4 items-start"
+       data-controller="photo-annotations annotation-editor"
+       data-annotation-editor-new-url-value="<%= new_admin_artifact_file_annotation_path(@file) %>"
+       data-action="click@window->annotation-editor#dismiss keydown.esc@window->annotation-editor#close turbo:submit-end->annotation-editor#refresh">
+    <div class="relative flex-1 min-w-0 rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4"
+         data-annotation-editor-target="stage">
       <%= render "admin/annotations/stage", file: @file, annotations: annotations %>
+      <%= turbo_frame_tag "annotation_form", class: "absolute z-10", data: { annotation_editor_target: "frame" } %>
     </div>
     <div class="w-full md:w-80 shrink-0 rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4">
       <%= render "admin/annotations/list", annotations: annotations %>
