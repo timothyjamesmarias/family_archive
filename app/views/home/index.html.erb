@@ -11,14 +11,14 @@
         </p>
 
         <%= form_with url: search_path, method: :get, class: "flex max-w-130 mb-6.5" do %>
-          <input type="text" name="q" placeholder="Search names, places, transcriptions"
+          <input type="text" name="q" autocomplete="off" placeholder="Search names, places, transcriptions"
                  class="font-sans text-base text-taupe-900 bg-paper-sheet border border-taupe-500 border-r-0 h-13 px-4 flex-1 min-w-0 dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400">
           <button type="submit" class="btn-primary h-13 px-6 flex-shrink-0">Search</button>
         <% end %>
 
         <div class="flex flex-wrap gap-3">
-          <a href="<%= artifacts_hub_path %>" class="font-sans text-15 font-medium text-taupe-700 bg-paper-sheet border border-taupe-300 px-6 h-12 inline-flex items-center no-underline hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-transparent dark:border-ink-400 dark:hover:border-ink-200 dark:hover:text-ink-50">Browse the collections</a>
-          <a href="<%= family_tree_path %>" class="font-sans text-15 font-medium text-taupe-700 bg-paper-sheet border border-taupe-300 px-6 h-12 inline-flex items-center no-underline hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-transparent dark:border-ink-400 dark:hover:border-ink-200 dark:hover:text-ink-50">Open the family tree</a>
+          <%= link_to "Browse the collections", artifacts_hub_path, class: "font-sans text-15 font-medium text-taupe-700 bg-paper-sheet border border-taupe-300 px-6 h-12 inline-flex items-center no-underline hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-transparent dark:border-ink-400 dark:hover:border-ink-200 dark:hover:text-ink-50" %>
+          <%= link_to "Open the family tree", family_tree_path, class: "font-sans text-15 font-medium text-taupe-700 bg-paper-sheet border border-taupe-300 px-6 h-12 inline-flex items-center no-underline hover:border-taupe-500 hover:text-taupe-900 dark:text-ink-100 dark:bg-transparent dark:border-ink-400 dark:hover:border-ink-200 dark:hover:text-ink-50" %>
         </div>
       </div>
       <% if @featured %>
@@ -84,7 +84,7 @@
     <% else %>
     <div class="flex flex-wrap gap-x-5 gap-y-2.5 items-baseline justify-between mb-5">
       <div class="font-mono text-11 tracking-12 uppercase text-heather-700 dark:text-heather-300">From the articles</div>
-      <a href="<%= articles_path %>" class="text-sm text-heather-700 underline dark:text-heather-300">All</a>
+      <%= link_to "All", articles_path, class: "text-sm text-heather-700 underline dark:text-heather-300" %>
     </div>
     <% @recent_articles.each_with_index do |article, index| %>
       <a href="/articles/<%= article.slug %>" class="block no-underline text-inherit <%= "pb-4.5 border-b border-heather-200 mb-4.5 dark:border-ink-500" unless index == @recent_articles.length - 1 %>">

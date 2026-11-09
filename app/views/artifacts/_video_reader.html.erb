@@ -1,3 +1,4 @@
+<%# locals: (artifact:, type:, title:) %>
 <%# Video detail, Pages screen 12: the frame leads on the ink board —
     lamplight in both themes, a film frame is dark — everything else sits
     below it in reading order. Locals: artifact, type, title. The
@@ -50,7 +51,7 @@
     </div>
     <h1 class="font-serif text-34 leading-115 font-medium tracking-tight mb-6 max-w-[28ch]"><%= title %></h1>
     <div class="max-w-160">
-      <%= render "details_panel", artifact: artifact %>
+      <%= render "artifacts/details_panel", artifact: artifact %>
     </div>
   </div>
 </div>

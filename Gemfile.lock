@@ -124,6 +124,13 @@ GEM
     concurrent-ruby (1.3.8)
     connection_pool (3.0.2)
     crass (1.0.8)
+    cruise (0.3.0)
+    cruise (0.3.0-aarch64-linux-gnu)
+    cruise (0.3.0-aarch64-linux-musl)
+    cruise (0.3.0-arm-linux-gnu)
+    cruise (0.3.0-arm64-darwin)
+    cruise (0.3.0-x86_64-linux-gnu)
+    cruise (0.3.0-x86_64-linux-musl)
     date (3.5.1)
     debug (1.11.1)
       irb (~> 1.10)
@@ -152,6 +159,13 @@ GEM
       raabro (~> 1.4)
     globalid (1.4.0)
       activesupport (>= 6.1)
+    herb (0.11.2-aarch64-linux-gnu)
+    herb (0.11.2-aarch64-linux-musl)
+    herb (0.11.2-arm-linux-gnu)
+    herb (0.11.2-arm-linux-musl)
+    herb (0.11.2-arm64-darwin)
+    herb (0.11.2-x86_64-linux-gnu)
+    herb (0.11.2-x86_64-linux-musl)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
     image_processing (2.2.0)
@@ -302,6 +316,11 @@ GEM
       prism (>= 1.6.0)
       rbs (>= 4.0.0)
       tsort
+    reactionview (0.6.1)
+      actionview (>= 7.0)
+      cruise (>= 0.3.0)
+      herb (>= 0.11.2)
+      websocket (~> 1.2)
     regexp_parser (2.12.0)
     reline (0.7.0)
       io-console (~> 0.5)
@@ -446,6 +465,7 @@ DEPENDENCIES
   puma (>= 5.0)
   rails (~> 8.1.3)
   rails-html-sanitizer
+  reactionview (~> 0.6.1)
   rubocop-rails-omakase
   ruby-vips
   selenium-webdriver

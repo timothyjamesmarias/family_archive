@@ -1,4 +1,4 @@
-<a href="<%= href %>" class="block bg-paper-sheet border border-taupe-200 no-underline text-inherit transition-[border-color,box-shadow] duration-150 hover:border-verdigris-300 hover:shadow-lifted dark:bg-ink-700 dark:border-ink-500 dark:hover:border-verdigris-400">
+<%= link_to href, class: "block bg-paper-sheet border border-taupe-200 no-underline text-inherit transition-[border-color,box-shadow] duration-150 hover:border-verdigris-300 hover:shadow-lifted dark:bg-ink-700 dark:border-ink-500 dark:hover:border-verdigris-400" do %>
   <div class="mat relative h-45 border-b border-taupe-200 p-3.5 dark:border-ink-500">
     <%= render ArtifactThumbnailComponent.new(artifact: artifact) %>
     <% if show_badge? %>
@@ -13,4 +13,4 @@
     <% end %>
     <div class="meta"><%= meta_line %></div>
   </div>
-</a>
+<% end %>

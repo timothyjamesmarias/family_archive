@@ -45,9 +45,9 @@
     <div class="flex items-center gap-4 px-4 py-3 text-sm">
       <div class="w-20 h-20 shrink-0 bg-slate-100 dark:bg-slate-800 rounded overflow-hidden flex items-center justify-center">
         <% if file.thumbnail? %>
-          <img src="<%= url_for(file.file.variant(:thumb)) %>" alt="" class="w-full h-full object-cover">
+          <%= image_tag url_for(file.file.variant(:thumb)), alt: "", class: "w-full h-full object-cover" %>
         <% elsif file.image? %>
-          <img src="<%= url_for(file.file) %>" alt="" class="w-full h-full object-cover">
+          <%= image_tag url_for(file.file), alt: "", class: "w-full h-full object-cover" %>
         <% elsif file.file.attached? %>
           <span class="text-xs text-slate-400 dark:text-slate-500"><%= file.file.blob.content_type.to_s.split("/").last %></span>
         <% end %>

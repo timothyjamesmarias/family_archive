@@ -1,3 +1,4 @@
+<%# locals: (artifact:) %>
 <%# The metadata rows every artifact can back today. Locals: artifact. %>
 <%= render MetadataListComponent.new do |list| %>
   <% list.with_row(term: "Identifier") { tag.span(artifact.slug, class: "font-mono text-sm") } %>

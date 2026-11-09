@@ -23,6 +23,7 @@ bin/rails test            # unit + integration tests
 bin/rails test:system     # system tests (headless Chrome)
 npm run typecheck         # tsc --noEmit
 npm run test:frontend     # Vitest for the family-tree island
+npm run herb:lint         # Herb lint for app/views and app/components
 bin/rubocop               # lint
 bin/ci                    # everything CI runs
 docker compose up -d      # Postgres only (host port 5433)
@@ -121,6 +122,17 @@ Tailwind v4 notes: dark mode is a `dark` class on `<html>` (applied and
 toggled by the `dark-mode` Stimulus controller, which both layouts share —
 the admin uses it too), custom classes that other classes `@apply` must be
 `@utility`, and the theme lives in `@theme` inside `public.css`.
+
+## Templates
+
+ERB is linted by [Herb](https://herb-tools.dev) (`.herb.yml`, `npm run
+herb:lint`, part of `bin/ci`). In development and test, ReActionView renders
+`.html.erb` through `Herb::Engine`, so mis-nested or unclosed markup raises in
+tests and shows an overlay in the browser; production stays on Erubi until
+Rails 8.2 makes Herb the default. Every partial opens with a strict-locals
+declaration (`<%# locals: (artifact:, type:) %>`) and uses no instance
+variables — a partial is a component with a checked signature, which is why
+most page-specific markup is a partial, not a ViewComponent.
 
 ## Style
 

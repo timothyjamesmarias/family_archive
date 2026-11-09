@@ -1,3 +1,4 @@
+<%# locals: () %>
 <% flash.each do |type, message| %>
   <%= render Ui::MessageComponent.new(
         level: type.to_sym == :alert ? :error : :success,

@@ -41,14 +41,14 @@
 
 <div class="mb-6 flex flex-wrap gap-2.5 items-center">
   <%= form_with url: base_url, method: :get, data: { controller: "autosubmit" }, class: "contents" do %>
-    <input type="text" name="q" value="<%= @browse.query %>"
+    <input type="text" name="q" autocomplete="off" value="<%= @browse.query %>"
            placeholder="<%= @type.grid? ? "Search #{@type.plural_display_name.downcase}" : "Search #{@type.plural_display_name.downcase} and transcriptions" %>"
            class="font-sans text-15 text-taupe-900 bg-paper-sheet border border-taupe-300 h-10.5 px-3 w-60 max-w-full dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400">
     <select name="sort" data-action="autosubmit#submit"
             class="font-sans text-15 text-taupe-900 bg-paper-sheet border border-taupe-300 h-10.5 px-3 dark:text-ink-50 dark:bg-ink-900 dark:border-ink-400">
       <% labels = { "newest" => "Newest first", "oldest" => "Oldest first", "title" => "Title A–Z" } %>
       <% @browse.sort_options.each do |sort| %>
-        <option value="<%= sort %>" <%= "selected" if @browse.sort == sort %>><%= labels.fetch(sort) %></option>
+        <option value="<%= sort %>" <% if @browse.sort == sort %>selected<% end %>><%= labels.fetch(sort) %></option>
       <% end %>
     </select>
     <input type="hidden" name="view" value="<%= @browse.view %>">

@@ -1,3 +1,4 @@
+<%# locals: (artifact:, type:, title:, leaf:, tab:) %>
 <%# Photo detail, Pages screen 10: the reader layout with the photograph
     left and its annotations replacing the transcription right. Locals:
     artifact, type, title, leaf, tab. Person links, "identified by"
@@ -55,7 +56,7 @@
                 data-action="photo-annotations#fullscreen">Full screen</button>
       </div>
       <div class="relative w-fit max-w-full mx-auto" data-photo-annotations-target="stage">
-        <img src="<%= url_for(current_file.file) %>" alt="<%= title %>" class="max-w-full max-h-160 object-contain border border-taupe-300 block dark:border-ink-400">
+        <%= image_tag url_for(current_file.file), alt: title, class: "max-w-full max-h-160 object-contain border border-taupe-300 block dark:border-ink-400" %>
         <% annotations.each_with_index do |annotation, index| %>
           <button type="button" class="annotation-dot annotation-marker"
                   style="left: <%= (annotation.x_coord * 100).to_f %>%; top: <%= (annotation.y_coord * 100).to_f %>%;"
@@ -72,7 +73,7 @@
                class="mat w-13.5 h-18 <%= index + 1 == leaf ? "border-2 border-verdigris-700 dark:border-verdigris-400" : "border border-taupe-300 dark:border-ink-400" %>"
                aria-label="Photograph <%= index + 1 %>">
               <% if file.thumbnail? %>
-                <img src="<%= url_for(file.file.variant(:thumb)) %>" alt="" class="max-w-full max-h-full object-contain">
+                <%= image_tag url_for(file.file.variant(:thumb)), alt: "", class: "max-w-full max-h-full object-contain" %>
               <% end %>
             </a>
           <% end %>
@@ -108,9 +109,9 @@
         <% end %>
       </div>
     <% when "commentary" %>
-      <%= render "commentary_panel", artifact: artifact %>
+      <%= render "artifacts/commentary_panel", artifact: artifact %>
     <% when "details" %>
-      <%= render "details_panel", artifact: artifact %>
+      <%= render "artifacts/details_panel", artifact: artifact %>
     <% end %>
   </div>
 </div>

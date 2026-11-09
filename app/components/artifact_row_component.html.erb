@@ -1,4 +1,4 @@
-<a href="<%= href %>" class="grid grid-cols-[84px_minmax(0,1fr)] sm:grid-cols-[84px_minmax(0,1fr)_150px] gap-x-5.5 gap-y-2 p-5 items-start no-underline text-inherit border-b border-taupe-100 last:border-b-0 hover:bg-verdigris-50 dark:border-ink-600 dark:hover:bg-ink-600">
+<%= link_to href, class: "grid grid-cols-[84px_minmax(0,1fr)] sm:grid-cols-[84px_minmax(0,1fr)_150px] gap-x-5.5 gap-y-2 p-5 items-start no-underline text-inherit border-b border-taupe-100 last:border-b-0 hover:bg-verdigris-50 dark:border-ink-600 dark:hover:bg-ink-600" do %>
   <div class="mat h-26 border border-taupe-200 p-2 dark:border-ink-500">
     <%= render ArtifactThumbnailComponent.new(artifact: artifact, icon_size: "w-8 h-8") %>
   </div>
@@ -24,4 +24,4 @@
     <% end %>
     <span class="meta pt-0.5"><%= file_count_label %></span>
   </div>
-</a>
+<% end %>
