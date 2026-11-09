@@ -6,6 +6,7 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <%= render "shared/theme_boot" %>
+    <%= turbo_refreshes_with method: :morph, scroll: :preserve %>
 
     <%= yield :head %>
 
