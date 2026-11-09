@@ -7,8 +7,9 @@
       <%= form.text_field :annotation_text, autofocus: true, placeholder: "Enter description…",
             class: "w-full rounded border border-slate-300 px-3 py-2 text-sm dark:border-slate-600" %>
     </div>
-    <%= form.hidden_field :x_coord %>
-    <%= form.hidden_field :y_coord %>
+    <%# The position the marker shows, so a row stored without one saves. %>
+    <%= form.hidden_field :x_coord, value: annotation.x_coord.to_f %>
+    <%= form.hidden_field :y_coord, value: annotation.y_coord.to_f %>
     <div class="flex justify-end gap-2">
       <%= render Admin::ButtonComponent.new(variant: :secondary, href: editor_path,
             data: { action: "annotation-editor#close:prevent" }).with_content("Cancel") %>
