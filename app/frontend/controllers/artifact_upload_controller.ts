@@ -43,20 +43,25 @@ export default class ArtifactUploadController extends Controller {
 
   async upload() {
     const created = await this.send()
-    if (!created) return
+    if (!created || this.navigatedAway) return
 
     window.location.assign(`${this.artifactsUrlValue}/${created.data.id}`)
   }
 
   async addAnother() {
     const created = await this.send()
-    if (!created) return
+    if (!created || this.navigatedAway) return
 
     const uppy = await this.uppy
     uppy.clear()
     this.titleTarget.value = ''
     this.dateTarget.value = ''
     showToast({ type: 'info', message: 'Artifact uploaded — add another' })
+  }
+
+  // The upload still lands; only the follow-up belongs to a page that's gone.
+  private get navigatedAway() {
+    return !this.element.isConnected
   }
 
   /** Posts the form and files; resolves to the created artifact, or null
