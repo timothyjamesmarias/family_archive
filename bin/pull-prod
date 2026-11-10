@@ -4,15 +4,21 @@
 # `ssh nix-server` reaching the server as deploy.
 set -eu
 cd "$(dirname "$0")/.."
+umask 077 # the dump holds production password hashes
+unset DATABASE_URL # the Rails steps below must hit family_archive_development, nothing else
 
 [ "${RAILS_ENV:-development}" = development ] || { echo "bin/pull-prod: development only" >&2; exit 1; }
 
-# Dump first: if ssh or pg_dump fails, set -e stops here and the dev database is untouched.
 dump=tmp/prod.dump
+rm -f "$dump" # recreated under the umask, even if an older pull left it readable
 ssh nix-server 'pg_dump -Fc family_archive' > "$dump"
 
 # Run inside the compose container: the dump is from Postgres 17, and a host
 # pg_restore older than that can't read it.
+# Read the dump's table of contents before dropping anything, so an empty or
+# garbled dump leaves the dev database untouched.
+docker compose exec -T postgres pg_restore --list < "$dump" > /dev/null
+
 # Drop instead of pg_restore --clean: --clean only drops objects in the
 # dump, so a table from an unmerged local migration would survive and the
 # migrate below would trip over it. --force disconnects a running bin/dev.
@@ -21,6 +27,8 @@ docker compose exec -T postgres createdb -U postgres family_archive_development
 docker compose exec -T postgres pg_restore -U postgres --no-owner --no-privileges \
   -d family_archive_development < "$dump"
 
-# The dump says it's production; Rails refuses destructive db: tasks until told otherwise.
+# The dump says it's production; Rails refuses destructive db: tasks until told
+# otherwise. db:migrate alone won't reset it: with the queue database alongside,
+# it only touches databases that have pending migrations.
 bin/rails db:environment:set RAILS_ENV=development
 bin/rails db:migrate

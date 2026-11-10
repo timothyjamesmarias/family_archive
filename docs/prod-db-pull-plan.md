@@ -118,7 +118,7 @@ What happens when development touches a prod blob:
 |---|---|
 | View an image / play audio | Presigned S3 URL, loads |
 | Existing thumbnail | Loads — its variant record came over in the dump |
-| Thumbnail prod never generated | `TransformJob` fails with AccessDenied in `/admin/jobs`; image shows broken |
+| Thumbnail prod never generated | Shows the original image; nothing tries to generate it |
 | Delete an artifact | Dev rows deleted; the purge job fails with AccessDenied; S3 untouched |
 | Upload a new file | Goes to `storage/` on disk as usual |
 
@@ -158,6 +158,27 @@ of intent.
   prerequisites, on why the restore runs in the container, and on dumping
   first: if `ssh`/`pg_dump` fails, `set -e` stops before anything is
   dropped.
+- **The dump is validated before the drop.** `pg_restore --list` (in the
+  container) reads the dump's table of contents; an empty or garbled file
+  exits 1, so `set -e` stops before `dropdb`. Checked with an empty file
+  ("input file is too short") and 4 KB of random bytes ("does not appear to
+  be a valid archive"). It reads only the TOC, so it won't catch a dump cut
+  off mid-data; an `ssh` failure is caught by its own exit status.
+- **`umask 077`, `rm -f` of the old dump, and `unset DATABASE_URL`.** The
+  dump holds production password hashes, so it's owner-only. A stray
+  `DATABASE_URL` would point the Rails steps at another database.
+- **`db:environment:set` stays.** Review suggested `db:migrate` already
+  records the environment (`Migrator#record_environment`). It does, but
+  development has two databases (primary + the queue SQLite), so
+  `DatabaseTasks.migrate_all` only migrates databases with pending
+  versions. On a pull with nothing pending, the primary keeps
+  `production`. Reproduced on the scratch database.
+- **Thumbnails (table above, corrected).** `TransformJob` is only enqueued
+  when a file is attached, and every `variant(:thumb)` call site is behind
+  `ArtifactFile#thumbnail?` (`variant_records.any?`), falling back to the
+  original. A prod file with no thumbnail shows its original; nothing fails.
+  The `ListBucket` rationale in `docs/aws-dev-access-plan.md` was corrected
+  for the same reason (`track_variants` is on); the permission stays.
 - **`db/schema.rb` changes after every pull**, not only when migrations are
   pending. A dump/restore makes Postgres re-render the `chk_role` check
   constraint (`'FATHER'::character varying::text` instead of
@@ -182,7 +203,7 @@ of intent.
   header". The container's is 17.11.
 - **Restore exercised on a scratch database, not production.** A
   `pg_dump -Fc` of the dev database was restored with the script's exact
-  `dropdb`/`createdb`/`pg_restore` commands into `family_archive_pullcheck`
+  `pg_restore --list`/`dropdb`/`createdb`/`pg_restore` commands into `family_archive_pullcheck`
   (exit 0, no errors). It was tagged `production`, `db:environment:set` and
   `db:migrate` were run against it, and it was then dropped.
   `db:environment:set` writes only the primary database, the one restored.
@@ -194,3 +215,16 @@ of intent.
   `host all all 127.0.0.1/32 scram-sha-256` rule does match `deploy`, but
   the role has no password, so only peer auth admits it. Checked with
   `nix-instantiate --parse` only; not built or deployed.
+- **`db-passwords` now waits for `postgresql-setup.service`.** At the
+  pinned nixpkgs, `ensureUsers` runs there, so the GRANT could race
+  `CREATE USER deploy` on the first switch, and the oneshot wouldn't retry.
+  The same fix covers the existing `ALTER USER` lines on a fresh cluster.
+  The unit runs at boot and whenever a rebuild changes it, not on every
+  rebuild.
+- **Part 1's premise was wrong: `deploy` does have sudo.** On `main`,
+  `modules/base.nix` gives it NOPASSWD `sudo -u postgres` for any command,
+  plus membership in `docker` (root-equivalent). `ssh nix-server 'sudo -n -u
+  postgres pg_dump -Fc family_archive'` would work without part 1. The role
+  is kept as least privilege, so routine pulls read as a read-only role
+  instead of the superuser. It isn't a new security boundary, and the
+  setup doc now says so.

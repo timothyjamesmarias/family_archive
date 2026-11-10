@@ -37,10 +37,11 @@ confirm on the S3 console's bucket list before starting):
    }
    ```
 
-   `GetObject` reads files. `ListBucket` is there so a missing file answers
-   "not found" instead of "access denied" — Active Storage checks whether a
-   thumbnail exists and treats a denial as an error. Neither permits any
-   write; IAM denies everything not listed.
+   `GetObject` reads files. `ListBucket` lets the `aws s3 ls` check in step 5
+   list keys, and makes a missing file answer "not found" instead of "access
+   denied". The app doesn't strictly need it: Active Storage tracks variants
+   in its own table rather than asking S3 whether a thumbnail exists.
+   Neither permits any write; IAM denies everything not listed.
 4. **Next**. Policy name: `family-archive-dev-readonly`. Description:
    `Development read-only access to the production artifacts bucket`.
 5. **Create policy**.

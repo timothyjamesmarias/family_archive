@@ -188,8 +188,10 @@ blob keys under a folder in the bucket. Cutover runbook:
 
 `bin/pull-prod` replaces `family_archive_development` with a copy of
 production: `ssh nix-server pg_dump` as the server's read-only `deploy`
-role, then drop, create and `pg_restore` inside the compose container
-(Postgres 17), then `db:environment:set` and `db:migrate`. Users come over
+role, then a `pg_restore --list` sanity check, then drop, create and
+`pg_restore` inside the compose container (Postgres 17), then
+`db:environment:set` and `db:migrate`. The dump at `tmp/prod.dump` is
+owner-only; it holds production password hashes. Users come over
 as-is, so log in with your production credentials. The restore re-renders
 the `chk_role` check constraint, so `db/schema.rb` shows a diff after every
 pull; don't commit it. Plan and record: `docs/prod-db-pull-plan.md`.
@@ -206,8 +208,9 @@ AWS_S3_BUCKET=marias-family-archive
 ```
 
 Keys stay in `~/.aws/credentials`: `storage.yml` passes nil keys, so the
-SDK falls back to `AWS_PROFILE`. Viewing works; anything that writes to the
-bucket (thumbnails prod never generated, purges) fails with AccessDenied in
+SDK falls back to `AWS_PROFILE`. Viewing works. A file prod never made a
+thumbnail for shows its original instead (`ArtifactFile#thumbnail?`), and
+nothing tries to generate one. Purging a prod blob fails with AccessDenied in
 `/admin/jobs` and leaves S3 untouched. `bin/rails console` doesn't read
 `.env`, so export the variables there if you need them.
 
