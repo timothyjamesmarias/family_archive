@@ -166,3 +166,39 @@ Each step is a commit.
 - **Upload page as a plain form post.** `create` already has an HTML branch;
   the upload page could use `uppy_picker` like the others and the JSON branch
   could go. Costs the files surviving a server-side rejection.
+
+## As built
+
+Where the shipped code differs from the plan above. The code and CLAUDE.md
+are current; this plan is the record of intent.
+
+- **Cleanup rode with each swap.** Each page lost its `vite_javascript_tag`
+  and reload meta in the step that moved it to a controller (steps 2–3), so
+  there is no separate cleanup commit.
+- **No page uses `turbo-visit-control: reload` now, `/family-tree`
+  included.** It never set the meta: the public bundle carries no Turbo.
+  CLAUDE.md says so instead of "applies only to /family-tree".
+- **The mobile menu controller sits on a new wrapper** inside the masthead's
+  full-chrome branch. The nearest existing element wrapping the button and
+  `#mobile-menu` also wraps the wordmark-only masthead, where the targets
+  don't exist; the wrapped markup re-indents. `open`/`close` are spelled out
+  rather than sharing a boolean helper.
+- **The mobile menu test** is its own file, driven at 390×844; it dispatches
+  Escape from script because of the chromedriver keystroke flake.
+- **`uppy_picker` defaults `maxFiles` to `MAX_FILES`** as well as
+  `maxFileSize` to `MAX_FILE_SIZE`, so the add-files page sets neither and
+  its limits stay in `uploads.ts`. An empty `allowedTypes` reaches Uppy as
+  `null`, since Uppy rejects every file given an empty list.
+- **`destroy()` on disconnect is what keeps a restored page to one
+  dashboard**, not `replaceChildren()`: Turbo clones the page for its cache a
+  tick after the visit starts, by which time Stimulus has disconnected and
+  Uppy has removed its DOM. The step 4 test fails without `destroy()` and
+  passes without `replaceChildren()`, which stays as a guard.
+- **The step 4 test** covers the upload page (admin artifacts → "Upload
+  artifact" → back → forward) and sets a `window` marker to prove no visit
+  fell back to a full load.
+- `artifact_upload` uses `disableButtons`/`enableButtons` instead of
+  `setBusy(boolean)`.
+- **Verification** ran `bin/ci`'s steps individually against a separate test
+  database rather than `bin/ci` itself, whose setup step touches the shared
+  development database.
