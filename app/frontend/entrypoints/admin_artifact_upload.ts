@@ -4,7 +4,7 @@ import '@uppy/core/css/style.min.css'
 import '@uppy/dashboard/css/style.min.css'
 import { csrfHeaders } from '../shared/csrf'
 import { showToast } from '../shared/components/toast'
-import { pageTheme } from '../shared/uppyFormPicker'
+import { pageTheme } from '../shared/uppy'
 import { MAX_FILE_SIZE, MAX_FILE_SIZE_LABEL, MAX_FILES } from '../shared/uploads'
 
 /**
