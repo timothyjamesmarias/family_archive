@@ -34,6 +34,24 @@ class ArtifactAdminTest < ApplicationSystemTestCase
     assert_equal 2, Artifact.of_type("LETTER").count
   end
 
+  test "Turbo history navigation leaves the upload page with one dashboard" do
+    sign_in_as email: "boss@example.com", admin: true
+    visit admin_artifacts_path
+    # Survives only if every navigation below stays a Turbo visit.
+    page.execute_script("window.turboVisitMarker = true")
+
+    click_on "Upload artifact"
+    assert_selector "h1", text: "Upload artifact"
+    assert_selector ".uppy-Dashboard", count: 1
+
+    go_back
+    assert_no_selector ".uppy-Dashboard"
+    go_forward
+    assert_selector "h1", text: "Upload artifact"
+    assert_selector ".uppy-Dashboard", count: 1
+    assert page.evaluate_script("window.turboVisitMarker")
+  end
+
   test "deleting an annotation from its marker's popover" do
     artifact = upload_photo(title: "Group portrait")
     file = artifact.primary_file

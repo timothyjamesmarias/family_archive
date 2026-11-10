@@ -34,7 +34,9 @@ export async function mountDashboard(
     import('@uppy/dashboard/css/style.min.css'),
   ])
 
-  // A Turbo snapshot restore brings back the previous dashboard's DOM.
+  // Controllers destroy their dashboard on disconnect, before Turbo clones
+  // the page for its cache; should a snapshot still carry one, mount in its
+  // place rather than beside it.
   target.replaceChildren()
 
   const uppy = new Uppy({ restrictions, autoProceed: false })
