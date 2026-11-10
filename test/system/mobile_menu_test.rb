@@ -1,7 +1,10 @@
 require "application_system_test_case"
 
 class MobileMenuTest < ApplicationSystemTestCase
-  driven_by :selenium, using: :headless_chrome, screen_size: [ 390, 844 ]
+  # Its own driver name: unnamed, Rails registers this as :selenium, the same
+  # name as the 1400px driver, and Capybara reuses whichever browser started first.
+  driven_by :selenium, using: :headless_chrome, screen_size: [ 390, 844 ],
+    options: { name: :headless_chrome_phone }
 
   test "the menu opens from its button and Escape closes it" do
     visit root_path
