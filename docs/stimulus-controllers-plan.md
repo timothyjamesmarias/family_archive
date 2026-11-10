@@ -199,6 +199,26 @@ are current; this plan is the record of intent.
   fell back to a full load.
 - `artifact_upload` uses `disableButtons`/`enableButtons` instead of
   `setBusy(boolean)`.
+- **`turbo: false` stays, for a different reason.** The flash loss that
+  "Turbo cleanup" and "Out of scope" cite came from the reload meta: a
+  Turbo submit fetched the redirect (consuming the flash), then the meta
+  forced a second, full load. With the metas gone a Turbo submit would keep
+  the flash. The forms and the file Delete button stay native because that
+  is the behaviour this port preserved; switching is untested. The view
+  comments and CLAUDE.md say so.
+- **The admin bundle carries `data-turbo-track="reload"`.** Uppy is now a
+  hashed dynamic chunk, so an admin tab opened before a deploy would import
+  a chunk that no longer exists; the track makes Turbo reload instead. If
+  the import fails anyway, `mountDashboard` shows an error toast ("The
+  uploader failed to load — reload the page") rather than an empty page.
+- **`artifact_upload` skips the follow-up after navigation.** An upload
+  that finishes once the controller has disconnected neither redirects nor
+  clears the destroyed dashboard; the request itself is not aborted.
+- **The step 4 test attaches a file after going forward** and expects one
+  `.uppy-Dashboard-Item`, since stale snapshot DOM alone would still match
+  `.uppy-Dashboard`.
+- **The GEDCOM note's limit** is built from `MAX_GEDCOM_BYTES` in the view;
+  the add-files note stays literal until the "Later" limits change.
 - **Verification** ran `bin/ci`'s steps individually against a separate test
   database rather than `bin/ci` itself, whose setup step touches the shared
   development database.

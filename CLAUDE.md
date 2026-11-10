@@ -121,7 +121,9 @@ no page loads its own entrypoint. The admin's Uppy dashboards mount through
 pages that use it:
 
 - `uppy_picker` — GEDCOM import and add files: Uppy picks, the form posts
-  natively (`turbo: false`) so redirect + flash work unchanged.
+  natively (`turbo: false`) and redirects with a full page load, as before
+  the controllers. A Turbo submit would keep the flash now that no reload
+  meta is involved; it just hasn't been tried.
 - `artifact_upload` — the artifact upload page (multi-file, "save and add
   another"; posts FormData to the JSON create).
 

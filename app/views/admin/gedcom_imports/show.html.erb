@@ -8,14 +8,15 @@
       their GEDCOM id, so re-importing the same file updates them in place —
       people, relationships, and events added by hand are preserved.
     </p>
-    <%# Uppy picks the file; the classic multipart POST (data: { turbo: false })
-        keeps the redirect + flash flow. %>
+    <%# Uppy picks the file; the form still posts natively (data: { turbo: false })
+        and redirects with a full page load, as before the Stimulus port. A Turbo
+        submit should work now that no reload meta is involved, but is untested. %>
     <%= form_with url: admin_gedcom_import_path, method: :post, multipart: true,
           data: { turbo: false, controller: "uppy-picker",
                   uppy_picker_max_files_value: 1,
                   uppy_picker_max_file_size_value: Admin::GedcomImportsController::MAX_GEDCOM_BYTES,
                   uppy_picker_allowed_types_value: [ ".ged" ],
-                  uppy_picker_note_value: "A single GEDCOM (.ged) file, up to 50MB",
+                  uppy_picker_note_value: "A single GEDCOM (.ged) file, up to #{Admin::GedcomImportsController::MAX_GEDCOM_BYTES / 1.megabyte}MB",
                   uppy_picker_empty_message_value: "Choose a .ged file to import",
                   uppy_picker_height_value: 300 },
           class: "space-y-3" do %>
