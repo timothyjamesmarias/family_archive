@@ -87,8 +87,11 @@ spouse beside the person they marry (on the right, or after turning the row
 around when that person is at its left end). A block is one layout node;
 its width is its member count. A couple is a block of width 2; a remarried
 person sits between their spouses, first marriage on the left: `S1 P S2`,
-`H1 W H2`. That keeps every marriage line between adjacent cards and each
-unit's midpoint over its own children.
+`H1 W H2`. That keeps every marriage line between adjacent cards. The first
+child-bearing marriage decides the block's centre; later broods are pushed
+right until their drop falls within their own children, so with uneven
+broods a later drop sits at the left edge of its children rather than
+centred over them.
 
 **Parent unit** of a person listed as a child in several units: the unit
 whose parents sit deepest (longest parent→child path from a parentless
@@ -161,7 +164,8 @@ Spouses share a generation by construction.
 - No crossing minimisation beyond the packing heuristics. Birth order wins.
 - A person with three or more spouses gets the extras appended on the
   right; those marriage lines pass behind a card. Spouse chains (S1
-  remarried T) linearise as a path and stay adjacent.
+  remarried T) stay adjacent by turning the row around, which can put the
+  shared person's first marriage on the right: `S2 P S1 T`.
 - A child of two families is drawn once, under the deeper; the other is a
   long edge, possibly spanning rows.
 - Buses of two units on one row may overlap (an in-law bus reaching back to
@@ -176,7 +180,7 @@ Each is a `ponytail:` comment in the code with the upgrade path.
 ## Files
 
 ```
-app/models/family_tree/layout.rb              facade, Unit, Position, Result
+app/models/family_tree/layout.rb              entry point (the instance is the result), Unit, Position
 app/models/family_tree/layout/forest.rb       blocks, anchors, tree edges, cross-links
 app/models/family_tree/layout/tidy_tree.rb    Buchheim port
 app/models/family_tree/layout/packing.rb      generation reconciliation + forest packing
