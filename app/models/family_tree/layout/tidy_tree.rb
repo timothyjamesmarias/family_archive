@@ -56,7 +56,7 @@ module FamilyTree
         w = v.index.positive? ? siblings[v.index - 1] : nil
         if v.children.any?
           execute_shifts(v)
-          midpoint = (anchor_x(v.children.first) + anchor_x(v.children.last)) / 2.0
+          midpoint = centre_over_groups(v)
           if w
             v.prelim = w.prelim + separation(v, w)
             v.mod = v.prelim - midpoint
@@ -77,6 +77,34 @@ module FamilyTree
       # A parent is centred over its children's own cards, not their blocks,
       # so a married child hangs under the marriage and the in-law beside them.
       def anchor_x(node) = node.prelim + node.block.anchor_offset
+
+      # Where the block's centre must be for each marriage's children to sit
+      # under that marriage. The first group decides; later groups can only be
+      # pushed right, so with uneven broods a later drop lands at the left edge
+      # of its own children rather than over the first marriage's.
+      def centre_over_groups(v)
+        centre = nil
+        start = 0
+        v.block.groups.each do |seat, blocks|
+          group = v.children[start, blocks.size]
+          group_centre = (anchor_x(group.first) + anchor_x(group.last)) / 2.0
+          if centre
+            shortfall = centre + seat - group_centre
+            push(v.children[start..], shortfall) if shortfall.positive?
+          else
+            centre = group_centre - seat
+          end
+          start += blocks.size
+        end
+        centre
+      end
+
+      def push(nodes, shift)
+        nodes.each do |node|
+          node.prelim += shift
+          node.mod += shift
+        end
+      end
 
       # Compare the right contour of everything left of v with the left
       # contour of v, level by level, and shift v's subtree right wherever the

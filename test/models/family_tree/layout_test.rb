@@ -193,13 +193,37 @@ class FamilyTree::LayoutTest < ActiveSupport::TestCase
     }, result)
   end
 
-  test "a child of the second marriage is not drawn under the first spouse" do
+  test "children of the second marriage sit under the second marriage, not the first spouse" do
     result = layout(
       first: [ [ :P, :S1 ], [] ],
-      second: [ [ :P, :S2 ], [ :C ] ]
+      second: [ [ :P, :S2 ], [ :C, :D ] ]
     )
 
-    assert_positions({ S1: [ 0, 0 ], P: [ 1, 0 ], S2: [ 2, 0 ], C: [ 1, 1 ] }, result)
+    assert_positions({ S1: [ 0, 0 ], P: [ 1, 0 ], S2: [ 2, 0 ], C: [ 1, 1 ], D: [ 2, 1 ] }, result)
+  end
+
+  # Three children by the first marriage, one by the second: the block is
+  # centred for the first brood, and the second's drop (at 2) lands at the
+  # left edge of its own child rather than over the first marriage's.
+  test "uneven broods keep each marriage's drop within its own children" do
+    result = layout(
+      first: [ [ :P, :S1 ], [ :a, :b, :c ] ],
+      second: [ [ :P, :S2 ], [ :d ] ]
+    )
+
+    assert_positions({
+      S1: [ 0.5, 0 ], P: [ 1.5, 0 ], S2: [ 2.5, 0 ],
+      a: [ 0, 1 ], b: [ 1, 1 ], c: [ 2, 1 ], d: [ 3, 1 ]
+    }, result)
+  end
+
+  test "a parentless unit whose only child hangs elsewhere is skipped" do
+    result = layout(
+      orphans: [ [], [ :C ] ], parents: [ [ :F, :M ], [ :C ] ],
+      individual_ids: %i[C F M]
+    )
+
+    assert_positions({ F: [ 0, 0 ], M: [ 1, 0 ], C: [ 0.5, 1 ] }, result)
   end
 
   test "a wife's second husband sits to her right" do

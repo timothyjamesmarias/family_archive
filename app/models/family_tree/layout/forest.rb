@@ -11,12 +11,13 @@ module FamilyTree
     class Forest
       # A mutable graph node, compared by identity.
       class Block
-        attr_accessor :members, :units, :anchor, :parent, :children, :depth, :x, :tree
+        attr_accessor :members, :units, :anchor, :parent, :children, :groups, :depth, :x, :tree
 
         def initialize(members, units = [])
           @members = members
           @units = units
           @children = []
+          @groups = []
           @depth = 0
           @x = 0.0
         end
@@ -177,13 +178,18 @@ module FamilyTree
       # Children hang under their unit; units are ordered left to right by
       # where they sit inside the block (every x is still 0 here, so
       # midpoint_of is the seat), so a remarried person's first marriage
-      # keeps its children on the left.
+      # keeps its children on the left. Groups remember which seat each run
+      # of children belongs under, for the tidy tree to centre them there.
       def grow_trees
         @blocks.each do |block|
           block.units = block.units.sort_by.with_index { |unit, index| [ block.midpoint_of(unit), index ] }
-          block.children = block.units.flat_map do |unit|
-            unit.child_ids.select { |child| tree_edge?(child, unit) }.map { |child| block_of(child) }
+          by_unit = block.units.filter_map do |unit|
+            children = unit.child_ids.select { |child| tree_edge?(child, unit) }.map { |child| block_of(child) }
+            [ block.midpoint_of(unit), children ] if children.any?
           end
+          # Two units at one seat (a lone parent's two broods) are one group.
+          block.groups = by_unit.chunk_while { |a, b| a.first == b.first }.map { |run| [ run.first.first, run.flat_map(&:last) ] }
+          block.children = block.groups.flat_map(&:last)
         end
 
         @blocks.select { |block| block.parent.nil? }.map do |root|

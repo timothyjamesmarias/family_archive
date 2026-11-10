@@ -15,7 +15,7 @@ module FamilyTree
       def initialize(forest)
         @forest = forest
         @extents = {}
-        @placed = Set.new
+        @placed = Set.new.compare_by_identity
       end
 
       def call
@@ -36,6 +36,9 @@ module FamilyTree
 
       def place(tree, link)
         rows = tree.blocks.reject(&:phantom?).group_by(&:depth)
+        # A phantom whose children all hang elsewhere has nothing to place.
+        return @placed << tree if rows.empty?
+
         row_shift, desired, side = link ? alignment(tree, link) : [ top_row - rows.keys.min, nil, 0 ]
         column_shift = clearing(rows, row_shift, desired, side)
 
@@ -101,7 +104,8 @@ module FamilyTree
       def top_row = @extents.keys.min || 0
 
       def largest_unplaced
-        (@forest.trees - @placed.to_a).max_by { |tree| [ tree.blocks.sum(&:width), -@forest.trees.index(tree) ] }
+        @forest.trees.each_with_index.reject { |tree, _| @placed.include?(tree) }
+          .max_by { |tree, index| [ tree.blocks.sum(&:width), -index ] }.first
       end
 
       # Unplaced trees reachable from this one, in left-to-right order of the
