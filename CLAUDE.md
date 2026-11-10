@@ -184,6 +184,33 @@ Redis is the planned replacement. Active Storage uploads go to S3
 blob keys under a folder in the bucket. Cutover runbook:
 `nixos-server/docs/FAMILY-ARCHIVE-CUTOVER.md`.
 
+## Production data
+
+`bin/pull-prod` replaces `family_archive_development` with a copy of
+production: `ssh nix-server pg_dump` as the server's read-only `deploy`
+role, then drop, create and `pg_restore` inside the compose container
+(Postgres 17), then `db:environment:set` and `db:migrate`. Users come over
+as-is, so log in with your production credentials. The restore re-renders
+the `chk_role` check constraint, so `db/schema.rb` shows a diff after every
+pull; don't commit it. Plan and record: `docs/prod-db-pull-plan.md`.
+
+Production blobs keep `service_name: amazon` and load from S3 through a
+read-only IAM user (`docs/aws-dev-access-plan.md`); new dev uploads still go
+to `storage/`. Put these in a gitignored `.env`, which foreman (`bin/dev`)
+loads:
+
+```sh
+AWS_PROFILE=family-archive-dev
+AWS_REGION=us-east-2
+AWS_S3_BUCKET=marias-family-archive
+```
+
+Keys stay in `~/.aws/credentials`: `storage.yml` passes nil keys, so the
+SDK falls back to `AWS_PROFILE`. Viewing works; anything that writes to the
+bucket (thumbnails prod never generated, purges) fails with AccessDenied in
+`/admin/jobs` and leaves S3 untouched. `bin/rails console` doesn't read
+`.env`, so export the variables there if you need them.
+
 ## Testing
 
 - `test/models` — domain behavior (records and POROs) against the real schema.
