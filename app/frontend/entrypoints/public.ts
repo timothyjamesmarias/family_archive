@@ -3,7 +3,7 @@ import DarkModeController from '../controllers/dark_mode_controller'
 import AutosubmitController from '../controllers/autosubmit_controller'
 import PhotoAnnotationsController from '../controllers/photo_annotations_controller'
 import MediaPlayerController from '../controllers/media_player_controller'
-import '../shared/mobileMenu'
+import MobileMenuController from '../controllers/mobile_menu_controller'
 
 // The public bundle carries no Turbo and only the controllers it needs.
 const application = Application.start()
@@ -11,3 +11,4 @@ application.register('dark-mode', DarkModeController)
 application.register('autosubmit', AutosubmitController)
 application.register('photo-annotations', PhotoAnnotationsController)
 application.register('media-player', MediaPlayerController)
+application.register('mobile-menu', MobileMenuController)
