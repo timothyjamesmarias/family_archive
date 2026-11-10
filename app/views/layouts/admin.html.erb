@@ -10,8 +10,10 @@
     <%= yield :head %>
 
     <%= vite_client_tag %>
-    <%= vite_stylesheet_tag "application" %>
-    <%= vite_javascript_tag "application" %>
+    <%# Reload on a deploy: Uppy loads as a hashed chunk that an old tab's
+        bundle would otherwise ask for after it's gone. %>
+    <%= vite_stylesheet_tag "application", data: { turbo_track: "reload" } %>
+    <%= vite_javascript_tag "application", data: { turbo_track: "reload" } %>
   </head>
 
   <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">

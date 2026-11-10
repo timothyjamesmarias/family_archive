@@ -114,11 +114,22 @@ Three Vite entrypoint groups:
 - `public.(ts|css)` — public pages: dark mode, mobile menu, annotated-photo
   islands; Tailwind with the Paperwhite theme (stone/sage palette, Lora/Inter).
 - `family_tree.(ts|css)` — the family-tree island, loaded only on /family-tree.
-- `admin_artifact_upload.ts` — the Uppy dashboard on the artifact upload page
-  (multi-file, "save and add another"; posts FormData to the JSON create).
 
-Pages that mount an island set `turbo-visit-control: reload` in `:head` so
-Turbo never restores a stale mount from its snapshot cache.
+Every other script is a Stimulus controller one of the bundles registers;
+no page loads its own entrypoint. The admin's Uppy dashboards mount through
+`shared/uppy.ts`, which imports Uppy on demand so it downloads only on the
+pages that use it:
+
+- `uppy_picker` — GEDCOM import and add files: Uppy picks, the form posts
+  natively (`turbo: false`) and redirects with a full page load, as before
+  the controllers. A Turbo submit would keep the flash now that no reload
+  meta is involved; it just hasn't been tried.
+- `artifact_upload` — the artifact upload page (multi-file, "save and add
+  another"; posts FormData to the JSON create).
+
+No page sets `turbo-visit-control: reload`: the public bundle (and so
+/family-tree) carries no Turbo, and admin controllers destroy what they
+mount on disconnect, so a Turbo snapshot restore remounts cleanly.
 
 The admin annotations editor (`/admin/artifacts/:id/annotations`) is the
 Hotwire pattern for interactive admin pages: server-rendered markup, the
