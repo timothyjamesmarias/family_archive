@@ -187,8 +187,8 @@ blob keys under a folder in the bucket. Cutover runbook:
 ## Production data
 
 `bin/pull-prod` replaces `family_archive_development` with a copy of
-production: `ssh nix-server pg_dump` as the server's read-only `deploy`
-role, then a `pg_restore --list` sanity check, then drop, create and
+production: `ssh nix-server` as `deploy`, `sudo -n -u postgres pg_dump`,
+then a `pg_restore --list` sanity check, then drop, create and
 `pg_restore` inside the compose container (Postgres 17), then
 `db:environment:set` and `db:migrate`. The dump at `tmp/prod.dump` is
 owner-only; it holds production password hashes. Users come over

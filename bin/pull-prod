@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 # Replaces the development database with a copy of production.
 # Needs the compose Postgres running (bin/setup / docker compose up -d) and
-# `ssh nix-server` reaching the server as deploy.
+# `ssh nix-server` reaching the server as deploy, which may sudo to postgres
+# without a password (nixos-server modules/base.nix).
 set -eu
 cd "$(dirname "$0")/.."
 umask 077 # the dump holds production password hashes
@@ -11,7 +12,7 @@ unset DATABASE_URL # the Rails steps below must hit family_archive_development, 
 
 dump=tmp/prod.dump
 rm -f "$dump" # recreated under the umask, even if an older pull left it readable
-ssh nix-server 'pg_dump -Fc family_archive' > "$dump"
+ssh nix-server 'sudo -n -u postgres pg_dump -Fc family_archive' > "$dump"
 
 # Run inside the compose container: the dump is from Postgres 17, and a host
 # pg_restore older than that can't read it.

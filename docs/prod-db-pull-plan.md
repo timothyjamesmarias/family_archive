@@ -6,7 +6,7 @@ through a read-only IAM user; anything uploaded in development stays on
 local disk. Nothing in development can write to the production database or
 bucket.
 
-Depends on: the `deploy` Postgres role (part 1, `nixos-server` repo) and the
+Depends on (see As built — part 1 was dropped): the `deploy` Postgres role (part 1, `nixos-server` repo) and the
 read-only IAM user (`docs/aws-dev-access-plan.md`).
 
 ## Part 1 — Read-only Postgres role for `deploy` (nixos-server)
@@ -228,3 +228,8 @@ of intent.
   is kept as least privilege, so routine pulls read as a read-only role
   instead of the superuser. It isn't a new security boundary, and the
   setup doc now says so.
+- **Part 1 dropped; the script uses `sudo -n -u postgres pg_dump`.** The
+  owner confirmed `ssh nix-server 'sudo -n -u postgres pg_dump -Fc
+  family_archive'` streams a valid dump today, so the read-only role in
+  ufo-soft/nixos-server#9 adds no capability `deploy` lacks and was closed
+  unmerged.
