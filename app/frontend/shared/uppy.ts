@@ -1,5 +1,6 @@
 import type Uppy from '@uppy/core'
 import { prefersDark } from '../controllers/dark_mode_controller'
+import { showToast } from './components/toast'
 
 interface DashboardOptions {
   restrictions: {
@@ -32,7 +33,11 @@ export async function mountDashboard(
     import('@uppy/dashboard'),
     import('@uppy/core/css/style.min.css'),
     import('@uppy/dashboard/css/style.min.css'),
-  ])
+  ]).catch((error: unknown) => {
+    // Otherwise the page just shows no dashboard and the buttons do nothing.
+    showToast({ type: 'error', message: 'The uploader failed to load — reload the page' })
+    throw error
+  })
 
   // Controllers destroy their dashboard on disconnect, before Turbo clones
   // the page for its cache; should a snapshot still carry one, mount in its
