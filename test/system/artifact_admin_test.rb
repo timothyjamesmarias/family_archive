@@ -48,7 +48,10 @@ class ArtifactAdminTest < ApplicationSystemTestCase
     assert_no_selector ".uppy-Dashboard"
     go_forward
     assert_selector "h1", text: "Upload artifact"
-    assert_selector ".uppy-Dashboard", count: 1
+    # A stale dashboard from the snapshot would still match .uppy-Dashboard;
+    # only a live one turns a picked file into an item.
+    attach_to_uppy FIXTURE
+    assert_selector ".uppy-Dashboard-Item", count: 1
     assert page.evaluate_script("window.turboVisitMarker")
   end
 
