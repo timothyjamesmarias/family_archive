@@ -1,8 +1,8 @@
 require "test_helper"
 
-# Edge geometry in the layout's own units: x in slots, y in rows, card
-# centres at integer rows. Cards paint over the segments, so lines may run
-# centre to centre.
+# Pixel geometry from FamilyTree::Metrics: card centres at 128 + 230·x, card
+# tops at 28 + 166·generation, cards 76 tall. A couple's bracket hangs 34
+# below their cards, a bus runs 28 above the children's.
 class FamilyTree::EdgesTest < ActiveSupport::TestCase
   def edges(positions, units)
     laid = positions.transform_values { |(x, generation)| FamilyTree::Layout::Position.new(x:, generation:) }
@@ -14,40 +14,42 @@ class FamilyTree::EdgesTest < ActiveSupport::TestCase
 
   def seg(kind, x1, y1, x2, y2) = FamilyTree::Edges::Segment.new(kind:, x1:, y1:, x2:, y2:)
 
-  test "a couple with one child: marriage line, drop, stub, no bus" do
+  test "a couple with one child: bracket, drop, stub, no bus" do
     segments = edges({ F: [ 0, 0 ], M: [ 1, 0 ], C: [ 0.5, 1 ] }, u: [ %i[F M], %i[C] ])
 
     assert_equal [
-      seg(:marriage, 0, 0, 1, 0),
-      seg(:drop, 0.5, 0, 0.5, 0.6),
-      seg(:stub, 0.5, 0.6, 0.5, 1)
+      seg(:marriage, 128, 104, 128, 138),
+      seg(:marriage, 128, 138, 358, 138),
+      seg(:marriage, 358, 138, 358, 104),
+      seg(:drop, 243, 138, 243, 166),
+      seg(:stub, 243, 166, 243, 194)
     ], segments
   end
 
   test "several children share a bus" do
     segments = edges({ F: [ 1, 0 ], M: [ 2, 0 ], A: [ 0, 1 ], B: [ 1, 1 ], C: [ 3, 1 ] }, u: [ %i[F M], %i[A B C] ])
 
-    assert_includes segments, seg(:bus, 0, 0.6, 3, 0.6)
+    assert_includes segments, seg(:bus, 128, 166, 818, 166)
     assert_equal 3, segments.count { |s| s.kind == :stub }
   end
 
-  test "a single parent drops from their own card" do
+  test "a lone parent drops straight off their card, with no bracket" do
     segments = edges({ M: [ 0.5, 0 ], A: [ 0, 1 ], B: [ 1, 1 ] }, u: [ %i[M], %i[A B] ])
 
-    assert_includes segments, seg(:drop, 0.5, 0, 0.5, 0.6)
+    assert_includes segments, seg(:drop, 243, 104, 243, 166)
     assert_not segments.any? { |s| s.kind == :marriage }
   end
 
   test "parentless siblings get a bus and stubs but no drop" do
     segments = edges({ A: [ 0, 0 ], B: [ 1, 0 ] }, u: [ [], %i[A B] ])
 
-    assert_equal [ seg(:bus, 0, -0.4, 1, -0.4), seg(:stub, 0, -0.4, 0, 0), seg(:stub, 1, -0.4, 1, 0) ], segments
+    assert_equal [ seg(:bus, 128, 0, 358, 0), seg(:stub, 128, 0, 128, 28), seg(:stub, 358, 0, 358, 28) ], segments
   end
 
   test "the bus reaches a drop that falls outside the children" do
     segments = edges({ P: [ 2, 0 ], S: [ 3, 0 ], C: [ 0, 1 ] }, u: [ %i[P S], %i[C] ])
 
-    assert_includes segments, seg(:bus, 0, 0.6, 2.5, 0.6)
+    assert_includes segments, seg(:bus, 128, 166, 703, 166)
   end
 
   test "overlapping buses on one row take separate lanes" do
@@ -56,20 +58,21 @@ class FamilyTree::EdgesTest < ActiveSupport::TestCase
       a: [ %i[A1 A2], %i[a a2] ], b: [ %i[B1 B2], %i[b b2] ]
     )
 
-    assert_includes segments, seg(:bus, 0, 0.6, 3, 0.6)
-    assert_includes segments, seg(:bus, 2, 0.7, 5, 0.7)
+    assert_includes segments, seg(:bus, 128, 166, 818, 166)
+    assert_includes segments, seg(:bus, 588, 156, 1278, 156)
   end
 
   test "a child more than one row down gets a longer drop to a bus above its own row" do
     segments = edges({ F: [ 0, 0 ], M: [ 1, 0 ], C: [ 0.5, 2 ] }, u: [ %i[F M], %i[C] ])
 
-    assert_includes segments, seg(:drop, 0.5, 0, 0.5, 1.6)
-    assert_includes segments, seg(:stub, 0.5, 1.6, 0.5, 2)
+    assert_includes segments, seg(:drop, 243, 138, 243, 332)
+    assert_includes segments, seg(:stub, 243, 332, 243, 360)
   end
 
   test "a child on the same row or above is linked directly" do
     segments = edges({ F: [ 0, 0 ], M: [ 1, 0 ], C: [ 3, 0 ] }, u: [ %i[F M], %i[C] ])
 
-    assert_equal [ seg(:marriage, 0, 0, 1, 0), seg(:link, 0.5, 0, 3, 0) ], segments
+    assert_equal seg(:link, 243, 138, 818, 28), segments.last
+    assert_equal 4, segments.size
   end
 end

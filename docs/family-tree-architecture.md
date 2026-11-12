@@ -54,35 +54,37 @@ flowchart LR
     Edits --> Mut["FamilyTree::Mutations"]
 ```
 
-## Planned
+### Read-only chart (chunk 2, at `/family-tree/chart`)
 
-### Read-only chart (chunk 2)
+The Builder and the queries are used as they are; `Chart` composes their
+responses the way the island's store did and decorates the order.
 
 ```mermaid
 flowchart TD
-    URL["GET /family-tree/chart?up[]=12&down[]=87#person-12"] --> C["FamilyTreeChartsController#show"]
+    URL["GET /family-tree/chart?depth=2&up[]=12&down[]=87#person-12"] --> C["FamilyTreeChartsController#show<br/>whitelists depth, keeps numeric ids"]
     C --> Chart
 
-    subgraph Chart["FamilyTree::Chart (PORO)"]
+    subgraph Chart["FamilyTree::Chart"]
         direction TB
-        L["loaded set: roots → 1 gen up → siblings → spouses,<br/>then ancestors(12), descendants(87)<br/>(Builder, Individual::Queries)"]
-        U["units, ordered: FATHER then MOTHER,<br/>children by child_order, units by marriage date"]
+        I["Builder#initial_tree,<br/>then expand_tree(root, depth up and down) per root,<br/>then expand_tree(id) for each up[]/down[] once its person is on the chart"]
+        MG["merge like the island's store:<br/>first person wins, family ids union"]
+        U["decorate: parents father-first by sex,<br/>children by child_order, families by id → Layout::Unit[]"]
         LY["FamilyTree::Layout → positions"]
-        E["Chart::Edges: positions + units → segments<br/>marriage, drop, bus, stubs; lanes; routed long edges"]
-        M["expand flags: Metadata.relationship_metadata_for"]
-        L --> U --> LY --> E
-        L --> M
+        F["Card per person: position + expands_up?/expands_down?<br/>(hasUnloaded* flag and no relative drawn in that direction)"]
+        I --> MG --> U --> LY --> F
     end
 
-    Chart --> V["FamilyTree::ChartComponent"]
-    V --> Ed["EdgesComponent (SVG)"]
-    V --> Cards["PersonCardComponent × people<br/>absolute: x·SLOT, generation·ROW"]
-    V --> Ex["ExpandButtonComponent × flags<br/>link: same URL + one more id + #anchor"]
+    Chart --> V["FamilyTree::ChartComponent<br/>toolbar (zoom, fit, centre, depth links, counts) + stage"]
+    V --> E["FamilyTree::Edges (pixels via Metrics)<br/>bracket under a couple, drop, bus, stubs; lanes; direct links"]
+    E --> Ed["EdgesComponent: one SVG path per kind"]
+    V --> Cards["PersonCardComponent × cards<br/>left = Metrics.left(x), top = Metrics.top(generation)<br/>expand links: same URL + one id + #person-id"]
 
-    V -->|HTML| Frame["turbo-frame#chart in the public layout"]
-    Frame --> Z["tree-zoom Stimulus controller<br/>CSS zoom on the wrapper, drag pans the scroll container"]
-    Ex -.->|"click → frame fetch"| URL
+    V -->|HTML| Frame["turbo-frame#chart, turbo-action=advance"]
+    Frame --> Z["tree-zoom Stimulus controller<br/>CSS zoom on the stage, drag scrolls the canvas"]
+    Cards -.->|"expand click → frame fetch"| URL
 ```
+
+## Planned
 
 ### Edit mode (chunk 3)
 

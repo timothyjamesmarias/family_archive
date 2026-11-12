@@ -1,0 +1,5 @@
+<svg class="tree-edges" width="<%= @width %>" height="<%= @height %>" aria-hidden="true">
+  <% paths.each do |kind, d| %>
+    <path data-kind="<%= kind %>" d="<%= d %>"></path>
+  <% end %>
+</svg>

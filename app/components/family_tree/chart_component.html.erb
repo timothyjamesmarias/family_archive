@@ -1,0 +1,38 @@
+<%# `advance` puts each expansion in the URL and history; the frame swap itself stays in place. %>
+<%= helpers.turbo_frame_tag "chart", class: "flex flex-col flex-grow",
+      data: { turbo_action: "advance", controller: "tree-zoom",
+              tree_zoom_width_value: stage_width, tree_zoom_height_value: stage_height } do %>
+  <div class="tree-toolbar">
+    <div class="tree-controls" role="group" aria-label="Zoom">
+      <button type="button" class="tree-control" data-action="tree-zoom#out" aria-label="Zoom out">&minus;</button>
+      <span class="tree-control pointer-events-none" data-tree-zoom-target="level">100%</span>
+      <button type="button" class="tree-control" data-action="tree-zoom#in" aria-label="Zoom in">+</button>
+    </div>
+    <%= render Ui::ButtonComponent.new(variant: :secondary, size: :sm, class: "h-9.5", data: { action: "tree-zoom#fit" }).with_content("Fit to screen") %>
+    <%= render Ui::ButtonComponent.new(variant: :secondary, size: :sm, class: "h-9.5", data: { action: "tree-zoom#centre" }).with_content("Centre on root") %>
+    <span class="tree-toolbar-divider"></span>
+    <span class="tree-toolbar-label">Depth</span>
+    <div class="tree-controls" role="group" aria-label="Depth">
+      <% DEPTH_LABELS.each do |depth, caption| %>
+        <%= link_to caption, depth_path(depth),
+              class: class_names("tree-control", "tree-control-active": depth == @depth),
+              aria: ({ current: "true" } if depth == @depth) %>
+      <% end %>
+    </div>
+    <span class="meta ml-auto"><%= number_with_delimiter(@chart.total) %> individuals &nbsp;&middot;&nbsp; <%= @chart.shown %> shown</span>
+  </div>
+
+  <div class="tree-canvas" data-tree-zoom-target="viewport">
+    <div class="tree-stage" data-tree-zoom-target="stage" style="width: <%= stage_width %>px; height: <%= stage_height %>px">
+      <%= render FamilyTree::EdgesComponent.new(segments:, width: stage_width, height: stage_height) %>
+      <% @chart.cards.each_with_index do |card, index| %>
+        <%= render FamilyTree::PersonCardComponent.new(
+              card:,
+              up_href: (expand_up_path(card) if card.expands_up?),
+              down_href: (expand_down_path(card) if card.expands_down?),
+              **card_attributes(index)
+            ) %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

@@ -688,4 +688,87 @@
     @apply font-sans text-15 leading-175 text-taupe-700 pl-6 max-w-[70ch] mt-3
            dark:text-ink-100;
   }
+
+  /* Family tree — pages 06. The stage is the page; the toolbar sits on it.
+     Cards are 200×76 on a 230×166 grid (FamilyTree::Metrics), so sizes here
+     and there must agree. */
+  .tree-toolbar {
+    @apply bg-taupe-100 border-b border-taupe-200 px-5 py-2.5
+           flex flex-wrap items-center gap-2.5
+           dark:bg-ink-700 dark:border-ink-500;
+  }
+
+  .tree-toolbar-divider {
+    @apply w-px h-6 bg-taupe-200 dark:bg-ink-500;
+  }
+
+  .tree-toolbar-label {
+    @apply font-mono text-11 tracking-[0.08em] uppercase text-taupe-600 dark:text-ink-200;
+  }
+
+  /* Bordered groups of 38px controls: zoom, depth. */
+  .tree-controls {
+    @apply inline-flex border border-taupe-300 dark:border-ink-400;
+  }
+
+  .tree-control {
+    @apply font-mono text-13 text-taupe-700 bg-paper-sheet no-underline cursor-pointer
+           h-9.5 min-w-9.5 px-3 inline-flex items-center justify-center
+           border-r border-taupe-300 last:border-r-0
+           hover:bg-verdigris-50 hover:text-verdigris-700
+           dark:text-ink-100 dark:bg-ink-700 dark:border-ink-400 dark:hover:bg-ink-600;
+  }
+
+  .tree-control-active {
+    @apply font-sans font-medium text-taupe-900 bg-taupe-100 hover:bg-taupe-100 hover:text-taupe-900
+           dark:text-ink-50 dark:bg-ink-600 dark:hover:bg-ink-600;
+  }
+
+  .tree-canvas {
+    @apply relative flex-grow overflow-auto cursor-grab select-none
+           bg-sage-50 bg-[radial-gradient(#dfe3df_1px,transparent_1px)] bg-[size:22px_22px]
+           dark:bg-ink-800 dark:bg-[radial-gradient(#3f3937_1px,transparent_1px)];
+  }
+
+  .tree-stage {
+    @apply relative;
+  }
+
+  .tree-edges {
+    @apply absolute inset-0 fill-none stroke-taupe-300 stroke-[1.5] dark:stroke-ink-400;
+  }
+
+  .tree-card {
+    @apply absolute w-50 h-19 bg-paper-sheet border border-taupe-300 px-3.5 py-3
+           dark:bg-ink-700 dark:border-ink-400;
+  }
+
+  .tree-card-name {
+    @apply font-serif text-base leading-tight mb-1.25 truncate text-taupe-900 dark:text-ink-50;
+  }
+
+  .tree-card-unnamed {
+    @apply italic text-taupe-600 dark:text-ink-200;
+  }
+
+  .tree-card-dates {
+    @apply font-mono text-11 text-taupe-600 dark:text-ink-200;
+  }
+
+  /* The expand affordance sits astride the card's top or bottom edge. */
+  .tree-expand {
+    @apply absolute left-1/2 -translate-x-1/2 h-6 px-2 inline-flex items-center
+           font-mono text-11 text-verdigris-700 no-underline
+           bg-paper-sheet border border-verdigris-300
+           hover:bg-verdigris-100
+           dark:text-verdigris-300 dark:bg-ink-700 dark:border-verdigris-600 dark:hover:bg-ink-600;
+  }
+
+  .tree-expand-up {
+    @apply -top-[13px];
+  }
+
+  .tree-expand-down {
+    @apply -bottom-[13px];
+  }
 }

@@ -1,19 +1,27 @@
 module FamilyTree
-  # One chart page: the island's initial tree plus the expansions named in the
-  # URL (`up[]`, `down[]`), merged the way the island's store merges them, then
-  # laid out. The Builder is used as is; this only composes its responses and
-  # puts parents and children in the order the layout reads as meaning.
+  # One chart page: the island's initial tree, `depth` generations each way
+  # from the roots, plus the expansions named in the URL (`up[]`, `down[]`),
+  # merged the way the island's store merges them, then laid out. The Builder
+  # is used as is; this only composes its responses and puts parents and
+  # children in the order the layout reads as meaning.
   class Chart
     Card = Data.define(:person, :position, :expands_up, :expands_down) do
       alias_method :expands_up?, :expands_up
       alias_method :expands_down?, :expands_down
     end
 
-    def initialize(up: [], down: [], builder: Builder.new)
+    # "All" on the depth control; deeper than any real genealogy.
+    ALL = 99
+
+    def initialize(up: [], down: [], depth: 1, builder: Builder.new)
       @up = Array(up).map(&:to_i).uniq
       @down = Array(down).map(&:to_i).uniq
+      @depth = depth
       @builder = builder
     end
+
+    def shown = cards.size
+    def total = Individual.count
 
     # An expand button shows where relatives exist beyond the chart and none
     # are drawn yet, as the island decides it.
@@ -54,6 +62,9 @@ module FamilyTree
         people = {}
         families = {}
         merge(people, families, @builder.initial_tree)
+        Individual.tree_roots.ids.each do |root|
+          merge(people, families, @builder.expand_tree(root, generations_up: @depth, generations_down: @depth, include_siblings: true))
+        end
         pending = @up.map { |id| [ id, :up ] } + @down.map { |id| [ id, :down ] }
         loop do
           ready, pending = pending.partition { |id, _| people.key?(id) }

@@ -7,9 +7,11 @@ class FamilyTree::ChartTest < ActiveSupport::TestCase
     @mutations.add_spouse(person_id: @john.id, spouse_data: { givenName: "Mary", sex: "F" })
     @mutations.add_child(parent_id: @john.id, child_data: { givenName: "Peter", sex: "M" })
     @mutations.add_sibling(person_id: person("Peter").id, sibling_data: { givenName: "Anna", sex: "F" })
+    @mutations.add_child(parent_id: person("Peter").id, child_data: { givenName: "Junior", sex: "M" })
     # Mother first, so the father-left rule has to do some work.
     @mutations.add_parent(child_id: @john.id, role: "MOTHER", parent_data: { givenName: "Grandma", sex: "F" })
     @mutations.add_parent(child_id: @john.id, role: "FATHER", parent_data: { givenName: "Senior", sex: "M" })
+    @mutations.add_parent(child_id: person("Senior").id, role: "FATHER", parent_data: { givenName: "Great", sex: "M" })
   end
 
   def person(name) = Individual.find_by!(given_name: name)
@@ -21,13 +23,16 @@ class FamilyTree::ChartTest < ActiveSupport::TestCase
 
   def names(chart) = chart.cards.map { |card| card.person[:givenName] }.sort
 
-  test "the initial chart shows the roots with spouses and parents, one generation per row" do
+  test "the chart shows one generation each way from the roots, with spouses, one generation per row" do
     chart = FamilyTree::Chart.new
 
-    assert_equal %w[Grandma John Mary Senior], names(chart)
+    assert_equal %w[Anna Grandma John Mary Peter Senior], names(chart)
     assert_equal 0, card(chart, "Senior").position.generation
     assert_equal 1, card(chart, "John").position.generation
-    assert_equal 2, chart.layout.height
+    assert_equal 2, card(chart, "Peter").position.generation
+    assert_equal 3, chart.layout.height
+    assert_equal 6, chart.shown
+    assert_equal 8, chart.total
   end
 
   test "the father is drawn left of the mother and a child under them" do
@@ -38,35 +43,45 @@ class FamilyTree::ChartTest < ActiveSupport::TestCase
       card(chart, "John").position.x
   end
 
-  test "expanding down adds the children in birth order" do
-    chart = FamilyTree::Chart.new(down: [ @john.id ])
+  test "children come in birth order" do
+    chart = FamilyTree::Chart.new
 
-    assert_equal %w[Anna Grandma John Mary Peter Senior], names(chart)
-    assert_equal 2, card(chart, "Peter").position.generation
     assert_operator card(chart, "Peter").position.x, :<, card(chart, "Anna").position.x
   end
 
-  test "expanding up adds the grandparents" do
-    @mutations.add_parent(child_id: person("Senior").id, role: "FATHER", parent_data: { givenName: "Great", sex: "M" })
+  test "a deeper chart reaches further both ways" do
+    chart = FamilyTree::Chart.new(depth: 2)
 
+    assert_equal %w[Anna Grandma Great John Junior Mary Peter Senior], names(chart)
+    assert_equal 0, card(chart, "Great").position.generation
+    assert_equal 4, card(chart, "Junior").position.generation
+  end
+
+  test "expanding down adds the children of that person" do
+    chart = FamilyTree::Chart.new(down: [ person("Peter").id ])
+
+    assert_equal 3, card(chart, "Junior").position.generation
+    assert_not_includes names(chart), "Great"
+  end
+
+  test "expanding up adds the parents of that person" do
     chart = FamilyTree::Chart.new(up: [ person("Senior").id ])
 
     assert_equal 0, card(chart, "Great").position.generation
     assert_equal 1, card(chart, "Senior").position.generation
-    assert_equal 2, card(chart, "John").position.generation
+    assert_not_includes names(chart), "Junior"
   end
 
   test "cards flag the directions that still have relatives to load" do
-    @mutations.add_parent(child_id: person("Senior").id, role: "FATHER", parent_data: { givenName: "Great", sex: "M" })
-
     chart = FamilyTree::Chart.new
-    assert card(chart, "John").expands_down?, "John's children are not loaded"
+    assert card(chart, "Peter").expands_down?, "Peter's child is not loaded"
     assert card(chart, "Senior").expands_up?, "Senior's father is not loaded"
     assert_not card(chart, "John").expands_up?, "John's parents are on the chart"
+    assert_not card(chart, "John").expands_down?, "John's children are on the chart"
     assert_not card(chart, "Mary").expands_down?, "Mary has no children"
 
-    expanded = FamilyTree::Chart.new(up: [ person("Senior").id ], down: [ @john.id ])
-    assert_not card(expanded, "John").expands_down?
+    expanded = FamilyTree::Chart.new(up: [ person("Senior").id ], down: [ person("Peter").id ])
+    assert_not card(expanded, "Peter").expands_down?
     assert_not card(expanded, "Senior").expands_up?
   end
 
