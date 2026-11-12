@@ -1,6 +1,10 @@
 <% content_for :title, "Family Tree - Marias Family Archive" %>
+<%# The island mounts when its module first runs and never tears down, so
+    every visit to this page, itself included, is a full load (the meta),
+    and the tracked tags make leaving it one too, dropping its script and CSS. %>
 <% content_for :head do %>
-  <%= vite_javascript_tag "family_tree.ts" %>
-  <%= vite_stylesheet_tag "family_tree" %>
+  <meta name="turbo-visit-control" content="reload">
+  <%= vite_javascript_tag "family_tree.ts", data: { turbo_track: "reload" } %>
+  <%= vite_stylesheet_tag "family_tree", data: { turbo_track: "reload" } %>
 <% end %>
 <div id="family-tree-root" data-auth="<%= user_signed_in? %>"></div>

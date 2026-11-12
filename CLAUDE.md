@@ -111,8 +111,9 @@ Previews render at `/rails/view_components` in development.
 Three Vite entrypoint groups:
 
 - `application.(js|css)` — the admin (Turbo + Stimulus + Tailwind slate).
-- `public.(ts|css)` — public pages: dark mode, mobile menu, annotated-photo
-  islands; Tailwind with the Paperwhite theme (stone/sage palette, Lora/Inter).
+- `public.(ts|css)` — public pages (Turbo + Stimulus): dark mode, mobile
+  menu, annotated-photo and media controllers; Tailwind with the Paperwhite
+  theme (stone/sage palette, Lora/Inter).
 - `family_tree.(ts|css)` — the family-tree island, loaded only on /family-tree.
 
 Every other script is a Stimulus controller one of the bundles registers;
@@ -127,9 +128,17 @@ pages that use it:
 - `artifact_upload` — the artifact upload page (multi-file, "save and add
   another"; posts FormData to the JSON create).
 
-No page sets `turbo-visit-control: reload`: the public bundle (and so
-/family-tree) carries no Turbo, and admin controllers destroy what they
-mount on disconnect, so a Turbo snapshot restore remounts cleanly.
+Both bundles run Turbo Drive. Controllers undo on disconnect what they
+mount, and state a snapshot would capture is reset (the mobile menu closes
+on `turbo:before-cache`, the media player resyncs from its element, flash
+is `data-turbo-temporary`), so a snapshot restore comes back clean. Each
+layout tracks its bundle tags (`data-turbo-track: reload`), so crossing
+between admin and public is a full load. /family-tree is the one page that
+sets `turbo-visit-control: reload`: the island mounts when its module first
+runs and never tears down, so every visit to it, itself included, is a full
+load, and its tracked island tags make leaving it one too. Download links
+carry `download`, which Drive skips, and the public layout turns hover
+prefetch off (`turbo-prefetch: false`).
 
 The admin annotations editor (`/admin/artifacts/:id/annotations`) is the
 Hotwire pattern for interactive admin pages: server-rendered markup, the

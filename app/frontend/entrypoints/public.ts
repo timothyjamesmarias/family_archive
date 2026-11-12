@@ -1,3 +1,4 @@
+import '@hotwired/turbo-rails'
 import { Application } from '@hotwired/stimulus'
 import DarkModeController from '../controllers/dark_mode_controller'
 import AutosubmitController from '../controllers/autosubmit_controller'
@@ -5,7 +6,7 @@ import PhotoAnnotationsController from '../controllers/photo_annotations_control
 import MediaPlayerController from '../controllers/media_player_controller'
 import MobileMenuController from '../controllers/mobile_menu_controller'
 
-// The public bundle carries no Turbo and only the controllers it needs.
+// Turbo Drive like the admin, but only the controllers public pages need.
 const application = Application.start()
 application.register('dark-mode', DarkModeController)
 application.register('autosubmit', AutosubmitController)

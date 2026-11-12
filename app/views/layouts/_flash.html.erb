@@ -3,6 +3,6 @@
   <%= render Ui::MessageComponent.new(
         level: type.to_sym == :alert ? :error : :success,
         class: "mb-4",
-        data: { testid: "flash-#{type}" }
+        data: { testid: "flash-#{type}", turbo_temporary: true }
       ).with_content(message) %>
 <% end %>
