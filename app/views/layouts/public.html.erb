@@ -6,10 +6,12 @@
     <title><%= content_for(:title) || "Marias Family Archive" %></title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <%# Hover prefetch would fetch pages nobody opens. %>
+    <meta name="turbo-prefetch" content="false">
     <%= render "shared/theme_boot" %>
     <%= vite_client_tag %>
-    <%# Reload on a deploy, and on entering or leaving /family-tree, whose
-        island tags are tracked too (see family_tree_pages/show). %>
+    <%# Reload on a deploy, and on leaving /family-tree, whose island tags
+        are tracked too (see family_tree_pages/show). %>
     <%= vite_stylesheet_tag "public", data: { turbo_track: "reload" } %>
     <%= vite_javascript_tag "public.ts", data: { turbo_track: "reload" } %>
     <%= yield :head %>
