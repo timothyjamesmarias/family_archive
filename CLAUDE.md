@@ -182,6 +182,17 @@ explain why and never what, prefer duplication to the wrong abstraction.
 TypeScript is JavaScript with contracts — no type soup. Run `bin/rubocop -a`
 before finishing; `rubocop-rails-omakase` is the base.
 
+## Architecture diagrams
+
+`docs/family-tree-architecture.md` holds Mermaid diagrams of the family-tree
+subsystem as it *is* (plans in `docs/*-plan.md` describe where it is going).
+A change that adds, removes or re-routes a step in a diagrammed flow updates
+the diagram in the same PR, and a new subsystem of comparable size gets its
+own `docs/<area>-architecture.md`. Diagrams show mechanism (what calls what,
+what data crosses each arrow), not file listings; keep each one to a screen
+and prefer two small diagrams over one large one. Reviewers: a diagram that
+no longer matches the code is a finding.
+
 ## Auth
 
 Devise with database_authenticatable, recoverable, rememberable, validatable.
