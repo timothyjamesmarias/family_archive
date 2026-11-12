@@ -31,7 +31,16 @@ class DarkModeTest < ApplicationSystemTestCase
     assert_no_selector "html.dark"
 
     first("button[aria-label='Toggle dark mode']").click
-
     assert_selector "html.dark"
+
+    # A Turbo visit swaps the body under the <html> that carries the class.
+    page.execute_script("window.turboVisitMarker = true")
+    within("nav[aria-label='Primary']", match: :first) { click_on "Articles" }
+    assert_selector "h1", text: "Articles"
+    assert_selector "html.dark"
+
+    first("button[aria-label='Toggle dark mode']").click
+    assert_no_selector "html.dark"
+    assert page.evaluate_script("window.turboVisitMarker")
   end
 end

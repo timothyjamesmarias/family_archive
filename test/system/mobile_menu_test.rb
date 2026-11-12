@@ -22,4 +22,17 @@ class MobileMenuTest < ApplicationSystemTestCase
     assert_no_selector "#mobile-menu"
     assert_selector "button[aria-label='Toggle menu'][aria-expanded='false']"
   end
+
+  test "Back after following a menu link restores the page with the menu closed" do
+    visit root_path
+    find("button[aria-label='Toggle menu']").click
+    within("#mobile-menu") { click_on "Articles" }
+    assert_selector "h1", text: "Articles"
+
+    go_back
+
+    assert_link "Browse the collections"
+    assert_no_selector "#mobile-menu"
+    assert_selector "button[aria-label='Toggle menu'][aria-expanded='false']"
+  end
 end

@@ -4,7 +4,8 @@ const PLAYBACK_RATES = [1, 1.25, 1.5, 2]
 
 // Drives the designed player band around a native <audio>/<video> element:
 // play/pause, a clickable progress track, elapsed/total time, and a cycling
-// speed button. The media element itself stays the source of truth.
+// speed button. The media element itself stays the source of truth, so a
+// Turbo snapshot restore (a fresh, paused element) resyncs the whole band.
 export default class MediaPlayerController extends Controller {
   static targets = ['media', 'playIcon', 'pauseIcon', 'fill', 'track', 'current', 'duration', 'rate', 'stage']
 
@@ -26,6 +27,7 @@ export default class MediaPlayerController extends Controller {
     this.mediaTarget.addEventListener('loadedmetadata', this.sync)
     this.mediaTarget.addEventListener('play', this.sync)
     this.mediaTarget.addEventListener('pause', this.sync)
+    this.mediaTarget.addEventListener('ratechange', this.sync)
     this.sync()
   }
 
@@ -34,6 +36,7 @@ export default class MediaPlayerController extends Controller {
     this.mediaTarget.removeEventListener('loadedmetadata', this.sync)
     this.mediaTarget.removeEventListener('play', this.sync)
     this.mediaTarget.removeEventListener('pause', this.sync)
+    this.mediaTarget.removeEventListener('ratechange', this.sync)
   }
 
   toggle() {
@@ -73,21 +76,18 @@ export default class MediaPlayerController extends Controller {
   }
 
   cycleRate() {
-    if (!this.hasRateTarget) return
     const next = PLAYBACK_RATES[(PLAYBACK_RATES.indexOf(this.mediaTarget.playbackRate) + 1) % PLAYBACK_RATES.length]
     this.mediaTarget.playbackRate = next
-    this.rateTarget.textContent = `${next}×`
   }
 
   private sync = () => {
-    const { currentTime, duration, paused } = this.mediaTarget
+    const { currentTime, duration, paused, playbackRate } = this.mediaTarget
     this.playIconTarget.classList.toggle('hidden', !paused)
     if (this.hasPauseIconTarget) this.pauseIconTarget.classList.toggle('hidden', paused)
     this.currentTarget.textContent = formatTime(currentTime)
     this.durationTarget.textContent = Number.isFinite(duration) ? formatTime(duration) : '--:--'
-    if (Number.isFinite(duration) && duration > 0) {
-      this.fillTarget.style.width = `${(currentTime / duration) * 100}%`
-    }
+    this.fillTarget.style.width = `${duration > 0 ? (currentTime / duration) * 100 : 0}%`
+    if (this.hasRateTarget) this.rateTarget.textContent = `${playbackRate}×`
   }
 }
 

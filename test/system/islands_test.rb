@@ -12,6 +12,21 @@ class IslandsTest < ApplicationSystemTestCase
     assert_selector "tree-canvas svg", visible: :all
   end
 
+  test "Turbo links into and out of the tree page are full loads" do
+    Individual.create!(given_name: "Root", surname: "Marias", is_tree_root: true)
+    visit root_path
+
+    within("nav[aria-label='Primary']", match: :first) { click_on "Family Tree" }
+    assert_selector "tree-canvas svg", visible: :all
+
+    within("nav[aria-label='Primary']", match: :first) { click_on "Articles" }
+    assert_selector "h1", text: "Articles"
+    assert_no_selector "script[src*='family_tree']", visible: false
+
+    go_back
+    assert_selector "tree-canvas svg", visible: :all
+  end
+
   test "other public pages do not load the family-tree bundle" do
     visit root_path
 
