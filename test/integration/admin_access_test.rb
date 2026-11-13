@@ -23,6 +23,18 @@ class AdminAccessTest < ActionDispatch::IntegrationTest
     end
   end
 
+  test "a published article links to its public page; a draft doesn't" do
+    sign_in create_admin
+    live = Article.create!(slug: "live", title: "Live", content: "", published_at: 1.hour.ago)
+    draft = Article.create!(slug: "draft", title: "Draft", content: "")
+
+    get admin_article_path(live)
+    assert_select "a[href='#{article_path("live")}']", "View on site"
+
+    get admin_article_path(draft)
+    assert_select "a", text: "View on site", count: 0
+  end
+
   test "an admin cannot delete their own account" do
     admin = create_admin
     sign_in admin

@@ -2,8 +2,9 @@ class Article < ApplicationRecord
   SLUG_PATTERN = /\A[a-z0-9]+(?:-[a-z0-9]+)*\z/
 
   has_rich_text :content
-  has_many :embeds, as: :owner, dependent: :delete_all
+  has_many :embeds, as: :owner
   after_save :sync_embeds
+  after_destroy { embeds.each { it.release_from(self) } }
 
   validates :title, presence: true
   validates :slug, presence: true, uniqueness: true,
@@ -32,13 +33,13 @@ class Article < ApplicationRecord
 
   private
 
-  # Claims embeds the body references and drops the ones edited out, so the
+  # Claims embeds the body references and releases the ones edited out, so the
   # embeds table holds exactly what articles show.
   # ponytail: an embed inserted into a new article that is never saved stays
   # ownerless; sweep `Embed.where(owner: nil)` by age if those pile up.
   def sync_embeds
     referenced = Array(content.body&.attachables).grep(Embed).map(&:id)
-    embeds.where.not(id: referenced).delete_all
+    embeds.where.not(id: referenced).each { it.release_from(self) }
     Embed.where(id: referenced, owner: nil).update_all(owner_type: self.class.name, owner_id: id)
   end
 end

@@ -4,6 +4,8 @@ class Artifact < ApplicationRecord
   has_one :transcription, dependent: :destroy
   has_many :commentaries, dependent: :destroy
   has_many :files, -> { order(:file_sequence) }, class_name: "ArtifactFile", dependent: :destroy
+  # An article whose embed is gone renders Action Text's missing placeholder.
+  has_many :embeds, as: :embeddable, dependent: :delete_all
 
   validates :slug, presence: true, uniqueness: true
   validates :artifact_type, inclusion: { in: ArtifactType::KEYS }

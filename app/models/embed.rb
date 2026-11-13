@@ -4,19 +4,16 @@
 class Embed < ApplicationRecord
   include ActionText::Attachable
 
-  # Every kind of thing an admin can embed. Adding one: an entry here and the
-  # component it names. `search` returns [label, id] pairs for the picker.
+  # Every kind of thing an admin can embed. Adding one: an entry here, the
+  # component it names, and a menu search class whose #options returns
+  # the picker's [label, id] pairs.
   KINDS = {
     "artifact" => {
       label: "Artifact",
       model: Artifact,
       component: Embeds::ArtifactComponent,
       options: %w[show_annotations show_transcription],
-      search: ->(query) {
-        Artifact.where("title ILIKE ?", "%#{Artifact.sanitize_sql_like(query)}%")
-          .order(:title).limit(20)
-          .map { |artifact| [ artifact.title.presence || artifact.type.untitled_label, artifact.id ] }
-      }
+      search: Artifact::MenuSearch
     }
   }.freeze
 
@@ -40,6 +37,21 @@ class Embed < ApplicationRecord
 
   def option?(name)
     options[name] == true
+  end
+
+  def self.menu_options(kind)
+    KINDS.fetch(kind)[:search].new.options
+  end
+
+  # Called when `record` stops showing this embed. An embed copied into
+  # another editor shares its sgid, so it moves to the rich text that still
+  # shows it; with none left it goes.
+  # ponytail: LIKE scan of every rich text body per release; index or track
+  # references if the archive's articles ever make that slow.
+  def release_from(record)
+    pattern = "%#{self.class.sanitize_sql_like(attachable_sgid)}%"
+    holder = ActionText::RichText.where.not(record:).where("body LIKE ?", pattern).pick(:record_type, :record_id)
+    holder ? update_columns(owner_type: holder.first, owner_id: holder.last) : delete
   end
 
   def component

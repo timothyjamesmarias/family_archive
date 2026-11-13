@@ -4,6 +4,8 @@ class ArticleEmbedsSystemTest < ApplicationSystemTestCase
   test "an admin inserts an artifact embed into an article and it survives a re-save" do
     letter = Artifact.create!(slug: "letter-1923", artifact_type: "LETTER", title: "Letter from 1923")
     letter.create_transcription!(transcription_text: "Dear Anna")
+    Artifact.create!(slug: "ledger-1923", artifact_type: "LEDGER", title: "Ledger 1923")
+    Artifact.create!(slug: "anna", artifact_type: "PHOTO", title: "Anna at the lake")
     article = Article.create!(slug: "story", title: "Story", content: "<p>Intro</p>")
     sign_in_as email: "boss@example.com", admin: true
 
@@ -11,9 +13,10 @@ class ArticleEmbedsSystemTest < ApplicationSystemTestCase
     assert_selector "lexxy-editor", text: "Intro"
     click_on "Insert embed"
     within "dialog" do
-      find("input[name=q]").set("1923")
-      click_on "Search"
-      choose "Letter from 1923"
+      find("input[name=filter]").set("ltr 23")
+      assert_no_selector "option", text: "Anna at the lake"
+      assert_equal "Letter from 1923 · Letter", find("select[name='embed[embeddable_id]'] option", match: :first).text
+      assert_equal letter.id.to_s, find("select[name='embed[embeddable_id]']").value
       check "Show transcription"
       click_on "Insert"
     end
@@ -32,5 +35,23 @@ class ArticleEmbedsSystemTest < ApplicationSystemTestCase
     click_on "Update Article"
     assert_text "Article updated."
     assert_equal [ embed ], article.reload.embeds
+  end
+
+  test "dismissing the dialog with Escape resets it" do
+    Artifact.create!(slug: "letter-1923", artifact_type: "LETTER", title: "Letter from 1923")
+    article = Article.create!(slug: "story", title: "Story", content: "<p>Intro</p>")
+    sign_in_as email: "boss@example.com", admin: true
+
+    visit edit_admin_article_path(article)
+    assert_selector "lexxy-editor", text: "Intro"
+    click_on "Insert embed"
+    find("dialog input[name=filter]").set("1923")
+    # A search field's first Escape clears it; the second dismisses the dialog.
+    find("dialog input[name=filter]").send_keys(:escape, :escape)
+    assert_no_selector "dialog[open]"
+    assert_no_selector "#embed_picker input", visible: :all
+
+    click_on "Insert embed"
+    assert_equal "", find("dialog input[name=filter]").value
   end
 end

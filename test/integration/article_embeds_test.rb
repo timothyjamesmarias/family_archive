@@ -55,11 +55,39 @@ class ArticleEmbedsTest < ActionDispatch::IntegrationTest
     assert_not Embed.exists?(kept.id)
   end
 
-  test "the insert dialog searches by kind and returns attachment markup" do
+  test "an embed copied into another article moves there instead of going" do
+    shared = embed
+    first = Article.create!(slug: "first", title: "First", content: attachment_html(shared))
+    second = Article.create!(slug: "second", title: "Second", content: attachment_html(shared))
+    assert_equal first, shared.reload.owner
+
+    first.update!(content: "<p>gone</p>")
+    assert_equal second, shared.reload.owner
+
+    first.update!(content: attachment_html(shared))
+    second.destroy!
+    assert_equal first, shared.reload.owner
+
+    first.destroy!
+    assert_not Embed.exists?(shared.id)
+  end
+
+  test "deleting an embedded artifact leaves the article rendering" do
+    Article.create!(slug: "a", title: "A", published_at: 1.hour.ago, content: "<p>Intro</p>" + attachment_html(embed))
+
+    @letter.destroy!
+    get article_path("a")
+
+    assert_response :success
+    assert_select ".prose-article", /Intro/
+    assert_equal 0, Embed.count
+  end
+
+  test "the insert dialog lists the kind's menu and returns attachment markup" do
     sign_in create_admin
 
-    get new_admin_embed_path(kind: "artifact", q: "1923")
-    assert_select "input[type=radio][value='#{@letter.id}']"
+    get new_admin_embed_path(kind: "artifact")
+    assert_select "select[name='embed[embeddable_id]'] option[value='#{@letter.id}']", "Letter from 1923 · Letter"
     assert_select "input[type=checkbox][name='embed[options][show_annotations]']"
 
     assert_difference -> { Embed.count } do
