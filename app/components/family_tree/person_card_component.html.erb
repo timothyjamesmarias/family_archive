@@ -1,6 +1,7 @@
 <%= tag.div id: dom_id, class: "tree-card", style: style, **@attributes do %>
   <div class="<%= class_names("tree-card-name", "tree-card-unnamed": name.blank?) %>"><%= name.presence || "Unnamed" %></div>
   <div class="tree-card-dates"><%= dates %></div>
+  <%= menu %>
   <% if @up_href %>
     <%= link_to "+ ↑", @up_href, class: "tree-expand tree-expand-up", aria: { label: "Show parents of #{name.presence || 'this person'}" } %>
   <% end %>

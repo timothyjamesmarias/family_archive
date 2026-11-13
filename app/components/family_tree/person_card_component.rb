@@ -2,6 +2,9 @@ module FamilyTree
   # One person on the stage, placed in pixels from their slot and row. The
   # expand links, when given, sit astride the card's top and bottom edges.
   class PersonCardComponent < ApplicationComponent
+    # Edit mode's action menu; nothing in view mode.
+    renders_one :menu
+
     def initialize(card:, up_href: nil, down_href: nil, **attributes)
       @card = card
       @up_href = up_href

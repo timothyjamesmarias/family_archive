@@ -1,0 +1,9 @@
+<%= helpers.turbo_frame_tag "tree_form" do %>
+  <div class="tree-form">
+    <h2 class="tree-form-heading"><%= @heading %></h2>
+    <% if @error %>
+      <%= render Ui::MessageComponent.new(level: :error).with_content(@error) %>
+    <% end %>
+    <%= content %>
+  </div>
+<% end %>

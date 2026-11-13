@@ -67,12 +67,12 @@ export default class TreeZoomController extends Controller {
     this.zoomAbout(this.scaleValue * factor, { x: event.clientX - rect.left, y: event.clientY - rect.top })
   }
 
-  // Links and buttons on a card still click; anything else on the canvas drags.
+  // Links, buttons and menus on a card still click; anything else on the canvas drags.
   startDrag(event: PointerEvent) {
     // Primary button or first finger only: a right-click keeps its context
     // menu, and a second touch must not take over a drag in progress.
     if (event.button !== 0 || this.drag) return
-    if ((event.target as HTMLElement).closest('a, button')) return
+    if ((event.target as HTMLElement).closest('a, button, details')) return
     this.drag = { pointerX: event.clientX, pointerY: event.clientY, x: this.xValue, y: this.yValue }
     this.viewportTarget.setPointerCapture(event.pointerId)
   }

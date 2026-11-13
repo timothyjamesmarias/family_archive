@@ -8,6 +8,8 @@ class FamilyTreeChartsController < ApplicationController
     @up = ids(params[:up])
     @down = ids(params[:down])
     @depth = DEPTHS.fetch(params[:depth], 1)
+    # A visitor with ?edit=1 just gets the chart.
+    @mode = params[:edit].present? && user_signed_in? ? :edit : :view
     @chart = FamilyTree::Chart.new(up: @up, down: @down, depth: @depth)
   end
 

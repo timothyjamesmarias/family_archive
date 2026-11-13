@@ -84,16 +84,23 @@ flowchart TD
     Cards -.->|"expand click → frame fetch"| URL
 ```
 
-## Planned
+### Edit mode (chunk 3, `?edit=1` for a signed-in user)
 
-### Edit mode (chunk 3)
+A visitor with `?edit=1` gets the plain chart; the controller only grants
+`:edit` when signed in, and every form requires a user.
 
 ```mermaid
 flowchart LR
-    Card["PersonCardComponent"] --> Menu["popover action menu<br/>(native, links only)"]
-    Menu --> Dlg["dialog holding a turbo-frame<br/>(Stimulus: showModal)"]
-    Dlg -->|"POST/PUT/DELETE"| Ctl["FamilyTree::*Controller"]
-    Ctl --> Mut["FamilyTree::Mutations"]
-    Ctl -->|"redirect to the tree URL"| Frame["turbo-frame#chart reloads"]
-    Ctl -->|"422"| Dlg
+    Card["PersonCardComponent<br/>menu slot in edit mode"] --> Menu["ActionMenuComponent<br/>native details: Edit, Add child/spouse/parent,<br/>Link existing parent, Add sibling, Delete<br/>links carry return_to = the chart URL"]
+    Menu -->|"GET, data-turbo-frame=tree_form"| Forms["FamilyTreePeopleController#edit/#delete<br/>FamilyTreeRelativesController#new (kind=…)<br/>EditDialogComponent + PersonFieldsComponent"]
+    Forms --> Dlg["dialog.tree-dialog holding turbo-frame#tree_form<br/>tree-dialog controller: frame-load → showModal"]
+    Dlg -->|"PATCH / POST / DELETE inside the frame"| Ctl["TreeEditing concern:<br/>authenticate, url_from(return_to), person fields → camelCase"]
+    Ctl --> Mut["Individual::Editor<br/>FamilyTree::Mutations (unchanged)"]
+    Ctl -->|"303 to return_to"| Visit["tree-dialog#refresh replays the redirect<br/>as a replace visit: new chart + flash"]
+    Ctl -->|"DomainError → 422"| Dlg
 ```
+
+## Planned
+
+Nothing drawn yet beyond chunk 4 (cutover): route the chart at
+`/family-tree`, delete the island and its JSON API.

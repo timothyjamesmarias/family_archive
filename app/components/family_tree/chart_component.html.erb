@@ -1,40 +1,64 @@
-<%# `advance` puts each expansion in the URL and history; the frame swap itself
-    stays in place, and the frame element (with the zoom controller's view
-    values on it) survives the swap. %>
-<%= helpers.turbo_frame_tag "chart", class: "flex flex-col flex-grow",
-      data: { turbo_action: "advance", controller: "tree-zoom" } do %>
-  <div class="tree-toolbar">
-    <div class="tree-controls" role="group" aria-label="Zoom">
-      <button type="button" class="tree-control" data-action="tree-zoom#out" aria-label="Zoom out">&minus;</button>
-      <span class="tree-control pointer-events-none" data-tree-zoom-target="level">100%</span>
-      <button type="button" class="tree-control" data-action="tree-zoom#in" aria-label="Zoom in">+</button>
+<%# The dialog sits outside the chart frame so it survives the frame's swaps;
+    the frame itself keeps the zoom controller's view values across them. %>
+<div class="flex flex-col flex-grow" data-controller="tree-dialog">
+  <%# `advance` puts each expansion in the URL and history; the frame swap itself stays in place. %>
+  <%= helpers.turbo_frame_tag "chart", class: "flex flex-col flex-grow",
+        data: { turbo_action: "advance", controller: "tree-zoom" } do %>
+    <div class="tree-toolbar">
+      <div class="tree-controls" role="group" aria-label="Zoom">
+        <button type="button" class="tree-control" data-action="tree-zoom#out" aria-label="Zoom out">&minus;</button>
+        <span class="tree-control pointer-events-none" data-tree-zoom-target="level">100%</span>
+        <button type="button" class="tree-control" data-action="tree-zoom#in" aria-label="Zoom in">+</button>
+      </div>
+      <%= render Ui::ButtonComponent.new(variant: :secondary, size: :sm, class: "h-9.5", data: { action: "tree-zoom#fit" }).with_content("Fit to screen") %>
+      <%= render Ui::ButtonComponent.new(variant: :secondary, size: :sm, class: "h-9.5", data: { action: "tree-zoom#centre" }).with_content("Centre on root") %>
+      <span class="tree-toolbar-divider"></span>
+      <span class="tree-toolbar-label">Depth</span>
+      <div class="tree-controls" role="group" aria-label="Depth">
+        <% DEPTH_LABELS.each do |depth, caption| %>
+          <%= link_to caption, depth_path(depth),
+                class: class_names("tree-control", "tree-control-active": depth == @depth),
+                aria: ({ current: "true" } if depth == @depth) %>
+        <% end %>
+      </div>
+      <div class="ml-auto flex items-center gap-2.5">
+        <span class="meta"><%= number_with_delimiter(@chart.total) %> individuals &nbsp;&middot;&nbsp; <%= number_with_delimiter(@chart.shown) %> shown</span>
+        <% if helpers.user_signed_in? %>
+          <% if edit? %>
+            <%= render Ui::ButtonComponent.new(variant: :secondary, size: :sm, class: "h-9.5", href: view_path).with_content("Done editing") %>
+          <% else %>
+            <%= render Ui::ButtonComponent.new(variant: :primary, size: :sm, class: "h-9.5", href: edit_path).with_content("Edit tree") %>
+          <% end %>
+        <% end %>
+      </div>
     </div>
-    <%= render Ui::ButtonComponent.new(variant: :secondary, size: :sm, class: "h-9.5", data: { action: "tree-zoom#fit" }).with_content("Fit to screen") %>
-    <%= render Ui::ButtonComponent.new(variant: :secondary, size: :sm, class: "h-9.5", data: { action: "tree-zoom#centre" }).with_content("Centre on root") %>
-    <span class="tree-toolbar-divider"></span>
-    <span class="tree-toolbar-label">Depth</span>
-    <div class="tree-controls" role="group" aria-label="Depth">
-      <% DEPTH_LABELS.each do |depth, caption| %>
-        <%= link_to caption, depth_path(depth),
-              class: class_names("tree-control", "tree-control-active": depth == @depth),
-              aria: ({ current: "true" } if depth == @depth) %>
-      <% end %>
-    </div>
-    <span class="meta ml-auto"><%= number_with_delimiter(@chart.total) %> individuals &nbsp;&middot;&nbsp; <%= number_with_delimiter(@chart.shown) %> shown</span>
-  </div>
 
-  <div class="tree-canvas" data-tree-zoom-target="viewport"
-       data-action="wheel->tree-zoom#wheel:!passive pointerdown->tree-zoom#startDrag pointermove->tree-zoom#moveDrag pointerup->tree-zoom#endDrag pointercancel->tree-zoom#endDrag">
-    <div class="tree-stage" data-tree-zoom-target="stage" style="width: <%= stage_width %>px; height: <%= stage_height %>px">
-      <%= render FamilyTree::EdgesComponent.new(segments:, width: stage_width, height: stage_height) %>
-      <% @chart.cards.each_with_index do |card, index| %>
-        <%= render FamilyTree::PersonCardComponent.new(
-              card:,
-              up_href: (expand_up_path(card) if card.expands_up?),
-              down_href: (expand_down_path(card) if card.expands_down?),
-              **card_attributes(index)
-            ) %>
-      <% end %>
+    <div class="tree-canvas" data-tree-zoom-target="viewport"
+         data-action="wheel->tree-zoom#wheel:!passive pointerdown->tree-zoom#startDrag pointermove->tree-zoom#moveDrag pointerup->tree-zoom#endDrag pointercancel->tree-zoom#endDrag">
+      <div class="tree-stage" data-tree-zoom-target="stage" style="width: <%= stage_width %>px; height: <%= stage_height %>px">
+        <%= render FamilyTree::EdgesComponent.new(segments:, width: stage_width, height: stage_height) %>
+        <% @chart.cards.each_with_index do |card, index| %>
+          <%= render FamilyTree::PersonCardComponent.new(
+                card:,
+                up_href: (expand_up_path(card) if card.expands_up?),
+                down_href: (expand_down_path(card) if card.expands_down?),
+                **card_attributes(index)
+              ) do |person_card| %>
+            <% if edit? %>
+              <% person_card.with_menu do %>
+                <%= render FamilyTree::ActionMenuComponent.new(person_id: card.person[:id], return_to: helpers.request.fullpath) %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
     </div>
-  </div>
-<% end %>
+  <% end %>
+
+  <% if helpers.user_signed_in? %>
+    <dialog class="tree-dialog" data-tree-dialog-target="dialog" data-action="close->tree-dialog#clear">
+      <%= helpers.turbo_frame_tag "tree_form",
+            data: { tree_dialog_target: "frame", action: "turbo:frame-load->tree-dialog#open turbo:submit-end->tree-dialog#refresh" } %>
+    </dialog>
+  <% end %>
+</div>

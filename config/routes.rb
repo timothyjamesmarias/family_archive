@@ -28,6 +28,14 @@ Rails.application.routes.draw do
   get "family-tree" => "family_tree_pages#show", as: :family_tree
   # Server-rendered chart replacing the island; swaps into /family-tree at cutover.
   get "family-tree/chart" => "family_tree_charts#show", as: :family_tree_chart
+  # Edit mode on the chart: forms load into the page's dialog frame, a save
+  # redirects back to the chart URL it came from.
+  scope "family-tree", as: :family_tree do
+    resources :people, only: %i[edit update destroy], controller: "family_tree_people" do
+      get :delete, on: :member
+      resources :relatives, only: %i[new create], controller: "family_tree_relatives"
+    end
+  end
 
   # JSON API consumed by the family-tree island. Paths and payloads mirror the
   # AdonisJS app so the island ports over without changes.
