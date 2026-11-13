@@ -1,17 +1,11 @@
 module FamilyTree
-  # Line segments for a chart, in the layout's units: x in slots, y in rows,
-  # card centres at integer rows. Cards paint over the lines, so a marriage
-  # line runs centre to centre and a stub ends at the child's centre. The view
-  # scales to pixels and styles by `kind`.
+  # The chart's lines, in pixels, as the design draws them: a couple is joined
+  # by a bracket below their cards, the drop falls from its middle to a bus
+  # above the children, and a stub rises to each child. The view only has to
+  # draw segments and style them by `kind`.
   class Edges
     Segment = Data.define(:kind, :x1, :y1, :x2, :y2)
-
-    # A sibling bus runs this far above its children's row; buses of different
-    # units that would overlap on one row step down a lane each.
-    BUS_ABOVE = 0.4
-    LANE = 0.1
-
-    Bus = Data.define(:unit, :row, :x1, :x2, :child_xs)
+    Bus = Data.define(:unit, :generation, :x1, :x2, :child_xs)
 
     def initialize(positions:, units:)
       @positions = positions
@@ -20,10 +14,10 @@ module FamilyTree
 
     def segments
       @segments ||= begin
-        offsets = lane_offsets
+        lanes = lane_of
         @units.flat_map do |unit|
-          marriage(unit) +
-            buses.select { |bus| bus.unit == unit }.flat_map { |bus| bus_segments(bus, offsets.fetch(bus)) } +
+          bracket(unit) +
+            buses.select { |bus| bus.unit == unit }.flat_map { |bus| bus_segments(bus, lanes.fetch(bus)) } +
             links(unit)
         end
       end
@@ -35,63 +29,84 @@ module FamilyTree
     def parents(unit) = unit.parent_ids.select { |id| @positions.key?(id) }
     def children(unit) = unit.child_ids.select { |id| @positions.key?(id) }
 
-    # Phantom units (no loaded parents) sit one row above their children.
-    def parent_row(unit)
-      return at(parents(unit).first).generation if parents(unit).any?
-      children(unit).map { |id| at(id).generation }.min.to_i - 1
-    end
+    def parent_generation(unit) = at(parents(unit).first).generation
 
     def midpoint(unit)
-      parents(unit).sum { |id| at(id).x } / parents(unit).size.to_f
+      parents(unit).sum { |id| Metrics.centre(at(id).x) } / parents(unit).size.to_f
     end
 
-    def marriage(unit)
+    # Where the drop starts: the bracket under a couple, or straight off the
+    # bottom of a lone parent's card.
+    def drop_top(unit)
+      Metrics.bottom(parent_generation(unit)) + (parents(unit).size > 1 ? Metrics::BRACKET : 0)
+    end
+
+    def bracket(unit)
       return [] if parents(unit).size < 2
-      row = parent_row(unit)
-      [ Segment.new(kind: :marriage, x1: at(parents(unit).first).x, y1: row, x2: at(parents(unit).last).x, y2: row) ]
+      bottom = Metrics.bottom(parent_generation(unit))
+      first, last = parents(unit).values_at(0, -1).map { |id| Metrics.centre(at(id).x) }
+      y = drop_top(unit)
+      [
+        Segment.new(kind: :marriage, x1: first, y1: bottom, x2: first, y2: y),
+        Segment.new(kind: :marriage, x1: first, y1: y, x2: last, y2: y),
+        Segment.new(kind: :marriage, x1: last, y1: y, x2: last, y2: bottom)
+      ]
     end
 
-    # One bus per row of children below the parents; the drop joins it, so the
-    # bus stretches to the midpoint when the children all sit to one side.
+    # One bus per row of children below the parents. The drop joins it, so the
+    # bus stretches to the midpoint when every child sits to one side. A unit
+    # with no loaded parents draws nothing: a bar hanging from nowhere read as
+    # a broken stem above the top row.
     def buses
-      @buses ||= @units.flat_map do |unit|
-        below = children(unit).select { |id| at(id).generation > parent_row(unit) }
-        below.group_by { |id| at(id).generation }.map do |row, ids|
-          xs = ids.map { |id| at(id).x }
-          span = parents(unit).any? ? xs + [ midpoint(unit) ] : xs
-          Bus.new(unit:, row:, x1: span.min, x2: span.max, child_xs: xs)
+      @buses ||= @units.select { |unit| parents(unit).any? }.flat_map do |unit|
+        below = children(unit).select { |id| at(id).generation > parent_generation(unit) }
+        below.group_by { |id| at(id).generation }.map do |generation, ids|
+          xs = ids.map { |id| Metrics.centre(at(id).x) }
+          span = xs + [ midpoint(unit) ]
+          Bus.new(unit:, generation:, x1: span.min, x2: span.max, child_xs: xs)
         end
       end
     end
 
-    def bus_segments(bus, offset)
-      y = bus.row - BUS_ABOVE + offset
-      drop = parents(bus.unit).any? ? [ Segment.new(kind: :drop, x1: midpoint(bus.unit), y1: parent_row(bus.unit), x2: midpoint(bus.unit), y2: y) ] : []
+    def bus_segments(bus, lane)
+      y = Metrics.top(bus.generation) - Metrics::BUS_ABOVE - lane * lane_step(bus.generation)
+      drop = Segment.new(kind: :drop, x1: midpoint(bus.unit), y1: drop_top(bus.unit), x2: midpoint(bus.unit), y2: y)
       line = bus.x1 < bus.x2 ? [ Segment.new(kind: :bus, x1: bus.x1, y1: y, x2: bus.x2, y2: y) ] : []
-      stubs = bus.child_xs.map { |x| Segment.new(kind: :stub, x1: x, y1: y, x2: x, y2: bus.row) }
-      drop + line + stubs
+      stubs = bus.child_xs.map { |x| Segment.new(kind: :stub, x1: x, y1: y, x2: x, y2: Metrics.top(bus.generation)) }
+      [ drop ] + line + stubs
+    end
+
+    # Lanes step up from the bus line towards the bracket above; with many
+    # overlapping buses the step shrinks so the top lane still clears it.
+    def lane_step(generation)
+      room = Metrics::ROW - Metrics::CARD_HEIGHT - Metrics::BRACKET - Metrics::BUS_ABOVE - 4
+      [ Metrics::LANE, room.fdiv([ lanes_in(generation), 1 ].max) ].min
+    end
+
+    def lanes_in(generation)
+      lane_of.select { |bus, _| bus.generation == generation }.values.max.to_i
     end
 
     # Greedy interval colouring per row: each bus takes the lowest lane whose
     # previous bus ended before this one starts.
-    def lane_offsets
-      buses.group_by(&:row).values.flat_map do |row|
+    def lane_of
+      @lane_of ||= buses.group_by(&:generation).values.flat_map do |row|
         ends = []
         row.sort_by(&:x1).map do |bus|
           lane = ends.index { |x2| x2 < bus.x1 } || ends.size
           ends[lane] = bus.x2
-          [ bus, lane * LANE ]
+          [ bus, lane ]
         end
       end.to_h
     end
 
     # A child on or above the parents' row (data the tree model cannot place)
-    # gets a straight line rather than bus-and-stub geometry.
+    # gets a straight line to the top of its card.
     def links(unit)
       return [] if parents(unit).empty?
-      row = parent_row(unit)
-      children(unit).reject { |id| at(id).generation > row }.map do |id|
-        Segment.new(kind: :link, x1: midpoint(unit), y1: row, x2: at(id).x, y2: at(id).generation)
+      children(unit).reject { |id| at(id).generation > parent_generation(unit) }.map do |id|
+        Segment.new(kind: :link, x1: midpoint(unit), y1: drop_top(unit),
+          x2: Metrics.centre(at(id).x), y2: Metrics.top(at(id).generation))
       end
     end
   end

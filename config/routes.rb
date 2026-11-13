@@ -26,6 +26,8 @@ Rails.application.routes.draw do
   resources :articles, only: [ :index, :show ], param: :slug
 
   get "family-tree" => "family_tree_pages#show", as: :family_tree
+  # Server-rendered chart replacing the island; swaps into /family-tree at cutover.
+  get "family-tree/chart" => "family_tree_charts#show", as: :family_tree_chart
 
   # JSON API consumed by the family-tree island. Paths and payloads mirror the
   # AdonisJS app so the island ports over without changes.

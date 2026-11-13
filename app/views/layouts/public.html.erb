@@ -91,7 +91,11 @@
 
     <%# Banded pages (home) manage their own full-width sections; everything
         else renders inside the shared content container. %>
-    <main class="flex-grow <%= "w-full max-w-340 mx-auto px-5 sm:px-8 py-10" unless content_for?(:full_bleed) %>">
+    <%# A page that fills the viewport (the tree) gets a flex column so its
+        stage can grow to the bottom; other full-bleed pages keep block flow,
+        where their centred grids stretch to full width. %>
+    <main class="flex-grow <%= class_names("flex flex-col" => content_for?(:fills_viewport),
+          "w-full max-w-340 mx-auto px-5 sm:px-8 py-10" => !content_for?(:full_bleed)) %>">
       <% if content_for?(:full_bleed) %>
         <div class="w-full max-w-340 mx-auto px-5 sm:px-8"><%= render "layouts/flash" %></div>
       <% else %>

@@ -1,0 +1,5 @@
+<% content_for :title, "Family Tree - Marias Family Archive" %>
+<%# The tree is the page: no content container, the stage fills the viewport. %>
+<% content_for :full_bleed, true %>
+<% content_for :fills_viewport, true %>
+<%= render FamilyTree::ChartComponent.new(chart: @chart, up: @up, down: @down, depth: @depth) %>
