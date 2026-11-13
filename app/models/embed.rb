@@ -5,7 +5,7 @@ class Embed < ApplicationRecord
   include ActionText::Attachable
 
   # Every kind of thing an admin can embed. Adding one: an entry here, the
-  # component it names, and a menu search: an object whose #options returns
+  # component it names, and a menu search class whose #options returns
   # the picker's [label, id] pairs.
   KINDS = {
     "artifact" => {
@@ -13,7 +13,7 @@ class Embed < ApplicationRecord
       model: Artifact,
       component: Embeds::ArtifactComponent,
       options: %w[show_annotations show_transcription],
-      search: "Artifact::MenuSearch"
+      search: Artifact::MenuSearch
     }
   }.freeze
 
@@ -40,7 +40,7 @@ class Embed < ApplicationRecord
   end
 
   def self.menu_options(kind)
-    KINDS.fetch(kind)[:search].constantize.new.options
+    KINDS.fetch(kind)[:search].new.options
   end
 
   # Called when `record` stops showing this embed. An embed copied into
