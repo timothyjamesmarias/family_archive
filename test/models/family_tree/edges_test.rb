@@ -40,10 +40,10 @@ class FamilyTree::EdgesTest < ActiveSupport::TestCase
     assert_not segments.any? { |s| s.kind == :marriage }
   end
 
-  test "parentless siblings get a bus and stubs but no drop" do
+  test "siblings whose parents are not loaded get no lines" do
     segments = edges({ A: [ 0, 0 ], B: [ 1, 0 ] }, u: [ [], %i[A B] ])
 
-    assert_equal [ seg(:bus, 128, 0, 358, 0), seg(:stub, 128, 0, 128, 28), seg(:stub, 358, 0, 358, 28) ], segments
+    assert_empty segments
   end
 
   test "the bus reaches a drop that falls outside the children" do

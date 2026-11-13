@@ -53,15 +53,16 @@ module FamilyTree
       ]
     end
 
-    # One bus per row of children below the parents (a parentless unit's
-    # children are all below). The drop joins it, so the bus stretches to the
-    # midpoint when every child sits to one side.
+    # One bus per row of children below the parents. The drop joins it, so the
+    # bus stretches to the midpoint when every child sits to one side. A unit
+    # with no loaded parents draws nothing: a bar hanging from nowhere read as
+    # a broken stem above the top row.
     def buses
-      @buses ||= @units.flat_map do |unit|
-        below = parents(unit).any? ? children(unit).select { |id| at(id).generation > parent_generation(unit) } : children(unit)
+      @buses ||= @units.select { |unit| parents(unit).any? }.flat_map do |unit|
+        below = children(unit).select { |id| at(id).generation > parent_generation(unit) }
         below.group_by { |id| at(id).generation }.map do |generation, ids|
           xs = ids.map { |id| Metrics.centre(at(id).x) }
-          span = parents(unit).any? ? xs + [ midpoint(unit) ] : xs
+          span = xs + [ midpoint(unit) ]
           Bus.new(unit:, generation:, x1: span.min, x2: span.max, child_xs: xs)
         end
       end
@@ -69,10 +70,10 @@ module FamilyTree
 
     def bus_segments(bus, lane)
       y = Metrics.top(bus.generation) - Metrics::BUS_ABOVE - lane * Metrics::LANE
-      drop = parents(bus.unit).any? ? [ Segment.new(kind: :drop, x1: midpoint(bus.unit), y1: drop_top(bus.unit), x2: midpoint(bus.unit), y2: y) ] : []
+      drop = Segment.new(kind: :drop, x1: midpoint(bus.unit), y1: drop_top(bus.unit), x2: midpoint(bus.unit), y2: y)
       line = bus.x1 < bus.x2 ? [ Segment.new(kind: :bus, x1: bus.x1, y1: y, x2: bus.x2, y2: y) ] : []
       stubs = bus.child_xs.map { |x| Segment.new(kind: :stub, x1: x, y1: y, x2: x, y2: Metrics.top(bus.generation)) }
-      drop + line + stubs
+      [ drop ] + line + stubs
     end
 
     # Greedy interval colouring per row: each bus takes the lowest lane whose

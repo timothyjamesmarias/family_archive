@@ -12,6 +12,9 @@ class FamilyTree::ChartTest < ActiveSupport::TestCase
     @mutations.add_parent(child_id: @john.id, role: "MOTHER", parent_data: { givenName: "Grandma", sex: "F" })
     @mutations.add_parent(child_id: @john.id, role: "FATHER", parent_data: { givenName: "Senior", sex: "M" })
     @mutations.add_parent(child_id: person("Senior").id, role: "FATHER", parent_data: { givenName: "Great", sex: "M" })
+    # A line that no depth from the root reaches: Senior's brother and his son.
+    @mutations.add_sibling(person_id: person("Senior").id, sibling_data: { givenName: "Uncle", sex: "M" })
+    @mutations.add_child(parent_id: person("Uncle").id, child_data: { givenName: "Cousin", sex: "M" })
   end
 
   def person(name) = Individual.find_by!(given_name: name)
@@ -32,7 +35,17 @@ class FamilyTree::ChartTest < ActiveSupport::TestCase
     assert_equal 2, card(chart, "Peter").position.generation
     assert_equal 3, chart.layout.height
     assert_equal 6, chart.shown
-    assert_equal 8, chart.total
+    assert_equal 10, chart.total
+  end
+
+  test "all reaches everyone connected, not just the roots' own line" do
+    deep = FamilyTree::Chart.new(depth: 2)
+    assert_includes names(deep), "Uncle"
+    assert_not_includes names(deep), "Cousin"
+
+    all = FamilyTree::Chart.new(depth: FamilyTree::Chart::ALL)
+    assert_equal Individual.count, all.shown
+    assert_empty all.cards.select { |card| card.expands_up? || card.expands_down? }
   end
 
   test "the father is drawn left of the mother and a child under them" do
@@ -52,7 +65,7 @@ class FamilyTree::ChartTest < ActiveSupport::TestCase
   test "a deeper chart reaches further both ways" do
     chart = FamilyTree::Chart.new(depth: 2)
 
-    assert_equal %w[Anna Grandma Great John Junior Mary Peter Senior], names(chart)
+    assert_equal %w[Anna Grandma Great John Junior Mary Peter Senior Uncle], names(chart)
     assert_equal 0, card(chart, "Great").position.generation
     assert_equal 4, card(chart, "Junior").position.generation
   end

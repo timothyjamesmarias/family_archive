@@ -71,8 +71,34 @@ module FamilyTree
           break if ready.empty?
           ready.each { |id, direction| merge(people, families, expand(id, direction, people)) }
         end
+        exhaust(people, families) if @depth == ALL
         [ people, families ]
       end
+    end
+
+    # "All" means everyone connected, not everyone descended from the roots:
+    # keep expanding whoever arrived flagged with relatives beyond their own
+    # response, each person once per direction, until nobody new arrives.
+    def exhaust(people, families)
+      tried = Set.new
+      loop do
+        frontier = people.values.flat_map { |person| frontier_of(person, families) }.reject { |step| tried.include?(step) }
+        break if frontier.empty?
+        frontier.each do |id, direction|
+          tried << [ id, direction ]
+          merge(people, families, expand(id, direction, people))
+        end
+      end
+    end
+
+    # Up brings parents and siblings; down brings children and, through the
+    # Builder's relatives pass, a spouse a one-parent family is missing.
+    def frontier_of(person, families)
+      flags = person[:relationships]
+      up = flags[:hasUnloadedAncestors] || flags[:hasUnloadedSiblings]
+      down = flags[:hasUnloadedDescendants] ||
+        flags[:spouseFamilyIds].any? { |family_id| families.dig(family_id, :parentIds)&.size == 1 }
+      [ ([ person[:id], :up ] if up), ([ person[:id], :down ] if down) ].compact
     end
 
     # `known` is the chart so far: the root's own record came with an earlier

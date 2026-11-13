@@ -24,12 +24,16 @@ class FamilyTreeChartTest < ApplicationSystemTestCase
     assert_current_path(/down%5B%5D=\d+/)
   end
 
-  test "zoom buttons scale the stage" do
+  test "zoom buttons scale the stage and the view survives an expansion" do
     visit family_tree_chart_path
 
     find("button[aria-label='Zoom out']").click
-
     assert_selector "[data-tree-zoom-target='level']", text: "80%"
-    assert_equal "0.8", page.evaluate_script("document.querySelector('.tree-stage').style.zoom")
+    assert_match(/scale\(0\.8\)/, page.evaluate_script("document.querySelector('.tree-stage').style.transform"))
+
+    find("a.tree-expand-down").click
+    assert_selector ".tree-card-name", text: "Junior Marias"
+    assert_selector "[data-tree-zoom-target='level']", text: "80%"
+    assert_match(/scale\(0\.8\)/, page.evaluate_script("document.querySelector('.tree-stage').style.transform"))
   end
 end

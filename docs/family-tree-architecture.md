@@ -66,7 +66,7 @@ flowchart TD
 
     subgraph Chart["FamilyTree::Chart"]
         direction TB
-        I["Builder#initial_tree,<br/>then expand_tree(root, depth up and down) per root,<br/>then expand_tree(id) for each up[]/down[] once its person is on the chart"]
+        I["Builder#initial_tree,<br/>then expand_tree(root, depth up and down) per root,<br/>then expand_tree(id) for each up[]/down[] once its person is on the chart;<br/>depth=all keeps expanding flagged people until nobody new arrives"]
         MG["merge like the island's store:<br/>first person wins, family ids union"]
         U["decorate: parents father-first by sex,<br/>children by child_order, families by id → Layout::Unit[]"]
         LY["FamilyTree::Layout → positions"]
@@ -80,7 +80,7 @@ flowchart TD
     V --> Cards["PersonCardComponent × cards<br/>left = Metrics.left(x), top = Metrics.top(generation)<br/>expand links: same URL + one id + #person-id"]
 
     V -->|HTML| Frame["turbo-frame#chart, turbo-action=advance"]
-    Frame --> Z["tree-zoom Stimulus controller<br/>CSS zoom on the stage, drag scrolls the canvas"]
+    Frame --> Z["tree-zoom Stimulus controller<br/>translate/scale transform on the stage: wheel zooms about the pointer,<br/>drag pans, fit and centre; view values live on the frame and survive a swap"]
     Cards -.->|"expand click → frame fetch"| URL
 ```
 

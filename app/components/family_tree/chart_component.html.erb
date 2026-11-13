@@ -1,7 +1,8 @@
-<%# `advance` puts each expansion in the URL and history; the frame swap itself stays in place. %>
+<%# `advance` puts each expansion in the URL and history; the frame swap itself
+    stays in place, and the frame element (with the zoom controller's view
+    values on it) survives the swap. %>
 <%= helpers.turbo_frame_tag "chart", class: "flex flex-col flex-grow",
-      data: { turbo_action: "advance", controller: "tree-zoom",
-              tree_zoom_width_value: stage_width, tree_zoom_height_value: stage_height } do %>
+      data: { turbo_action: "advance", controller: "tree-zoom" } do %>
   <div class="tree-toolbar">
     <div class="tree-controls" role="group" aria-label="Zoom">
       <button type="button" class="tree-control" data-action="tree-zoom#out" aria-label="Zoom out">&minus;</button>

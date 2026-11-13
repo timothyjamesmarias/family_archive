@@ -724,14 +724,16 @@
            dark:text-ink-50 dark:bg-ink-600 dark:hover:bg-ink-600;
   }
 
+  /* The stage pans and zooms by transform inside a clipped viewport
+     (tree-zoom controller), so the canvas never scrolls. */
   .tree-canvas {
-    @apply relative flex-grow overflow-auto cursor-grab select-none
+    @apply relative flex-grow overflow-hidden cursor-grab select-none touch-none
            bg-sage-50 bg-[radial-gradient(#dfe3df_1px,transparent_1px)] bg-[size:22px_22px]
            dark:bg-ink-800 dark:bg-[radial-gradient(#3f3937_1px,transparent_1px)];
   }
 
   .tree-stage {
-    @apply relative;
+    @apply absolute left-0 top-0 origin-top-left;
   }
 
   .tree-edges {
