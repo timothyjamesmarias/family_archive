@@ -10,9 +10,11 @@ class FamilyTreeEditingTest < ApplicationSystemTestCase
     sign_in_as email: "editor@example.com"
   end
 
-  test "adding a child from a card's menu shows the child on the chart" do
+  test "adding a child from a card's menu shows the child on the chart and keeps the view" do
     visit family_tree_chart_path(edit: 1)
     assert_selector ".tree-card", count: 2
+    find("button[aria-label='Zoom out']").click
+    assert_selector "[data-tree-zoom-target='level']", text: "80%"
 
     within("#person-#{@john.id}") { find("summary").click }
     within("#person-#{@john.id}") { click_on "Add child" }
@@ -28,6 +30,22 @@ class FamilyTreeEditingTest < ApplicationSystemTestCase
     assert_no_selector "dialog[open]"
     assert_text "Child added for John Marias"
     assert_current_path(/edit=1/)
+    assert_selector "[data-tree-zoom-target='level']", text: "80%"
+  end
+
+  test "editing a person updates their card in place" do
+    visit family_tree_chart_path(edit: 1)
+
+    within("#person-#{@john.id}") { find("summary").click }
+    within("#person-#{@john.id}") { click_on "Edit" }
+    within("dialog[open]") do
+      fill_in "Given name", with: "Johann"
+      fill_in "Birth date", with: "1849"
+      click_on "Save"
+    end
+
+    assert_selector "#person-#{@john.id} .tree-card-name", text: "Johann Marias"
+    assert_selector "#person-#{@john.id} .tree-card-dates", text: "b. 1849"
   end
 
   test "a refused change stays in the dialog with its reason" do
