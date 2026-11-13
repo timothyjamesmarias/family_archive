@@ -10,8 +10,8 @@ module FamilyTree
     end
 
     def initialize(up: [], down: [], builder: Builder.new)
-      @up = up.map(&:to_i)
-      @down = down.map(&:to_i)
+      @up = Array(up).map(&:to_i).uniq
+      @down = Array(down).map(&:to_i).uniq
       @builder = builder
     end
 
@@ -58,17 +58,46 @@ module FamilyTree
         loop do
           ready, pending = pending.partition { |id, _| people.key?(id) }
           break if ready.empty?
-          ready.each { |id, direction| merge(people, families, expand(id, direction)) }
+          ready.each { |id, direction| merge(people, families, expand(id, direction, people)) }
         end
         [ people, families ]
       end
     end
 
-    def expand(id, direction)
+    # `known` is the chart so far: the root's own record came with an earlier
+    # response, and `people` is not available while the tree is being built.
+    def expand(id, direction, known)
       case direction
-      when :up then @builder.expand_tree(id, generations_up: 1, include_siblings: true)
+      when :up then ancestors_only(@builder.expand_tree(id, generations_up: 1, include_siblings: true), id, known)
       when :down then @builder.expand_tree(id, generations_down: 1)
       end
+    end
+
+    # An up-expansion as the island showed it: the parents (and their other
+    # marriages), the siblings, and only those siblings' marriages that have
+    # children. A childless in-law would float beside a sibling with nothing
+    # attaching them; the siblings' descendants are a down-expansion away.
+    def ancestors_only(response, root_id, known)
+      individuals = response[:individuals].index_by { |person| person[:id] }
+      families = response[:families].index_by { |family| family[:familyId] }
+      root = known[root_id] || individuals[root_id]
+      parent_family = families[root&.dig(:relationships, :childFamilyIds)&.first]
+      return response unless parent_family
+
+      keep_people = Set.new(parent_family[:parentIds] + parent_family[:childIds])
+      keep_families = Set[parent_family[:familyId]]
+      parent_family[:parentIds].each { |id| keep_families.merge(individuals.dig(id, :relationships, :spouseFamilyIds) || []) }
+      parent_family[:childIds].each do |id|
+        (individuals.dig(id, :relationships, :spouseFamilyIds) || []).each do |family_id|
+          marriage = families[family_id]
+          next unless marriage && marriage[:childIds].any?
+          keep_families << family_id
+          keep_people.merge(marriage[:parentIds])
+        end
+      end
+
+      { individuals: response[:individuals].select { |person| keep_people.include?(person[:id]) },
+        families: response[:families].select { |family| keep_families.include?(family[:familyId]) } }
     end
 
     def merge(people, families, response)
@@ -83,8 +112,10 @@ module FamilyTree
       end
     end
 
+    # Men left; when sex cannot decide (unknown, or a same-sex couple), the
+    # lower id, so the order never depends on how the rows came back.
     def fathers_first(parent_ids)
-      parent_ids.partition { |id| people[id][:sex] == "M" }.flatten
+      parent_ids.sort_by { |id| [ people[id][:sex] == "M" ? 0 : 1, id ] }
     end
 
     def birth_order(family_id, child_ids)
