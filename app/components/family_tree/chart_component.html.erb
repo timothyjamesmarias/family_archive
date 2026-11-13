@@ -23,7 +23,8 @@
     <span class="meta ml-auto"><%= number_with_delimiter(@chart.total) %> individuals &nbsp;&middot;&nbsp; <%= @chart.shown %> shown</span>
   </div>
 
-  <div class="tree-canvas" data-tree-zoom-target="viewport">
+  <div class="tree-canvas" data-tree-zoom-target="viewport"
+       data-action="wheel->tree-zoom#wheel:!passive pointerdown->tree-zoom#startDrag pointermove->tree-zoom#moveDrag pointerup->tree-zoom#endDrag pointercancel->tree-zoom#endDrag">
     <div class="tree-stage" data-tree-zoom-target="stage" style="width: <%= stage_width %>px; height: <%= stage_height %>px">
       <%= render FamilyTree::EdgesComponent.new(segments:, width: stage_width, height: stage_height) %>
       <% @chart.cards.each_with_index do |card, index| %>

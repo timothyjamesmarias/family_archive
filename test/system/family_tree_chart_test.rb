@@ -36,4 +36,17 @@ class FamilyTreeChartTest < ApplicationSystemTestCase
     assert_selector "[data-tree-zoom-target='level']", text: "80%"
     assert_match(/scale\(0\.8\)/, page.evaluate_script("document.querySelector('.tree-stage').style.transform"))
   end
+
+  test "the wheel still zooms after a depth change swaps the canvas" do
+    visit family_tree_chart_path
+    within(".tree-toolbar") { click_on "2" }
+    assert_selector "a.tree-control-active", text: "2"
+
+    page.execute_script(<<~JS)
+      document.querySelector('.tree-canvas').dispatchEvent(
+        new WheelEvent('wheel', { deltaY: -100, clientX: 50, clientY: 50, bubbles: true, cancelable: true }))
+    JS
+
+    assert_selector "[data-tree-zoom-target='level']", text: "122%"
+  end
 end

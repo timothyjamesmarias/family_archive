@@ -28,21 +28,8 @@ export default class TreeZoomController extends Controller {
 
   private drag: { pointerX: number; pointerY: number; x: number; y: number } | null = null
 
-  connect() {
-    this.viewportTarget.addEventListener('wheel', this.wheel, { passive: false })
-    this.viewportTarget.addEventListener('pointerdown', this.startDrag)
-    this.viewportTarget.addEventListener('pointermove', this.moveDrag)
-    this.viewportTarget.addEventListener('pointerup', this.endDrag)
-    this.viewportTarget.addEventListener('pointercancel', this.endDrag)
-  }
-
-  disconnect() {
-    this.viewportTarget.removeEventListener('wheel', this.wheel)
-    this.viewportTarget.removeEventListener('pointerdown', this.startDrag)
-    this.viewportTarget.removeEventListener('pointermove', this.moveDrag)
-    this.viewportTarget.removeEventListener('pointerup', this.endDrag)
-    this.viewportTarget.removeEventListener('pointercancel', this.endDrag)
-  }
+  // Pointer and wheel handlers are wired as actions on the viewport markup,
+  // not here: a frame swap replaces the viewport, and actions come with it.
 
   // A frame swap brings a new stage; show it where the old one was, then
   // bring the card named in the URL into view, since the page cannot scroll
@@ -73,11 +60,31 @@ export default class TreeZoomController extends Controller {
     if (this.hasRootTarget) this.centreOn(this.rootTarget)
   }
 
-  private wheel = (event: WheelEvent) => {
+  wheel(event: WheelEvent) {
     event.preventDefault()
     const factor = Math.exp(-event.deltaY * (event.deltaMode === 1 ? 0.05 : event.deltaMode ? 1 : 0.002))
     const rect = this.viewportTarget.getBoundingClientRect()
     this.zoomAbout(this.scaleValue * factor, { x: event.clientX - rect.left, y: event.clientY - rect.top })
+  }
+
+  // Links and buttons on a card still click; anything else on the canvas drags.
+  startDrag(event: PointerEvent) {
+    if ((event.target as HTMLElement).closest('a, button')) return
+    this.drag = { pointerX: event.clientX, pointerY: event.clientY, x: this.xValue, y: this.yValue }
+    this.viewportTarget.setPointerCapture(event.pointerId)
+  }
+
+  moveDrag(event: PointerEvent) {
+    if (!this.drag) return
+    this.set(
+      this.drag.x + (event.clientX - this.drag.pointerX),
+      this.drag.y + (event.clientY - this.drag.pointerY),
+      this.scaleValue,
+    )
+  }
+
+  endDrag() {
+    this.drag = null
   }
 
   // Scale while keeping the stage point under `about` (viewport coordinates) still.
@@ -92,26 +99,6 @@ export default class TreeZoomController extends Controller {
     const cardX = card.offsetLeft + card.offsetWidth / 2
     const cardY = card.offsetTop + card.offsetHeight / 2
     this.set(centre.x - cardX * this.scaleValue, centre.y - cardY * this.scaleValue, this.scaleValue)
-  }
-
-  // Links on a card still click; anything else on the canvas drags.
-  private startDrag = (event: PointerEvent) => {
-    if ((event.target as HTMLElement).closest('a, button')) return
-    this.drag = { pointerX: event.clientX, pointerY: event.clientY, x: this.xValue, y: this.yValue }
-    this.viewportTarget.setPointerCapture(event.pointerId)
-  }
-
-  private moveDrag = (event: PointerEvent) => {
-    if (!this.drag) return
-    this.set(
-      this.drag.x + (event.clientX - this.drag.pointerX),
-      this.drag.y + (event.clientY - this.drag.pointerY),
-      this.scaleValue,
-    )
-  }
-
-  private endDrag = () => {
-    this.drag = null
   }
 
   private set(x: number, y: number, scale: number) {
