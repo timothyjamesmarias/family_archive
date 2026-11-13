@@ -19,6 +19,8 @@ class FamilyTreeRelativesController < ApplicationController
   }.freeze
 
   def create
+    return render_form(status: :unprocessable_entity) unless valid_dates?(dates)
+
     case kind
     when "child"
       mutations.add_child(parent_id: person.id, child_data: person_data, parent_family_id: params[:family_id].presence)
@@ -45,6 +47,10 @@ class FamilyTreeRelativesController < ApplicationController
   def role = params[:role].to_s
 
   def mutations = FamilyTree::Mutations.new
+
+  def dates
+    person_values.slice(:birth_date, :death_date).merge(marriage_date: params[:marriage_date], divorce_date: params[:divorce_date])
+  end
 
   def render_form(status: :ok)
     render :new, status:

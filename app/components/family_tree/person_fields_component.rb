@@ -6,13 +6,15 @@ module FamilyTree
   class PersonFieldsComponent < ApplicationComponent
     SEXES = { "M" => "Male", "F" => "Female", "" => "Unknown" }.freeze
 
-    def initialize(values: {}, person: nil, except: [])
+    def initialize(values: {}, person: nil, except: [], errors: {})
       @values = values
       @person = person
       @except = except
+      @errors = errors
     end
 
     def show?(field) = @except.exclude?(field)
+    def error(field) = @errors[field]
 
     def value(field)
       @values.fetch(field) { prefill[field] }

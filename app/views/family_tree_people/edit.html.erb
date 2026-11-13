@@ -1,7 +1,7 @@
 <%= render FamilyTree::EditDialogComponent.new(heading: "Edit #{person.display_name}", error: @error) do %>
   <%= form_with url: family_tree_person_path(person), method: :patch, data: { turbo_frame: "tree_form" } do %>
     <%= hidden_field_tag :return_to, return_to %>
-    <%= render FamilyTree::PersonFieldsComponent.new(person:, values: person_values) %>
+    <%= render FamilyTree::PersonFieldsComponent.new(person:, values: person_values, errors:) %>
     <%= render FamilyTree::FormActionsComponent.new(submit: "Save") %>
   <% end %>
 <% end %>

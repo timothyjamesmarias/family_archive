@@ -55,6 +55,26 @@ class FamilyTreeEditingTest < ActionDispatch::IntegrationTest
     assert_equal "1849", @john.events.find_by(event_type: "BIRTH").date_string
   end
 
+  test "a date the archive cannot read is refused, field by field, and nothing is saved" do
+    sign_in_user
+    patch family_tree_person_path(@john), params: {
+      return_to: @chart, person: { given_name: "Johann", birth_date: "sometime in spring", death_date: "ABT 1921" }
+    }
+
+    assert_response :unprocessable_entity
+    assert_select ".field-invalid .field-label", text: "Birth date"
+    assert_select ".field-invalid .field-label", text: "Death date", count: 0
+    assert_select "input[name='person[given_name]'][value='Johann']", true, "the form keeps what was typed"
+    assert_equal "John", @john.reload.given_name
+
+    post family_tree_person_relatives_path(@peter), params: {
+      kind: "spouse", return_to: @chart, marriage_date: "soon", person: { given_name: "Wife" }
+    }
+    assert_response :unprocessable_entity
+    assert_select ".field-invalid .field-label", text: "Marriage date"
+    assert_nil Individual.find_by(given_name: "Wife")
+  end
+
   test "a return address off this site is ignored" do
     sign_in_user
     patch family_tree_person_path(@john), params: { return_to: "https://evil.example/", person: { given_name: "J" } }

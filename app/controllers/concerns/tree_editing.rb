@@ -7,9 +7,11 @@ module TreeEditing
 
   PERSON_FIELDS = %i[given_name surname sex birth_date birth_place death_date death_place].freeze
 
+  DATE_HINT = "Use the archive's form: 12 JUN 1849, JUN 1849 or 1849, with ABT, BEF or AFT in front if unsure."
+
   included do
     before_action :authenticate_user!
-    helper_method :person, :return_to, :person_values
+    helper_method :person, :return_to, :person_values, :errors
 
     rescue_from DomainError do |error|
       @error = error.message
@@ -18,6 +20,16 @@ module TreeEditing
   end
 
   private
+
+  def errors = @errors || {}
+
+  # Dates are stored as written, so anything Gedcom::Date cannot read would
+  # sit in the archive as text forever. Refuse it here, field by field.
+  def valid_dates?(values)
+    @errors = values.select { |_, value| value.present? && Gedcom::Date.parse(value).nil? }.transform_values { DATE_HINT }
+    @error = "One or more dates could not be read." if @errors.any?
+    @errors.empty?
+  end
 
   def person
     @person ||= Individual.includes(events: :place).find(params[:person_id] || params[:id])

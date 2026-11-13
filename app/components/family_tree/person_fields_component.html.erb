@@ -18,13 +18,13 @@
       </div>
     </fieldset>
   <% end %>
-  <%= render Ui::FieldComponent.new(label: "Birth date", hint: "As recorded, e.g. 12 JUN 1849") do %>
+  <%= render Ui::FieldComponent.new(label: "Birth date", hint: "As recorded, e.g. 12 JUN 1849", error: error(:birth_date)) do %>
     <%= text_field_tag "person[birth_date]", value(:birth_date), class: "field-input" %>
   <% end %>
   <%= render Ui::FieldComponent.new(label: "Birth place") do %>
     <%= text_field_tag "person[birth_place]", value(:birth_place), class: "field-input" %>
   <% end %>
-  <%= render Ui::FieldComponent.new(label: "Death date") do %>
+  <%= render Ui::FieldComponent.new(label: "Death date", error: error(:death_date)) do %>
     <%= text_field_tag "person[death_date]", value(:death_date), class: "field-input" %>
   <% end %>
   <%= render Ui::FieldComponent.new(label: "Death place") do %>

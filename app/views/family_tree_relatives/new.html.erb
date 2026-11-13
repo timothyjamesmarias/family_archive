@@ -40,16 +40,16 @@
           <% end %>
         <% end %>
       <% when "spouse" %>
-        <%= render Ui::FieldComponent.new(label: "Marriage date") do %>
+        <%= render Ui::FieldComponent.new(label: "Marriage date", error: errors[:marriage_date]) do %>
           <%= text_field_tag :marriage_date, params[:marriage_date], class: "field-input" %>
         <% end %>
-        <%= render Ui::FieldComponent.new(label: "Divorce date") do %>
+        <%= render Ui::FieldComponent.new(label: "Divorce date", error: errors[:divorce_date]) do %>
           <%= text_field_tag :divorce_date, params[:divorce_date], class: "field-input" %>
         <% end %>
       <% when "parent" %>
         <%= render FamilyTree::RoleChoiceComponent.new(role:) %>
       <% end %>
-      <%= render FamilyTree::PersonFieldsComponent.new(values: person_values, except: (kind == "parent" ? [ :sex ] : [])) %>
+      <%= render FamilyTree::PersonFieldsComponent.new(values: person_values, errors:, except: (kind == "parent" ? [ :sex ] : [])) %>
       <%= render FamilyTree::FormActionsComponent.new(submit: "Add") %>
     <% end %>
   <% end %>
