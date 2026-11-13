@@ -1,5 +1,7 @@
 <% content_for :title, "Family Tree - Marias Family Archive" %>
-<%# The tree is the page: no content container, the stage fills the viewport. %>
+<%# The tree is the page: no content container, the stage fills the viewport,
+    and a flash floats over it rather than pushing it down. %>
 <% content_for :full_bleed, true %>
 <% content_for :fills_viewport, true %>
+<% content_for :floating_flash, true %>
 <%= render FamilyTree::ChartComponent.new(chart: @chart, up: @up, down: @down, depth: @depth, mode: @mode) %>

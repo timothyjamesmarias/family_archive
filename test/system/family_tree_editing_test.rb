@@ -28,7 +28,7 @@ class FamilyTreeEditingTest < ApplicationSystemTestCase
 
     assert_selector ".tree-card-name", text: "Peter Marias"
     assert_no_selector "dialog[open]"
-    assert_text "Child added for John Marias"
+    assert_selector ".toast-stack .message", text: "Child added for John Marias"
     assert_current_path(/edit=1/)
     assert_selector "[data-tree-zoom-target='level']", text: "80%"
   end
