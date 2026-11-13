@@ -3,35 +3,23 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test:frontend": "vitest run",
     "herb:lint": "herb-lint app/views app/components"
   },
   "devDependencies": {
     "@herb-tools/linter": "^0.11.2",
     "@tailwindcss/typography": "^0.5.20",
     "@tailwindcss/vite": "^4.3.3",
-    "@types/d3-selection": "^3.0.11",
-    "@types/d3-shape": "^3.1.8",
-    "@types/d3-transition": "^3.0.9",
-    "@types/d3-zoom": "^3.0.8",
-    "@types/dagre": "^0.7.54",
-    "happy-dom": "^20.3.1",
     "jsdom": "^29.1.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vite": "^8.3.6",
-    "vite-plugin-ruby": "^5.2.6",
-    "vitest": "^4.1.10"
+    "vite-plugin-ruby": "^5.2.6"
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.23",
     "@uppy/core": "^5.2.0",
     "@uppy/dashboard": "^5.1.1",
-    "d3-selection": "^3.0.0",
-    "d3-shape": "^3.2.0",
-    "d3-zoom": "^3.0.0",
-    "dagre": "^0.8.5",
     "read-gedcom": "^0.3.2"
   }
 }

@@ -11,7 +11,7 @@ class FamilyTreeChartTest < ActionDispatch::IntegrationTest
   end
 
   test "renders the loaded people as placed cards inside the chart frame" do
-    get family_tree_chart_path
+    get family_tree_path
 
     assert_response :success
     assert_select "turbo-frame#chart" do
@@ -22,15 +22,15 @@ class FamilyTreeChartTest < ActionDispatch::IntegrationTest
   end
 
   test "a card with unloaded children links to the same URL plus its id" do
-    get family_tree_chart_path
+    get family_tree_path
 
     assert_select "#person-#{@peter.id} a.tree-expand-down[href=?]",
-      family_tree_chart_path(down: [ @peter.id ], anchor: "person-#{@peter.id}")
+      family_tree_path(down: [ @peter.id ], anchor: "person-#{@peter.id}")
     assert_select "#person-#{@john.id} a.tree-expand-down", count: 0
   end
 
   test "expansions and depth come from the URL" do
-    get family_tree_chart_path(down: [ @peter.id ], depth: "2")
+    get family_tree_path(down: [ @peter.id ], depth: "2")
 
     assert_select ".tree-card-name", text: "Junior Marias"
     assert_select "a.tree-control-active[aria-current='true']", text: "2"
@@ -38,7 +38,7 @@ class FamilyTreeChartTest < ActionDispatch::IntegrationTest
   end
 
   test "ignores ids that are not numbers" do
-    get family_tree_chart_path(up: [ "drop table", "" ], depth: "nope")
+    get family_tree_path(up: [ "drop table", "" ], depth: "nope")
 
     assert_response :success
     assert_select ".tree-card", count: 3

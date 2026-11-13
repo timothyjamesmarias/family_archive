@@ -10,8 +10,7 @@
     <meta name="turbo-prefetch" content="false">
     <%= render "shared/theme_boot" %>
     <%= vite_client_tag %>
-    <%# Reload on a deploy, and on leaving /family-tree, whose island tags
-        are tracked too (see family_tree_pages/show). %>
+    <%# Tracked so a deploy reloads open tabs. %>
     <%= vite_stylesheet_tag "public", data: { turbo_track: "reload" } %>
     <%= vite_javascript_tag "public.ts", data: { turbo_track: "reload" } %>
     <%= yield :head %>
