@@ -36,8 +36,8 @@ export default class TreeZoomController extends Controller {
   // a transformed stage to an anchor itself.
   stageTargetConnected() {
     this.render()
-    const anchored = location.hash && this.stageTarget.querySelector<HTMLElement>(location.hash)
-    if (anchored) this.centreOn(anchored)
+    const anchored = location.hash && document.getElementById(decodeURIComponent(location.hash.slice(1)))
+    if (anchored && this.stageTarget.contains(anchored)) this.centreOn(anchored)
   }
 
   in() {
@@ -69,6 +69,9 @@ export default class TreeZoomController extends Controller {
 
   // Links and buttons on a card still click; anything else on the canvas drags.
   startDrag(event: PointerEvent) {
+    // Primary button or first finger only: a right-click keeps its context
+    // menu, and a second touch must not take over a drag in progress.
+    if (event.button !== 0 || this.drag) return
     if ((event.target as HTMLElement).closest('a, button')) return
     this.drag = { pointerX: event.clientX, pointerY: event.clientY, x: this.xValue, y: this.yValue }
     this.viewportTarget.setPointerCapture(event.pointerId)

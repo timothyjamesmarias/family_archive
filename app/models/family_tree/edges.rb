@@ -69,17 +69,28 @@ module FamilyTree
     end
 
     def bus_segments(bus, lane)
-      y = Metrics.top(bus.generation) - Metrics::BUS_ABOVE - lane * Metrics::LANE
+      y = Metrics.top(bus.generation) - Metrics::BUS_ABOVE - lane * lane_step(bus.generation)
       drop = Segment.new(kind: :drop, x1: midpoint(bus.unit), y1: drop_top(bus.unit), x2: midpoint(bus.unit), y2: y)
       line = bus.x1 < bus.x2 ? [ Segment.new(kind: :bus, x1: bus.x1, y1: y, x2: bus.x2, y2: y) ] : []
       stubs = bus.child_xs.map { |x| Segment.new(kind: :stub, x1: x, y1: y, x2: x, y2: Metrics.top(bus.generation)) }
       [ drop ] + line + stubs
     end
 
+    # Lanes step up from the bus line towards the bracket above; with many
+    # overlapping buses the step shrinks so the top lane still clears it.
+    def lane_step(generation)
+      room = Metrics::ROW - Metrics::CARD_HEIGHT - Metrics::BRACKET - Metrics::BUS_ABOVE - 4
+      [ Metrics::LANE, room.fdiv([ lanes_in(generation), 1 ].max) ].min
+    end
+
+    def lanes_in(generation)
+      lane_of.select { |bus, _| bus.generation == generation }.values.max.to_i
+    end
+
     # Greedy interval colouring per row: each bus takes the lowest lane whose
     # previous bus ended before this one starts.
     def lane_of
-      buses.group_by(&:generation).values.flat_map do |row|
+      @lane_of ||= buses.group_by(&:generation).values.flat_map do |row|
         ends = []
         row.sort_by(&:x1).map do |bus|
           lane = ends.index { |x2| x2 < bus.x1 } || ends.size

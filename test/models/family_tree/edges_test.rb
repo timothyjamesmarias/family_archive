@@ -62,6 +62,20 @@ class FamilyTree::EdgesTest < ActiveSupport::TestCase
     assert_includes segments, seg(:bus, 588, 156, 1278, 156)
   end
 
+  # Four couples whose children interleave need four lanes; the bracket sits
+  # at 138, so the lanes squeeze into the 28px above the bus line rather
+  # than climbing past it.
+  test "many overlapping buses stay below the brackets" do
+    positions = { A1: [ 0, 0 ], A2: [ 1, 0 ], B1: [ 2, 0 ], B2: [ 3, 0 ], C1: [ 4, 0 ], C2: [ 5, 0 ], D1: [ 6, 0 ], D2: [ 7, 0 ],
+                  a1: [ 0, 1 ], b1: [ 1, 1 ], c1: [ 2, 1 ], d1: [ 3, 1 ], d2: [ 4, 1 ], c2: [ 5, 1 ], b2: [ 6, 1 ], a2: [ 7, 1 ] }
+    segments = edges(positions,
+      a: [ %i[A1 A2], %i[a1 a2] ], b: [ %i[B1 B2], %i[b1 b2] ], c: [ %i[C1 C2], %i[c1 c2] ], d: [ %i[D1 D2], %i[d1 d2] ])
+
+    bus_ys = segments.select { |s| s.kind == :bus }.map(&:y1).sort.reverse
+    assert_equal [ 166, 158, 150, 142 ], bus_ys
+    assert segments.select { |s| s.kind == :drop }.all? { |s| s.y2 > s.y1 }, "every drop still goes down"
+  end
+
   test "a child more than one row down gets a longer drop to a bus above its own row" do
     segments = edges({ F: [ 0, 0 ], M: [ 1, 0 ], C: [ 0.5, 2 ] }, u: [ %i[F M], %i[C] ])
 

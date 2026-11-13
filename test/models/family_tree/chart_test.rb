@@ -113,7 +113,6 @@ class FamilyTree::ChartTest < ActiveSupport::TestCase
   end
 
   test "an expansion waits for the one that brings its person, whatever the URL order" do
-    @mutations.add_parent(child_id: person("Senior").id, role: "FATHER", parent_data: { givenName: "Great", sex: "M" })
     @mutations.add_parent(child_id: person("Great").id, role: "FATHER", parent_data: { givenName: "Elder", sex: "M" })
 
     chart = FamilyTree::Chart.new(up: [ person("Great").id, person("Senior").id ])
@@ -130,24 +129,20 @@ class FamilyTree::ChartTest < ActiveSupport::TestCase
     assert_equal chart.units.map(&:id), chart.units.map(&:id).sort
   end
 
-  test "expanding up shows the siblings and the parents, but not a sibling's childless marriage" do
-    @mutations.add_parent(child_id: person("Senior").id, role: "FATHER", parent_data: { givenName: "Great", sex: "M" })
-    @mutations.add_sibling(person_id: person("Senior").id, sibling_data: { givenName: "Uncle", sex: "M" })
+  test "expanding up shows the siblings and the parents, but not a sibling's spouse or children" do
     @mutations.add_spouse(person_id: person("Uncle").id, spouse_data: { givenName: "Aunt", sex: "F" })
-    @mutations.add_sibling(person_id: person("Senior").id, sibling_data: { givenName: "Father", sex: "M" })
-    @mutations.add_spouse(person_id: person("Father").id, spouse_data: { givenName: "Mother", sex: "F" })
-    @mutations.add_child(parent_id: person("Father").id, parent_family_id: Family.order(:id).last.id,
-      child_data: { givenName: "Cousin", sex: "F" })
+    @mutations.add_sibling(person_id: person("Senior").id, sibling_data: { givenName: "Bachelor", sex: "M" })
+    @mutations.add_spouse(person_id: person("Bachelor").id, spouse_data: { givenName: "Childless", sex: "F" })
 
     chart = FamilyTree::Chart.new(up: [ person("Senior").id ])
 
     assert_includes names(chart), "Uncle"
-    assert_includes names(chart), "Father"
-    assert_not_includes names(chart), "Aunt", "an in-law floats beside the sibling with nothing attaching them"
+    assert_includes names(chart), "Bachelor"
+    assert_not_includes names(chart), "Childless", "an in-law floats beside the sibling with nothing attaching them"
     assert_not_includes names(chart), "Cousin", "siblings' descendants are a down-expansion away"
     # A sibling's children are never in an up-response, so neither is the
     # spouse; the expand tab says there is more below.
-    assert_not_includes names(chart), "Mother"
-    assert card(chart, "Father").expands_down?
+    assert_not_includes names(chart), "Aunt"
+    assert card(chart, "Uncle").expands_down?
   end
 end

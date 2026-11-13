@@ -1,5 +1,3 @@
-require "benchmark"
-
 # Where does a chart build spend its time? Run against development data:
 #
 #   bin/rails "family_tree:profile[all]"        # depth 1, 2, 3 or all; adds up[]/down[] via UP=1,2 DOWN=3
@@ -32,7 +30,7 @@ namespace :family_tree do
       "edges" => -> { FamilyTree::Edges.new(positions: chart.layout.positions, units: chart.units).segments }
     }
     puts "depth #{args[:depth] || 1}, up #{up.inspect}, down #{down.inspect}"
-    phases.each { |label, work| puts format("  %-14s %8.1f ms", label, Benchmark.realtime(&work) * 1000) }
+    phases.each { |label, work| puts format("  %-14s %8.1f ms", label, ActiveSupport::Benchmark.realtime(:float_millisecond, &work)) }
 
     puts format("  %d people shown; %d statements, %.1f ms in the database",
       chart.shown, statements.values.sum { |s| s[:count] }, statements.values.sum { |s| s[:ms] })

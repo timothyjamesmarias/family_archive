@@ -19,7 +19,8 @@ module FamilyTree
     def top(generation) = MARGIN + generation * ROW
     def bottom(generation) = top(generation) + CARD_HEIGHT
 
-    def stage_width(layout) = left(layout.width - 1) + CARD_WIDTH + MARGIN
-    def stage_height(layout) = bottom(layout.height - 1) + MARGIN
+    # An empty chart (no roots) is 0×0, not negative.
+    def stage_width(layout) = layout.width.zero? ? 0 : left(layout.width - 1) + CARD_WIDTH + MARGIN
+    def stage_height(layout) = layout.height.zero? ? 0 : bottom(layout.height - 1) + MARGIN
   end
 end

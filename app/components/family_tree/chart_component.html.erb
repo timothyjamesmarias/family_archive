@@ -20,7 +20,7 @@
               aria: ({ current: "true" } if depth == @depth) %>
       <% end %>
     </div>
-    <span class="meta ml-auto"><%= number_with_delimiter(@chart.total) %> individuals &nbsp;&middot;&nbsp; <%= @chart.shown %> shown</span>
+    <span class="meta ml-auto"><%= number_with_delimiter(@chart.total) %> individuals &nbsp;&middot;&nbsp; <%= number_with_delimiter(@chart.shown) %> shown</span>
   </div>
 
   <div class="tree-canvas" data-tree-zoom-target="viewport"
