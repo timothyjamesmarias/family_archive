@@ -3,6 +3,7 @@
   <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100"><%= @article.title %></h1>
   <div class="flex gap-2">
     <% if @article.published? %>
+      <%= link_to "View on site", article_path(@article.slug), class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
       <%= button_to "Unpublish", unpublish_admin_article_path(@article), method: :post,
             class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer" %>
     <% else %>
