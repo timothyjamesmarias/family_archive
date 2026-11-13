@@ -16,8 +16,10 @@
 }
 
 /* Lexxy has no dark mode of its own, only these variables; the values are
-   its sandbox's dark palette (basecamp/lexxy test/dummy sandbox.css). */
-.dark {
+   its sandbox's dark palette (basecamp/lexxy test/dummy sandbox.css).
+   :root.dark outranks Lexxy's :root, which in development Vite injects
+   after this stylesheet. */
+:root.dark {
   --lexxy-color-ink: oklch(96% 0 0);
   --lexxy-color-ink-medium: oklch(75% 0 0);
   --lexxy-color-ink-light: oklch(55% 0 0);
