@@ -8,3 +8,41 @@
 @source "../../helpers/**/*.rb";
 @source "../../components/**/*.{erb,rb}";
 @source "../**/*.{js,ts,jsx,tsx}";
+
+/* Native controls and <dialog> draw with system colors (Canvas, CanvasText,
+   Field); without this they stay light under the dark class. */
+.dark {
+  color-scheme: dark;
+}
+
+/* Lexxy has no dark mode of its own, only these variables; the values are
+   its sandbox's dark palette (basecamp/lexxy test/dummy sandbox.css). */
+.dark {
+  --lexxy-color-ink: oklch(96% 0 0);
+  --lexxy-color-ink-medium: oklch(75% 0 0);
+  --lexxy-color-ink-light: oklch(55% 0 0);
+  --lexxy-color-ink-lighter: oklch(40% 0 0);
+  --lexxy-color-ink-lightest: oklch(25% 0 0);
+  --lexxy-color-ink-inverted: oklch(15% 0 0);
+
+  --lexxy-color-accent-dark: oklch(70% 0.30 260);
+  --lexxy-color-accent-medium: oklch(75% 0.196 258);
+  --lexxy-color-accent-light: oklch(45% 0.04 254);
+  --lexxy-color-accent-lightest: oklch(35% 0.04 254);
+
+  --lexxy-color-red: oklch(70% 0.15 27);
+  --lexxy-color-green: oklch(70% 0.15 145);
+  --lexxy-color-blue: oklch(75% 0.196 258);
+  --lexxy-color-purple: oklch(70% 0.15 305);
+
+  --lexxy-color-code-token-att: #ff7b72;
+  --lexxy-color-code-token-comment: #8b949e;
+  --lexxy-color-code-token-function: #d2a8ff;
+  --lexxy-color-code-token-operator: #ff7b72;
+  --lexxy-color-code-token-property: #79c0ff;
+  --lexxy-color-code-token-punctuation: #f0f6fc;
+  --lexxy-color-code-token-selector: #7ee787;
+  --lexxy-color-code-token-variable: #ffa657;
+
+  --lexxy-shadow: 0 0 0 1px rgba(100, 100, 100, 0.3);
+}
