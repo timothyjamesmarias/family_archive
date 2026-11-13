@@ -21,18 +21,22 @@ class FamilyTreeRelativesController < ApplicationController
   def create
     return render_form(status: :unprocessable_entity) unless valid_dates?(dates)
 
-    case kind
-    when "child"
-      mutations.add_child(parent_id: person.id, child_data: person_data, parent_family_id: params[:family_id].presence)
-    when "spouse"
-      mutations.add_spouse(person_id: person.id, spouse_data: person_data,
-        marriage_data: { marriageDateString: params[:marriage_date].presence, divorceDateString: params[:divorce_date].presence })
-    when "parent"
-      mutations.add_parent(child_id: person.id, role:, parent_data: person_data.merge(sex: SEX_FOR_ROLE[role]))
-    when "sibling"
-      mutations.add_sibling(person_id: person.id, sibling_data: person_data)
-    when "existing_parent"
-      mutations.link_existing_parent(child_id: person.id, existing_parent_id: params[:existing_parent_id].to_i, role:)
+    # Mutations create the person before checking the relationship; a refusal
+    # must take the person with it.
+    ActiveRecord::Base.transaction do
+      case kind
+      when "child"
+        mutations.add_child(parent_id: person.id, child_data: person_data, parent_family_id: chosen_family&.id)
+      when "spouse"
+        mutations.add_spouse(person_id: person.id, spouse_data: person_data,
+          marriage_data: { marriageDateString: params[:marriage_date].presence, divorceDateString: params[:divorce_date].presence })
+      when "parent"
+        mutations.add_parent(child_id: person.id, role:, parent_data: person_data.merge(sex: SEX_FOR_ROLE[role]))
+      when "sibling"
+        mutations.add_sibling(person_id: person.id, sibling_data: person_data)
+      when "existing_parent"
+        mutations.link_existing_parent(child_id: person.id, existing_parent_id: params[:existing_parent_id].to_i, role:)
+      end
     end
 
     redirect_to return_to, status: :see_other, notice: "#{NOTICES.fetch(kind)} for #{person.display_name}."
@@ -61,11 +65,19 @@ class FamilyTreeRelativesController < ApplicationController
     Family.joins(:members).merge(FamilyMember.parents.where(individual_id: person.id)).includes(members: :individual).distinct
   end
 
-  # Existing people matching the search box, for linking as a parent.
+  # A family the person is a parent in, never an arbitrary id from the form;
+  # with one marriage there is nothing to choose, so the child goes there.
+  def chosen_family
+    return families.find(params[:family_id]) if params[:family_id].present?
+    families.first if families.one?
+  end
+
+  # Existing people matching the search box, by either name or both.
   def candidates
     query = params[:q].to_s.strip
     return Individual.none if query.blank?
     pattern = "%#{Individual.sanitize_sql_like(query)}%"
-    Individual.where("given_name ILIKE :q OR surname ILIKE :q", q: pattern).where.not(id: person.id).order(:surname, :given_name).limit(20)
+    Individual.where("given_name ILIKE :q OR surname ILIKE :q OR concat_ws(' ', given_name, surname) ILIKE :q", q: pattern)
+      .where.not(id: person.id).order(:surname, :given_name).limit(20)
   end
 end

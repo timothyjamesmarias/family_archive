@@ -853,7 +853,7 @@
      under the masthead, gone after a few seconds (and on the next visit via
      data-turbo-temporary). */
   .toast-stack {
-    @apply fixed right-5 top-24 z-40 w-[min(26rem,calc(100vw-2.5rem))] flex flex-col gap-2.5 pointer-events-none;
+    @apply fixed right-5 top-40 z-40 w-[min(26rem,calc(100vw-2.5rem))] flex flex-col gap-2.5 pointer-events-none;
   }
 
   .toast-stack .message {

@@ -10,7 +10,7 @@ class FamilyTreePeopleController < ApplicationController
     return render_form(status: :unprocessable_entity) unless valid_dates?(person_values.slice(:birth_date, :death_date))
 
     Individual::Editor.new.update_from_request(person.id, person_data)
-    redirect_to return_to, status: :see_other, notice: "#{person.display_name} updated."
+    redirect_to return_to, status: :see_other, notice: "#{person.reload.display_name} updated."
   end
 
   def delete

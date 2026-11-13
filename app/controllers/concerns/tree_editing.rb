@@ -41,7 +41,9 @@ module TreeEditing
 
   # What the form showed: the submitted values on a 422, else nothing.
   def person_values
-    params.fetch(:person, {}).permit(*PERSON_FIELDS).to_h.symbolize_keys
+    values = params.fetch(:person, {}).permit(*PERSON_FIELDS).to_h.symbolize_keys.transform_values { |value| value.to_s.strip }
+    values[:sex] = values[:sex].in?(%w[M F]) ? values[:sex] : "" if values.key?(:sex)
+    values
   end
 
   def person_data

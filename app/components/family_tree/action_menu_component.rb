@@ -9,16 +9,23 @@ module FamilyTree
       "existing_parent" => "Link existing parent", "sibling" => "Add sibling"
     }.freeze
 
-    def initialize(person_id:, return_to:)
-      @person_id = person_id
+    def initialize(card:, return_to:)
+      @card = card
       @return_to = return_to
+    end
+
+    def person_id = @card.person[:id]
+
+    def label
+      name = [ @card.person[:givenName], @card.person[:surname] ].compact_blank.join(" ")
+      "Actions for #{name.presence || 'this person'}"
     end
 
     def items
       [
-        [ "Edit", helpers.edit_family_tree_person_path(@person_id, return_to: @return_to) ],
-        *RELATIVES.map { |kind, caption| [ caption, helpers.new_family_tree_person_relative_path(@person_id, kind:, return_to: @return_to) ] },
-        [ "Delete", helpers.delete_family_tree_person_path(@person_id, return_to: @return_to) ]
+        [ "Edit", helpers.edit_family_tree_person_path(person_id, return_to: @return_to) ],
+        *RELATIVES.map { |kind, caption| [ caption, helpers.new_family_tree_person_relative_path(person_id, kind:, return_to: @return_to) ] },
+        [ "Delete", helpers.delete_family_tree_person_path(person_id, return_to: @return_to) ]
       ]
     end
   end

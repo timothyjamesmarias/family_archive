@@ -1,5 +1,5 @@
 <details class="tree-menu">
-  <summary class="tree-menu-button" aria-label="Actions">&middot;&middot;&middot;</summary>
+  <summary class="tree-menu-button" aria-label="<%= label %>">&middot;&middot;&middot;</summary>
   <div class="tree-menu-items">
     <% items.each do |caption, href| %>
       <%= link_to caption, href, class: "tree-menu-item", data: { turbo_frame: "tree_form" } %>

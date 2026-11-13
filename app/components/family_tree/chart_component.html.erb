@@ -46,7 +46,7 @@
               ) do |person_card| %>
             <% if edit? %>
               <% person_card.with_menu do %>
-                <%= render FamilyTree::ActionMenuComponent.new(person_id: card.person[:id], return_to: helpers.request.fullpath) %>
+                <%= render FamilyTree::ActionMenuComponent.new(card:, return_to: helpers.request.fullpath) %>
               <% end %>
             <% end %>
           <% end %>
@@ -56,7 +56,9 @@
   <% end %>
 
   <% if helpers.user_signed_in? %>
-    <dialog class="tree-dialog" data-tree-dialog-target="dialog" data-action="close->tree-dialog#clear">
+    <%# Closed before Turbo caches the page, so Back never restores it open. %>
+    <dialog class="tree-dialog" aria-labelledby="tree_form_heading" data-tree-dialog-target="dialog"
+            data-action="close->tree-dialog#clear turbo:before-cache@document->tree-dialog#close">
       <%= helpers.turbo_frame_tag "tree_form",
             data: { tree_dialog_target: "frame", action: "turbo:frame-load->tree-dialog#open turbo:submit-end->tree-dialog#refresh" } %>
     </dialog>

@@ -100,19 +100,11 @@ module FamilyTree
 
     private
 
+    # The Editor owns what a new person is made of, birth and death events
+    # included; a relative added from the tree gets the same treatment as one
+    # created on their own.
     def create_individual(data)
-      gedcom_id = data[:gedcomId].presence || Gedcom::Ids.next_individual_id
-      if Individual.exists?(gedcom_id: gedcom_id)
-        raise ConflictError.new("Individual with GEDCOM ID '#{gedcom_id}' already exists",
-          field: "gedcomId")
-      end
-      Individual.create!(
-        gedcom_id: gedcom_id,
-        given_name: data[:givenName].presence,
-        surname: data[:surname].presence,
-        sex: data[:sex].presence&.first,
-        is_tree_root: false
-      )
+      Individual.find(Individual::Editor.new.create_from_request(data)[:id])
     end
 
     def parent_role?(role)

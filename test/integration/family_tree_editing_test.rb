@@ -98,6 +98,59 @@ class FamilyTreeEditingTest < ActionDispatch::IntegrationTest
     assert FamilyMember.children.exists?(family_id: second, individual_id: Individual.find_by!(given_name: "Late").id)
   end
 
+  test "a child of someone with one marriage joins that marriage, with their dates" do
+    sign_in_user
+    family = Family.sole
+
+    post family_tree_person_relatives_path(@john), params: {
+      kind: "child", return_to: @chart, person: { given_name: "Anna", sex: "F", birth_date: "1900", birth_place: "Bremen" }
+    }
+
+    assert_redirected_to @chart
+    anna = Individual.find_by!(given_name: "Anna")
+    assert FamilyMember.children.exists?(family_id: family.id, individual_id: anna.id), "the child joins the existing marriage"
+    assert_equal 1, Family.count
+    assert_equal "1900", anna.events.find_by(event_type: "BIRTH").date_string
+    assert_equal "Bremen", anna.events.find_by(event_type: "BIRTH").place.name
+  end
+
+  test "a child cannot be put into a family the parent is not part of" do
+    sign_in_user
+    other = Family.create!
+    FamilyMember.create!(family_id: other.id, individual_id: @peter.id, role: "FATHER")
+
+    post family_tree_person_relatives_path(@john), params: { kind: "child", family_id: other.id, return_to: @chart, person: { given_name: "Cuckoo" } }
+
+    assert_response :not_found
+    assert_nil Individual.find_by(given_name: "Cuckoo")
+  end
+
+  test "a refused add leaves no orphan behind" do
+    sign_in_user
+    @mutations.add_parent(child_id: @john.id, role: "MOTHER", parent_data: { givenName: "Grandma", sex: "F" })
+
+    assert_no_difference "Individual.count" do
+      post family_tree_person_relatives_path(@john), params: { kind: "parent", role: "MOTHER", return_to: @chart, person: { given_name: "Second mother" } }
+    end
+    assert_response :unprocessable_entity
+  end
+
+  test "names are stripped and an unknown sex is stored as unknown" do
+    sign_in_user
+    patch family_tree_person_path(@john), params: { return_to: @chart, person: { given_name: "  Johann ", surname: "Marias", sex: "X" } }
+
+    assert_redirected_to @chart
+    assert_equal "Johann", @john.reload.given_name
+    assert_nil @john.sex
+  end
+
+  test "a visitor cannot delete" do
+    delete family_tree_person_path(@peter)
+
+    assert_redirected_to new_user_session_path
+    assert Individual.exists?(@peter.id)
+  end
+
   test "adding a spouse records the marriage dates" do
     sign_in_user
     post family_tree_person_relatives_path(@peter), params: {
@@ -123,8 +176,13 @@ class FamilyTreeEditingTest < ActionDispatch::IntegrationTest
     sign_in_user
     stranger = Individual.create!(given_name: "Anna", surname: "Vogt", sex: "F")
 
-    get new_family_tree_person_relative_path(@john, kind: "existing_parent", q: "vogt")
-    assert_select "form[action=?] input[name='existing_parent_id'][value=?]", family_tree_person_relatives_path(@john), stranger.id.to_s
+    get new_family_tree_person_relative_path(@john, kind: "existing_parent", q: "anna vogt")
+    # The role radios and the Link buttons share one form, so the role chosen
+    # after searching is the one submitted.
+    assert_select "form[action=?]", family_tree_person_relatives_path(@john) do
+      assert_select "input[name='role'][type='radio']", count: 2
+      assert_select "button[name='existing_parent_id'][value=?]", stranger.id.to_s, text: "Link"
+    end
 
     post family_tree_person_relatives_path(@john), params: { kind: "existing_parent", role: "MOTHER", existing_parent_id: stranger.id, return_to: @chart }
     assert_redirected_to @chart

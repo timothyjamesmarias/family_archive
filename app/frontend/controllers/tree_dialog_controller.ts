@@ -22,9 +22,11 @@ export default class TreeDialogController extends Controller {
     this.dialogTarget.close()
   }
 
+  // Also folds every card menu, so Cancel, Escape or a snapshot leaves none open.
   clear() {
     this.frameTarget.removeAttribute('src')
     this.frameTarget.replaceChildren()
+    this.element.querySelectorAll<HTMLDetailsElement>('details[open]').forEach((menu) => (menu.open = false))
   }
 
   async refresh(event: CustomEvent) {
