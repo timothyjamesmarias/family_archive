@@ -6,7 +6,8 @@ const STEP = 1.25
 
 // Pan and zoom for the family-tree stage, the way the v1 canvas behaved: the
 // stage carries a translate/scale transform, the wheel zooms about the
-// pointer, dragging anywhere pans, the buttons zoom about the centre. The
+// pointer, dragging anywhere pans, two fingers pinch, the buttons zoom about
+// the centre (the canvas is touch-action: none, so the page never zooms). The
 // view lives in values on the frame, which Turbo keeps across a frame swap,
 // so expanding a card does not move the chart under you.
 export default class TreeZoomController extends Controller {
@@ -26,7 +27,10 @@ export default class TreeZoomController extends Controller {
   declare yValue: number
   declare scaleValue: number
 
-  private drag: { pointerX: number; pointerY: number; x: number; y: number } | null = null
+  // Every pointer currently down on the canvas, in viewport coordinates. One
+  // finger or a mouse button pans; two fingers pan by their midpoint and zoom
+  // by their spread.
+  private pointers = new Map<number, { x: number; y: number }>()
 
   // Pointer and wheel handlers are wired as actions on the viewport markup,
   // not here: a frame swap replaces the viewport, and actions come with it.
@@ -83,27 +87,46 @@ export default class TreeZoomController extends Controller {
     this.zoomAbout(this.scaleValue * factor, { x: event.clientX - rect.left, y: event.clientY - rect.top })
   }
 
-  // Links, buttons and menus on a card still click; anything else on the canvas drags.
+  // Links, buttons and menus on a card still click; anything else on the
+  // canvas drags. Only the primary button: a right-click keeps its context menu.
   startDrag(event: PointerEvent) {
-    // Primary button or first finger only: a right-click keeps its context
-    // menu, and a second touch must not take over a drag in progress.
-    if (event.button !== 0 || this.drag) return
+    if (event.button !== 0) return
     if ((event.target as HTMLElement).closest('a, button, details')) return
-    this.drag = { pointerX: event.clientX, pointerY: event.clientY, x: this.xValue, y: this.yValue }
-    this.viewportTarget.setPointerCapture(event.pointerId)
+    this.pointers.set(event.pointerId, this.viewportPoint(event))
+    try {
+      this.viewportTarget.setPointerCapture(event.pointerId)
+    } catch {
+      // A synthetic pointer (tests) has no capture; moves still arrive.
+    }
   }
 
+  // Pan by how far the pointers' midpoint moved, then zoom by how much the
+  // first two spread apart, about that midpoint. With one pointer the spread
+  // is zero and this is a plain drag.
   moveDrag(event: PointerEvent) {
-    if (!this.drag) return
-    this.set(
-      this.drag.x + (event.clientX - this.drag.pointerX),
-      this.drag.y + (event.clientY - this.drag.pointerY),
-      this.scaleValue,
-    )
+    if (!this.pointers.has(event.pointerId)) return
+    const before = this.gesture()
+    this.pointers.set(event.pointerId, this.viewportPoint(event))
+    const after = this.gesture()
+    this.set(this.xValue + after.x - before.x, this.yValue + after.y - before.y, this.scaleValue)
+    if (before.spread > 0 && after.spread > 0) this.zoomAbout((this.scaleValue * after.spread) / before.spread, after)
   }
 
-  endDrag() {
-    this.drag = null
+  endDrag(event: PointerEvent) {
+    this.pointers.delete(event.pointerId)
+  }
+
+  private gesture() {
+    const points = [...this.pointers.values()]
+    const x = points.reduce((sum, p) => sum + p.x, 0) / points.length
+    const y = points.reduce((sum, p) => sum + p.y, 0) / points.length
+    const spread = points.length > 1 ? Math.hypot(points[1].x - points[0].x, points[1].y - points[0].y) : 0
+    return { x, y, spread }
+  }
+
+  private viewportPoint(event: PointerEvent) {
+    const rect = this.viewportTarget.getBoundingClientRect()
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top }
   }
 
   // Scale while keeping the stage point under `about` (viewport coordinates) still.

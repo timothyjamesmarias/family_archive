@@ -68,7 +68,7 @@ flowchart TD
     V --> Cards["PersonCardComponent × cards<br/>left = Metrics.left(x), top = Metrics.top(generation)<br/>expand links: same URL + one id + #person-id"]
 
     V -->|HTML| Frame["turbo-frame#chart, turbo-action=advance"]
-    Frame --> Z["tree-zoom Stimulus controller<br/>translate/scale transform on the stage: wheel zooms about the pointer,<br/>drag pans, fit and centre; view values live on the frame and survive a swap"]
+    Frame --> Z["tree-zoom Stimulus controller<br/>translate/scale transform on the stage: wheel zooms about the pointer,<br/>drag pans, two fingers pinch, fit and centre;<br/>view values live on the frame and survive a swap"]
     Cards -.->|"expand click → frame fetch"| URL
 ```
 

@@ -37,6 +37,30 @@ class FamilyTreeChartTest < ApplicationSystemTestCase
     assert_match(/scale\(0\.8\)/, page.evaluate_script("document.querySelector('.tree-stage').style.transform"))
   end
 
+  # Two synthetic touch pointers move apart on the canvas: the stage should
+  # scale up around them, and a single finger afterwards should still pan.
+  test "a pinch zooms the stage and one finger pans it" do
+    visit family_tree_path
+
+    page.execute_script(<<~JS)
+      const canvas = document.querySelector('.tree-canvas')
+      const rect = canvas.getBoundingClientRect()
+      const touch = (type, id, dx, dy) => canvas.dispatchEvent(new PointerEvent(type, {
+        pointerId: id, pointerType: 'touch', button: 0, bubbles: true, isPrimary: id === 1,
+        clientX: rect.left + 300 + dx, clientY: rect.top + 300 + dy }))
+      touch('pointerdown', 1, -50, 0); touch('pointerdown', 2, 50, 0)
+      touch('pointermove', 1, -100, 0); touch('pointermove', 2, 100, 0)
+      touch('pointerup', 2, 100, 0)
+      touch('pointermove', 1, -60, 40)
+      touch('pointerup', 1, -60, 40)
+    JS
+
+    assert_selector "[data-tree-zoom-target='level']", text: "200%"
+    transform = page.evaluate_script("document.querySelector('.tree-stage').style.transform")
+    assert_match(/scale\(2\)/, transform)
+    assert_no_match(/translate\(0px, 0px\)/, transform, "the single-finger move should have panned")
+  end
+
   test "the wheel still zooms after a depth change swaps the canvas" do
     visit family_tree_path
     within(".tree-toolbar") { click_on "2" }
