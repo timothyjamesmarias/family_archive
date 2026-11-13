@@ -21,13 +21,13 @@ Each chunk is one PR. The island keeps working until the last one.
    plain link into the same Turbo Frame, so back/forward and bookmarks work
    for free. A `zoom` Stimulus controller sets the CSS `zoom` property
    (scroll extents follow) and handles drag-to-pan. Person card and expand
-   button become ViewComponents; the chart assembly is a partial with strict
-   locals. Needs a design page for the tree — the design project is the spec
-   and currently has none. The Builder must start ordering what the layout
-   treats as meaning: FATHER before MOTHER in `parentIds`, `childIds` by
-   `child_order`, memberships and families deterministically (today
-   `build_family_units` has no ORDER BY, so identical data can lay out
-   differently between requests).
+   button, edges and the chart assembly are ViewComponents under
+   `FamilyTree::`. Needs a design page for the tree — the design project is
+   the spec and currently has none. The queries and the Builder are finished
+   and stay as they are: `FamilyTree::Chart` composes `initial_tree` and
+   `expand_tree` the way the island's store does and decorates the result
+   with the order the layout reads as meaning (father first by sex, children
+   by `child_order`, families by id).
 3. **Edit mode.** Per-card action menu as a native `popover`, forms in a
    `<dialog>` holding a Turbo Frame (one tiny Stimulus controller calls
    `showModal`). Mutation controllers reuse `FamilyTree::Mutations` and
