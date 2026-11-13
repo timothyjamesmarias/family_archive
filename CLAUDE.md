@@ -253,6 +253,8 @@ nothing tries to generate one. Purging a prod blob fails with AccessDenied in
 - `test/models` — domain behavior (records and POROs) against the real schema.
 - `test/integration` — public pages, the tree page and its edit forms, admin gating.
 - `test/system` — headless Chrome; guards the Vite/Tailwind pipeline and the
-  tree's frame, dialog and zoom behaviour.
+  tree's frame, dialog and zoom behaviour. The public layout skips the
+  Google Fonts link in test, so pages render in fallback fonts and never
+  reflow under a click; do not reintroduce a font `@import` into `public.css`.
 
 Test behavior, not implementation. Existing tests must keep passing.

@@ -1,5 +1,7 @@
-/* Public-facing styles - Paperwhite Design System */
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap');
+/* Public-facing styles - Paperwhite Design System.
+   Lora and Inter are linked from the public layout (not imported here) so
+   the test environment can leave them out: a late font swap moves the text
+   under Capybara's pointer between locating an element and clicking it. */
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
