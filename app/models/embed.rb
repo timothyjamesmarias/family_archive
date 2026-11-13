@@ -10,8 +10,8 @@ class Embed < ApplicationRecord
   KINDS = {
     "artifact" => {
       label: "Artifact",
-      model: "Artifact",
-      component: "Embeds::ArtifactComponent",
+      model: Artifact,
+      component: Embeds::ArtifactComponent,
       options: %w[show_annotations show_transcription],
       search: "Artifact::MenuSearch"
     }
@@ -26,7 +26,7 @@ class Embed < ApplicationRecord
     definition = KINDS.fetch(kind)
     new(
       kind: kind,
-      embeddable: definition[:model].constantize.find(embeddable_id),
+      embeddable: definition[:model].find(embeddable_id),
       options: options.slice(*definition[:options]).transform_values { ActiveModel::Type::Boolean.new.cast(it) }
     )
   end
@@ -55,7 +55,7 @@ class Embed < ApplicationRecord
   end
 
   def component
-    definition[:component].constantize.new(embed: self)
+    definition[:component].new(embed: self)
   end
 
   def to_attachable_partial_path

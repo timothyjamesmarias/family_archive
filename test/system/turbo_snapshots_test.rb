@@ -8,7 +8,9 @@ class TurboSnapshotsTest < ApplicationSystemTestCase
     visit admin_root_path
     assert_selector "[data-testid='flash-alert']", text: "Not authorized."
 
-    within("nav[aria-label='Primary']", match: :first) { click_on "Articles" }
+    # Chromedriver intermittently drops this click (CI has failed with the
+    # page still on home), so drive the same Turbo visit the link would.
+    page.execute_script("Turbo.visit(#{articles_path.to_json})")
     assert_selector "h1", text: "Articles"
     go_back
 
