@@ -1,0 +1,33 @@
+<%= turbo_frame_tag "embed_picker" do %>
+  <%# GET reloads the dialog for another kind; Insert posts. Insert is the
+      only submit button, so Enter in the filter inserts the top match. %>
+  <%= form_with url: new_admin_embed_path, method: :get, class: "space-y-3", data: { controller: "autosubmit" } do |form| %>
+    <%= hidden_field_tag "embed[kind]", @kind %>
+    <div class="flex gap-2" data-controller="fuzzy-select">
+      <div class="flex-1 space-y-2">
+        <%= search_field_tag :filter, nil, placeholder: "Filter by name", autofocus: true, autocomplete: "off",
+              aria: { label: "Filter" },
+              data: { fuzzy_select_target: "input", action: "fuzzy-select#filter" },
+              class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
+        <%= select_tag "embed[embeddable_id]", options_for_select(@options), size: 10, required: true,
+              aria: { label: Embed::KINDS[@kind][:label] },
+              data: { fuzzy_select_target: "select" },
+              class: "w-full rounded border border-slate-300 dark:border-slate-600 text-sm" %>
+      </div>
+      <%= form.select :kind, Embed::KINDS.map { |key, kind| [ kind[:label], key ] }, { selected: @kind },
+            data: { action: "autosubmit#submit" },
+            class: "self-start rounded border border-slate-300 dark:border-slate-600 px-2 py-2 text-sm" %>
+    </div>
+    <fieldset class="space-y-1 text-sm">
+      <% Embed::KINDS[@kind][:options].each do |option| %>
+        <label class="flex items-center gap-2">
+          <%= hidden_field_tag "embed[options][#{option}]", "0", id: nil %>
+          <%= check_box_tag "embed[options][#{option}]", "1" %>
+          <%= option.humanize %>
+        </label>
+      <% end %>
+    </fieldset>
+    <%= form.submit "Insert", name: nil, formaction: admin_embeds_path, formmethod: :post,
+          class: "rounded bg-slate-900 dark:bg-slate-700 px-4 py-2 text-sm font-medium text-white cursor-pointer" %>
+  <% end %>
+<% end %>

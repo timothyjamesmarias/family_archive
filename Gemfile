@@ -80,3 +80,5 @@ group :test do
 end
 
 gem "reactionview", "~> 0.6.1", groups: [ :development, :test ]
+
+gem "lexxy", "~> 1.0"

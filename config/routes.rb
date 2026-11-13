@@ -49,6 +49,7 @@ Rails.application.routes.draw do
         post :unpublish
       end
     end
+    resources :embeds, only: %i[new create]
     resource :gedcom_import, only: [ :show, :create ]
 
     resources :artifacts, constraints: { id: /\d+/ } do

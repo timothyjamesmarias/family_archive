@@ -1,5 +1,6 @@
 <%# locals: (article:) %>
-<%= form_with model: [ :admin, article ], class: "max-w-xl space-y-4" do |form| %>
+<div data-controller="embed-picker">
+<%= form_with model: [ :admin, article ], class: "max-w-3xl space-y-4" do |form| %>
   <%= render "admin/shared/form_errors", record: article %>
 
   <div>
@@ -16,9 +17,11 @@
     <%= form.text_field :excerpt, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm" %>
   </div>
   <div>
-    <%= form.label :content, "Content (HTML)", class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
-    <span class="text-xs text-slate-500 dark:text-slate-400">Sanitized on save to the editor's allowed tags</span>
-    <%= form.text_area :content, rows: 16, class: "w-full rounded border border-slate-300 dark:border-slate-600 px-3 py-2 text-sm font-mono" %>
+    <div class="flex items-end justify-between mb-1">
+      <%= form.label :content, class: "block text-sm font-medium text-slate-700 dark:text-slate-300" %>
+      <button type="button" data-action="embed-picker#open" class="rounded border border-slate-300 dark:border-slate-600 px-3 py-1 text-sm hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">Insert embed</button>
+    </div>
+    <%= form.rich_text_area :content, data: { embed_picker_target: "editor" } %>
   </div>
   <div>
     <%= form.label :published_at, class: "block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1" %>
@@ -30,3 +33,13 @@
     <%= link_to "Cancel", admin_articles_path, class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
   </div>
 <% end %>
+
+<%# Outside the article form: the picker is a form of its own. %>
+<dialog data-embed-picker-target="dialog" data-action="close->embed-picker#reset" class="m-auto w-full max-w-lg rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 backdrop:bg-black/40">
+  <div class="flex justify-between mb-3">
+    <h2 class="font-semibold">Insert embed</h2>
+    <button type="button" data-action="embed-picker#close" class="text-sm underline cursor-pointer">Close</button>
+  </div>
+  <%= turbo_frame_tag "embed_picker", data: { embed_picker_target: "frame", src: new_admin_embed_path } %>
+</dialog>
+</div>

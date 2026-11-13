@@ -188,6 +188,8 @@ GEM
       logger (~> 1.6)
     letter_opener (1.10.0)
       launchy (>= 2.2, < 4)
+    lexxy (1.0.4)
+      railties (>= 8.0.2)
     lint_roller (1.1.0)
     logger (1.7.0)
     loofah (2.25.3)
@@ -459,6 +461,7 @@ DEPENDENCIES
   devise
   image_processing (~> 2.0)
   letter_opener
+  lexxy (~> 1.0)
   mission_control-jobs
   pg (~> 1.1)
   propshaft

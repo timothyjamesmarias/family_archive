@@ -18,10 +18,13 @@ module ApplicationHelper
     nil
   end
 
-  # Article bodies are sanitized when saved; sanitizing again at render keeps
-  # the guarantee even for content written outside the admin flow.
-  def article_html(article)
-    sanitize article.content,
-      tags: Article::Html::ALLOWED_TAGS, attributes: Article::Html::ALLOWED_ATTRIBUTES
+  # Replaces Action Text's render, which sanitizes after rendering
+  # attachments and so strips the embed components' own markup (Stimulus data
+  # attributes, svg). Sanitizing what the author wrote, then rendering embeds,
+  # keeps the allowlist on the untrusted part only.
+  def render_rich_text(content)
+    self.prefix_partial_path_with_controller_namespace = false
+    author_html = ActionText::Content.new(sanitize_action_text_content(content), canonicalize: false)
+    render_action_text_attachments(author_html).to_html.html_safe
   end
 end

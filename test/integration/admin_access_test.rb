@@ -23,17 +23,16 @@ class AdminAccessTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "article content is sanitized on save" do
+  test "a published article links to its public page; a draft doesn't" do
     sign_in create_admin
+    live = Article.create!(slug: "live", title: "Live", content: "", published_at: 1.hour.ago)
+    draft = Article.create!(slug: "draft", title: "Draft", content: "")
 
-    post admin_articles_path, params: { article: {
-      slug: "hello", title: "Hello", excerpt: "",
-      content: "<p>ok</p><script>alert(1)</script>", published_at: ""
-    } }
+    get admin_article_path(live)
+    assert_select "a[href='#{article_path("live")}']", "View on site"
 
-    article = Article.find_by!(slug: "hello")
-    assert_no_match(/<script/, article.content)
-    assert_match(/ok/, article.content)
+    get admin_article_path(draft)
+    assert_select "a", text: "View on site", count: 0
   end
 
   test "an admin cannot delete their own account" do

@@ -3,6 +3,7 @@
   <h1 class="text-2xl font-semibold text-slate-900 dark:text-slate-100"><%= @article.title %></h1>
   <div class="flex gap-2">
     <% if @article.published? %>
+      <%= link_to "View on site", article_path(@article.slug), class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800" %>
       <%= button_to "Unpublish", unpublish_admin_article_path(@article), method: :post,
             class: "rounded border border-slate-300 dark:border-slate-600 px-4 py-2 text-sm hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer" %>
     <% else %>
@@ -37,7 +38,7 @@
 
 <h2 class="mt-8 mb-3 text-lg font-semibold text-slate-900 dark:text-slate-100">Content preview</h2>
 <div class="rounded border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 prose max-w-none">
-  <%= article_html(@article) %>
+  <%= @article.content %>
 </div>
 
 <div class="mt-6">
