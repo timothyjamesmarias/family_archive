@@ -18,7 +18,8 @@ server-rendered admin manages everything.
 
 Stack: Rails 8.1, PostgreSQL, Solid Cache/Queue/Cable, Vite, Tailwind v4,
 Turbo + Stimulus, Devise for auth (admin-managed users, no public signup),
-Mission Control – Jobs for the queue dashboard.
+Mission Control – Jobs for the queue dashboard, Action Text with the Lexxy
+editor for article bodies.
 
 ## Commands
 
@@ -71,8 +72,18 @@ Seeds create `admin@example.com` / `password` in development.
   The `artifact_files` row carries only `file_sequence` and the annotation
   anchor. Development/test use Disk; production uses S3 (`amazon` service in
   `config/storage.yml`, configured by `AWS_*` env vars).
-- **Article HTML is sanitized twice**: `Article::Html.sanitize` on save, and the
-  `article_html` helper on render.
+- **Article bodies are Action Text** (`has_rich_text :content`), edited with
+  Lexxy. Records go into rich text as **embeds**: an `Embed` row (kind,
+  embeddable, options) whose sgid is the `<action-text-attachment>` in the
+  HTML. Lexxy drops unknown attributes from that tag, so per-embed options
+  live on the row. `Embed::KINDS` is the registry — label, model, component,
+  options, search — and feeds the admin's "Insert embed" dialog
+  (`Admin::EmbedsController`, `embed_picker` controller); adding a kind is an
+  entry there plus its component under `Embeds::`. Saving an article claims
+  the embeds its body references and deletes the ones edited out. Rendering
+  goes through `render_rich_text` (the app's `action_text/contents/_content`),
+  which sanitizes the author's HTML *before* rendering embeds, so component
+  markup isn't filtered by the author allowlist. Nothing is sanitized on save.
 - **Mission Control** at `/admin/jobs` (admin-gated) shows the Solid Queue
   jobs, including Active Storage's analyze/transform/purge jobs. Development
   uses Solid Queue too (the :async default would keep the dashboard empty), so
@@ -131,6 +142,9 @@ pages that use it:
   meta is involved; it just hasn't been tried.
 - `artifact_upload` — the artifact upload page (multi-file, "save and add
   another"; posts FormData to the JSON create).
+
+The admin bundle also loads Lexxy and starts Active Storage direct uploads
+for the rich text editor.
 
 Both bundles run Turbo Drive. Controllers undo on disconnect what they
 mount, and state a snapshot would capture is reset (the mobile menu closes

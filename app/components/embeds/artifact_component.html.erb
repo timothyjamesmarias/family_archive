@@ -1,0 +1,14 @@
+<figure>
+  <%= render ArtifactThumbnailComponent.new(artifact:) %>
+  <figcaption><%= link_to title, href %></figcaption>
+  <% if annotations.any? %>
+    <ul>
+      <% annotations.each do |annotation| %>
+        <li><%= annotation.annotation_text %></li>
+      <% end %>
+    </ul>
+  <% end %>
+  <% if transcription %>
+    <%= simple_format transcription %>
+  <% end %>
+</figure>

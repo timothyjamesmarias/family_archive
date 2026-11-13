@@ -64,14 +64,9 @@ module Admin
       scope.where(clauses, pattern: pattern)
     end
 
-    # Body HTML is sanitized on the way in — the public page renders it
-    # unescaped.
     def article_params
       attributes = params.expect(article: [ :slug, :title, :excerpt, :content, :published_at ])
-      attributes.merge(
-        content: Article::Html.sanitize(attributes[:content]),
-        published_at: attributes[:published_at].presence
-      )
+      attributes.merge(published_at: attributes[:published_at].presence)
     end
   end
 end

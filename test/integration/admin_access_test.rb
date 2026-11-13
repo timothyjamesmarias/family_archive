@@ -23,19 +23,6 @@ class AdminAccessTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "article content is sanitized on save" do
-    sign_in create_admin
-
-    post admin_articles_path, params: { article: {
-      slug: "hello", title: "Hello", excerpt: "",
-      content: "<p>ok</p><script>alert(1)</script>", published_at: ""
-    } }
-
-    article = Article.find_by!(slug: "hello")
-    assert_no_match(/<script/, article.content)
-    assert_match(/ok/, article.content)
-  end
-
   test "an admin cannot delete their own account" do
     admin = create_admin
     sign_in admin

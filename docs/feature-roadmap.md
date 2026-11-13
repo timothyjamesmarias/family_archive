@@ -12,7 +12,7 @@ design project ("Archive Pages") before code; nothing below prescribes how.
 |---|---|
 | Artifact management (upload, types, files, thumbnails) | Done |
 | Photo annotation | Done (admin editor + public overlay) |
-| Articles with embedded artifacts | Done |
+| Articles with embedded artifacts | Working, unstyled: Lexxy editor and an embed registry; the public embed isn't designed yet |
 | Family tree builder, GEDCOM import | Done (server-rendered, edit mode) |
 | Transcriptions, translations, commentary | Half: schema and public reader tabs exist, no admin editing |
 | Search | Placeholder route only (`/search`, `SearchesController`) |

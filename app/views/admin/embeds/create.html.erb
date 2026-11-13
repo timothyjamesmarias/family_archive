@@ -1,0 +1,6 @@
+<%= turbo_frame_tag "embed_picker" do %>
+  <template data-embed-picker-target="attachment"><%= content_tag "action-text-attachment", "",
+    sgid: @embed.attachable_sgid,
+    "content-type": @embed.attachable_content_type,
+    content: render(@embed.component).to_json %></template>
+<% end %>
