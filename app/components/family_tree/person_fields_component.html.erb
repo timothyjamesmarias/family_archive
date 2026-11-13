@@ -1,0 +1,33 @@
+<div class="tree-form-fields">
+  <%= render Ui::FieldComponent.new(label: "Given name") do %>
+    <%= text_field_tag "person[given_name]", value(:given_name), class: "field-input", autofocus: true %>
+  <% end %>
+  <%= render Ui::FieldComponent.new(label: "Surname") do %>
+    <%= text_field_tag "person[surname]", value(:surname), class: "field-input" %>
+  <% end %>
+  <% if show?(:sex) %>
+    <fieldset class="field">
+      <legend class="field-label">Sex</legend>
+      <div class="tree-form-choices">
+        <% SEXES.each do |code, caption| %>
+          <label class="tree-form-choice">
+            <%= radio_button_tag "person[sex]", code, value(:sex).to_s == code %>
+            <%= caption %>
+          </label>
+        <% end %>
+      </div>
+    </fieldset>
+  <% end %>
+  <%= render Ui::FieldComponent.new(label: "Birth date", hint: "As recorded, e.g. 12 JUN 1849", error: error(:birth_date)) do %>
+    <%= text_field_tag "person[birth_date]", value(:birth_date), class: "field-input" %>
+  <% end %>
+  <%= render Ui::FieldComponent.new(label: "Birth place") do %>
+    <%= text_field_tag "person[birth_place]", value(:birth_place), class: "field-input" %>
+  <% end %>
+  <%= render Ui::FieldComponent.new(label: "Death date", error: error(:death_date)) do %>
+    <%= text_field_tag "person[death_date]", value(:death_date), class: "field-input" %>
+  <% end %>
+  <%= render Ui::FieldComponent.new(label: "Death place") do %>
+    <%= text_field_tag "person[death_place]", value(:death_place), class: "field-input" %>
+  <% end %>
+</div>

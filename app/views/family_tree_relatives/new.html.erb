@@ -1,0 +1,65 @@
+<% headings = {
+  "child" => "Add a child of", "spouse" => "Add a spouse of", "parent" => "Add a parent of",
+  "sibling" => "Add a sibling of", "existing_parent" => "Link a parent of"
+} %>
+<%= render FamilyTree::EditDialogComponent.new(heading: "#{headings.fetch(kind)} #{person.display_name}", error: @error) do %>
+  <% if kind == "existing_parent" %>
+    <%# Search submits to this same form inside the frame. The role sits in the
+        link form with the results, so the role picked after a search is the
+        one that gets linked. %>
+    <%= form_with url: new_family_tree_person_relative_path(person), method: :get, data: { turbo_frame: "tree_form" } do %>
+      <%= hidden_field_tag :kind, kind %>
+      <%= hidden_field_tag :return_to, return_to %>
+      <%= hidden_field_tag :role, role %>
+      <%= render Ui::FieldComponent.new(label: "Find by name") do %>
+        <%= search_field_tag :q, params[:q], class: "field-input", autofocus: true %>
+      <% end %>
+      <%= render Ui::ButtonComponent.new(variant: :secondary, size: :sm, type: "submit").with_content("Search") %>
+    <% end %>
+    <% if params[:q].present? %>
+      <%= form_with url: family_tree_person_relatives_path(person), data: { turbo_frame: "tree_form" } do %>
+        <%= hidden_field_tag :kind, kind %>
+        <%= hidden_field_tag :return_to, return_to %>
+        <%= render FamilyTree::RoleChoiceComponent.new(role:) %>
+        <ul class="tree-form-results">
+          <% candidates.each do |candidate| %>
+            <li class="tree-form-result">
+              <span><%= candidate.display_name %></span>
+              <%= render Ui::ButtonComponent.new(variant: :secondary, size: :sm, type: "submit",
+                    name: "existing_parent_id", value: candidate.id).with_content("Link") %>
+            </li>
+          <% end %>
+          <% if candidates.empty? %><li class="tree-form-result"><span class="meta">Nobody matches.</span></li><% end %>
+        </ul>
+      <% end %>
+    <% end %>
+    <%= render FamilyTree::FormActionsComponent.new %>
+  <% else %>
+    <%= form_with url: family_tree_person_relatives_path(person), data: { turbo_frame: "tree_form" } do %>
+      <%= hidden_field_tag :kind, kind %>
+      <%= hidden_field_tag :return_to, return_to %>
+      <% case kind %>
+      <% when "child" %>
+        <% if families.size > 1 %>
+          <%= render Ui::FieldComponent.new(label: "Marriage") do %>
+            <%= select_tag :family_id, options_from_collection_for_select(families, :id, :display_name, params[:family_id]), class: "field-input" %>
+          <% end %>
+        <% elsif families.one? %>
+          <%# The only marriage is where the child goes; a new family would strand them. %>
+          <%= hidden_field_tag :family_id, families.first.id %>
+        <% end %>
+      <% when "spouse" %>
+        <%= render Ui::FieldComponent.new(label: "Marriage date", error: errors[:marriage_date]) do %>
+          <%= text_field_tag :marriage_date, params[:marriage_date], class: "field-input" %>
+        <% end %>
+        <%= render Ui::FieldComponent.new(label: "Divorce date", error: errors[:divorce_date]) do %>
+          <%= text_field_tag :divorce_date, params[:divorce_date], class: "field-input" %>
+        <% end %>
+      <% when "parent" %>
+        <%= render FamilyTree::RoleChoiceComponent.new(role:) %>
+      <% end %>
+      <%= render FamilyTree::PersonFieldsComponent.new(values: person_values, errors:, except: (kind == "parent" ? [ :sex ] : [])) %>
+      <%= render FamilyTree::FormActionsComponent.new(submit: "Add") %>
+    <% end %>
+  <% end %>
+<% end %>

@@ -6,12 +6,20 @@ module FamilyTree
     DEPTH_LABELS = { 1 => "1", 2 => "2", 3 => "3", Chart::ALL => "All" }.freeze
     DEPTH_PARAMS = { 1 => nil, 2 => "2", 3 => "3", Chart::ALL => "all" }.freeze
 
-    def initialize(chart:, up: [], down: [], depth: 1)
+    # `mode` is :view or :edit; edit adds a menu to every card and the dialog
+    # the menus' forms load into. The controller has already checked that
+    # only a signed-in user gets :edit.
+    def initialize(chart:, up: [], down: [], depth: 1, mode: :view)
       @chart = chart
       @up = up
       @down = down
       @depth = depth
+      @mode = mode
     end
+
+    def edit? = @mode == :edit
+    def view_path = chart_path(mode: :view)
+    def edit_path = chart_path(mode: :edit)
 
     def stage_width = Metrics.stage_width(@chart.layout)
     def stage_height = Metrics.stage_height(@chart.layout)
@@ -33,8 +41,9 @@ module FamilyTree
 
     private
 
-    def chart_path(up: @up, down: @down, depth: @depth, anchor: nil)
-      helpers.family_tree_chart_path(up: up.presence, down: down.presence, depth: DEPTH_PARAMS.fetch(depth), anchor:)
+    def chart_path(up: @up, down: @down, depth: @depth, mode: @mode, anchor: nil)
+      helpers.family_tree_chart_path(up: up.presence, down: down.presence, depth: DEPTH_PARAMS.fetch(depth),
+        edit: (1 if mode == :edit), anchor:)
     end
   end
 end

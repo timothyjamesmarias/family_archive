@@ -28,10 +28,13 @@ Each chunk is one PR. The island keeps working until the last one.
    `expand_tree` the way the island's store does and decorates the result
    with the order the layout reads as meaning (father first by sex, children
    by `child_order`, families by id).
-3. **Edit mode.** Per-card action menu as a native `popover`, forms in a
-   `<dialog>` holding a Turbo Frame (one tiny Stimulus controller calls
-   `showModal`). Mutation controllers reuse `FamilyTree::Mutations` and
-   redirect back to the tree URL; the frame reloads.
+3. **Edit mode.** `?edit=1` for a signed-in user. Per-card action menu as a
+   native `<details>` (a `popover` would need anchor positioning to sit on
+   its card), forms in a `<dialog>` holding a Turbo Frame (one small Stimulus
+   controller opens it when the frame loads). The controllers reuse
+   `Individual::Editor` and `FamilyTree::Mutations` and redirect back to the
+   tree URL; the controller replays that redirect as a replace visit, so the
+   chart and flash update in place.
 4. **Cutover.** Route swap, delete the island, its Vitest suite, dagre and
    d3, and the `/api/family-tree` JSON endpoints (the annotations API stays).
    Update CLAUDE.md.

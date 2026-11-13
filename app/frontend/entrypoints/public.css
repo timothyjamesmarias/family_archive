@@ -773,4 +773,98 @@
   .tree-expand-down {
     @apply -bottom-[13px];
   }
+
+  /* Edit mode: a menu on each card, forms in a dialog. Not drawn in the
+     design; built from the field, button and message recipes above. */
+  .tree-menu {
+    @apply absolute right-1.5 top-1.5;
+  }
+
+  .tree-menu-button {
+    @apply list-none cursor-pointer select-none font-mono text-13 leading-none
+           text-taupe-600 px-1.5 py-0.5 border border-transparent
+           hover:text-verdigris-700 hover:border-taupe-300
+           dark:text-ink-200 dark:hover:text-verdigris-300;
+  }
+
+  .tree-menu-button::-webkit-details-marker {
+    display: none;
+  }
+
+  .tree-menu-items {
+    @apply absolute right-0 top-full mt-1 z-10 min-w-44 flex flex-col
+           bg-paper-sheet border border-taupe-300 shadow-sm
+           dark:bg-ink-700 dark:border-ink-400;
+  }
+
+  .tree-menu-item {
+    @apply font-sans text-sm text-taupe-700 no-underline px-3.5 py-2
+           hover:bg-verdigris-50 hover:text-verdigris-700
+           dark:text-ink-100 dark:hover:bg-ink-600 dark:hover:text-verdigris-300;
+  }
+
+  .tree-dialog {
+    @apply w-[min(28rem,calc(100vw-2rem))] p-0 m-auto
+           bg-paper-sheet border border-taupe-300 text-taupe-900
+           dark:bg-ink-700 dark:border-ink-400 dark:text-ink-50;
+  }
+
+  .tree-dialog::backdrop {
+    @apply bg-ink-900/40;
+  }
+
+  .tree-form {
+    @apply p-6 flex flex-col gap-5;
+  }
+
+  .tree-form-heading {
+    @apply font-serif text-xl font-medium leading-tight m-0;
+  }
+
+  .tree-form-fields {
+    @apply grid gap-4;
+  }
+
+  .tree-form-text {
+    @apply text-15 leading-relaxed text-taupe-700 m-0 dark:text-ink-100;
+  }
+
+  .tree-form-choices {
+    @apply flex flex-wrap gap-x-5 gap-y-2 pt-1;
+  }
+
+  .tree-form-choice {
+    @apply inline-flex items-center gap-2 text-15 text-taupe-700 dark:text-ink-100;
+  }
+
+  .tree-form-results {
+    @apply list-none m-0 p-0 flex flex-col border-t border-taupe-200 dark:border-ink-500;
+  }
+
+  .tree-form-result {
+    @apply flex items-center justify-between gap-3 py-2 border-b border-taupe-200 text-15 dark:border-ink-500;
+  }
+
+  .tree-form-actions {
+    @apply flex justify-end gap-2.5 pt-1;
+  }
+
+  /* A flash that floats over the page instead of pushing it down: top right,
+     under the masthead, gone after a few seconds (and on the next visit via
+     data-turbo-temporary). */
+  .toast-stack {
+    @apply fixed right-5 top-40 z-40 w-[min(26rem,calc(100vw-2.5rem))] flex flex-col gap-2.5 pointer-events-none;
+  }
+
+  .toast-stack .message {
+    @apply shadow-md pointer-events-auto;
+    animation: toast-out 400ms ease-in 6s forwards;
+  }
+
+  @keyframes toast-out {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
 }

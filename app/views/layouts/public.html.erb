@@ -96,7 +96,10 @@
         where their centred grids stretch to full width. %>
     <main class="flex-grow <%= class_names("flex flex-col" => content_for?(:fills_viewport),
           "w-full max-w-340 mx-auto px-5 sm:px-8 py-10" => !content_for?(:full_bleed)) %>">
-      <% if content_for?(:full_bleed) %>
+      <% if content_for?(:floating_flash) %>
+        <%# Pages whose content must not move (the tree) get the flash as a toast. %>
+        <div class="toast-stack"><%= render "layouts/flash" %></div>
+      <% elsif content_for?(:full_bleed) %>
         <div class="w-full max-w-340 mx-auto px-5 sm:px-8"><%= render "layouts/flash" %></div>
       <% else %>
         <%= render "layouts/flash" %>

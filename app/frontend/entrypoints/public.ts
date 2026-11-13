@@ -6,6 +6,7 @@ import PhotoAnnotationsController from '../controllers/photo_annotations_control
 import MediaPlayerController from '../controllers/media_player_controller'
 import MobileMenuController from '../controllers/mobile_menu_controller'
 import TreeZoomController from '../controllers/tree_zoom_controller'
+import TreeDialogController from '../controllers/tree_dialog_controller'
 
 // Turbo Drive like the admin, but only the controllers public pages need.
 const application = Application.start()
@@ -15,3 +16,4 @@ application.register('photo-annotations', PhotoAnnotationsController)
 application.register('media-player', MediaPlayerController)
 application.register('mobile-menu', MobileMenuController)
 application.register('tree-zoom', TreeZoomController)
+application.register('tree-dialog', TreeDialogController)

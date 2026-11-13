@@ -1,0 +1,13 @@
+<%# The Editor's own reason stands in for an error when deletion is refused. %>
+<%= render FamilyTree::EditDialogComponent.new(heading: "Delete #{person.display_name}",
+      error: @error || (@deletion[:reason] unless @deletion[:valid])) do %>
+  <% if @deletion[:valid] %>
+    <p class="tree-form-text">This removes <%= person.display_name %> from the tree.</p>
+    <%= form_with url: family_tree_person_path(person), method: :delete, data: { turbo_frame: "tree_form" } do %>
+      <%= hidden_field_tag :return_to, return_to %>
+      <%= render FamilyTree::FormActionsComponent.new(submit: "Delete", variant: :danger) %>
+    <% end %>
+  <% else %>
+    <%= render FamilyTree::FormActionsComponent.new %>
+  <% end %>
+<% end %>

@@ -31,6 +31,22 @@ export default class TreeZoomController extends Controller {
   // Pointer and wheel handlers are wired as actions on the viewport markup,
   // not here: a frame swap replaces the viewport, and actions come with it.
 
+  // A save replaces the whole page, so the view also lives in sessionStorage
+  // (one per chart). Restored in initialize: target callbacks, which render,
+  // run before connect.
+  initialize() {
+    try {
+      const saved = sessionStorage.getItem(this.storageKey)
+      if (!saved) return
+      const { x, y, scale } = JSON.parse(saved)
+      this.xValue = x
+      this.yValue = y
+      this.scaleValue = scale
+    } catch {
+      // Storage unavailable or unreadable: start at the default view.
+    }
+  }
+
   // A frame swap brings a new stage; show it where the old one was, then
   // bring the card named in the URL into view, since the page cannot scroll
   // a transformed stage to an anchor itself.
@@ -67,12 +83,12 @@ export default class TreeZoomController extends Controller {
     this.zoomAbout(this.scaleValue * factor, { x: event.clientX - rect.left, y: event.clientY - rect.top })
   }
 
-  // Links and buttons on a card still click; anything else on the canvas drags.
+  // Links, buttons and menus on a card still click; anything else on the canvas drags.
   startDrag(event: PointerEvent) {
     // Primary button or first finger only: a right-click keeps its context
     // menu, and a second touch must not take over a drag in progress.
     if (event.button !== 0 || this.drag) return
-    if ((event.target as HTMLElement).closest('a, button')) return
+    if ((event.target as HTMLElement).closest('a, button, details')) return
     this.drag = { pointerX: event.clientX, pointerY: event.clientY, x: this.xValue, y: this.yValue }
     this.viewportTarget.setPointerCapture(event.pointerId)
   }
@@ -109,6 +125,15 @@ export default class TreeZoomController extends Controller {
     this.yValue = y
     this.scaleValue = scale
     this.render()
+    try {
+      sessionStorage.setItem(this.storageKey, JSON.stringify({ x, y, scale }))
+    } catch {
+      // Private mode or a full store: the view just won't survive a save.
+    }
+  }
+
+  private get storageKey() {
+    return `tree-zoom:${location.pathname}`
   }
 
   private render() {
