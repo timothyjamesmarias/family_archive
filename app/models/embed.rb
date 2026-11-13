@@ -43,6 +43,17 @@ class Embed < ApplicationRecord
     KINDS.fetch(kind)[:search].constantize.new.options
   end
 
+  # Called when `record` stops showing this embed. An embed copied into
+  # another editor shares its sgid, so it moves to the rich text that still
+  # shows it; with none left it goes.
+  # ponytail: LIKE scan of every rich text body per release; index or track
+  # references if the archive's articles ever make that slow.
+  def release_from(record)
+    pattern = "%#{self.class.sanitize_sql_like(attachable_sgid)}%"
+    holder = ActionText::RichText.where.not(record:).where("body LIKE ?", pattern).pick(:record_type, :record_id)
+    holder ? update_columns(owner_type: holder.first, owner_id: holder.last) : delete
+  end
+
   def component
     definition[:component].constantize.new(embed: self)
   end

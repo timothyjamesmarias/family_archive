@@ -4,8 +4,8 @@ import { Controller } from '@hotwired/stimulus'
 type LexxyEditor = HTMLElement & { contents: { insertHtml(html: string): void } }
 
 // Opens the "Insert embed" dialog and puts the chosen embed into the editor.
-// The dialog's frame loads on open and is reset on close, so every insert
-// starts from a fresh search.
+// The dialog's frame loads on open and is reset whenever the dialog closes
+// (Close, Escape, or an insert), so every insert starts fresh.
 export default class EmbedPickerController extends Controller {
   static targets = ['editor', 'dialog', 'frame', 'attachment']
 
@@ -20,12 +20,19 @@ export default class EmbedPickerController extends Controller {
 
   close() {
     this.dialogTarget.close()
+  }
+
+  // Bound to the dialog's native `close` event, which Escape fires too.
+  reset() {
     this.frameTarget.removeAttribute('src')
     this.frameTarget.replaceChildren()
   }
 
-  // The create response is a <template> holding the attachment markup.
+  // The create response is a <template> holding the attachment markup. One
+  // that lands after the dialog was dismissed is a cancelled insert.
   attachmentTargetConnected(template: HTMLTemplateElement) {
+    if (!this.dialogTarget.open) return this.reset()
+
     const html = template.innerHTML
     this.close()
     this.editorTarget.contents.insertHtml(html)

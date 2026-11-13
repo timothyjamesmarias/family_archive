@@ -35,7 +35,7 @@
 <% end %>
 
 <%# Outside the article form: the picker is a form of its own. %>
-<dialog data-embed-picker-target="dialog" class="m-auto w-full max-w-lg rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 backdrop:bg-black/40">
+<dialog data-embed-picker-target="dialog" data-action="close->embed-picker#reset" class="m-auto w-full max-w-lg rounded border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 backdrop:bg-black/40">
   <div class="flex justify-between mb-3">
     <h2 class="font-semibold">Insert embed</h2>
     <button type="button" data-action="embed-picker#close" class="text-sm underline cursor-pointer">Close</button>

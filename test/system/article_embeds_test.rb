@@ -36,4 +36,22 @@ class ArticleEmbedsSystemTest < ApplicationSystemTestCase
     assert_text "Article updated."
     assert_equal [ embed ], article.reload.embeds
   end
+
+  test "dismissing the dialog with Escape resets it" do
+    Artifact.create!(slug: "letter-1923", artifact_type: "LETTER", title: "Letter from 1923")
+    article = Article.create!(slug: "story", title: "Story", content: "<p>Intro</p>")
+    sign_in_as email: "boss@example.com", admin: true
+
+    visit edit_admin_article_path(article)
+    assert_selector "lexxy-editor", text: "Intro"
+    click_on "Insert embed"
+    find("dialog input[name=filter]").set("1923")
+    # A search field's first Escape clears it; the second dismisses the dialog.
+    find("dialog input[name=filter]").send_keys(:escape, :escape)
+    assert_no_selector "dialog[open]"
+    assert_no_selector "#embed_picker input", visible: :all
+
+    click_on "Insert embed"
+    assert_equal "", find("dialog input[name=filter]").value
+  end
 end

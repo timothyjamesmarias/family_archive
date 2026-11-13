@@ -83,7 +83,11 @@ Seeds create `admin@example.com` / `password` in development.
   whose `#options` returns `[label, id]` pairs (`Artifact::MenuSearch` lists
   every artifact; the dialog's `fuzzy_select` controller filters it in the
   browser, so there's no server search yet). Saving an article claims
-  the embeds its body references and deletes the ones edited out. Rendering
+  the embeds its body references; one edited out (or whose article is
+  deleted) moves to another rich text still showing its sgid — a copy
+  between editors — or is deleted (`Embed#release_from`). Deleting the
+  embedded record deletes its embeds; articles then show Action Text's
+  missing placeholder. Rendering
   goes through `render_rich_text` (the app's `action_text/contents/_content`),
   which sanitizes the author's HTML *before* rendering embeds, so component
   markup isn't filtered by the author allowlist. Nothing is sanitized on save.
