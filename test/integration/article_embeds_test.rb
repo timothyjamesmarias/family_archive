@@ -55,11 +55,11 @@ class ArticleEmbedsTest < ActionDispatch::IntegrationTest
     assert_not Embed.exists?(kept.id)
   end
 
-  test "the insert dialog searches by kind and returns attachment markup" do
+  test "the insert dialog lists the kind's menu and returns attachment markup" do
     sign_in create_admin
 
-    get new_admin_embed_path(kind: "artifact", q: "1923")
-    assert_select "input[type=radio][value='#{@letter.id}']"
+    get new_admin_embed_path(kind: "artifact")
+    assert_select "select[name='embed[embeddable_id]'] option[value='#{@letter.id}']", "Letter from 1923 · Letter"
     assert_select "input[type=checkbox][name='embed[options][show_annotations]']"
 
     assert_difference -> { Embed.count } do

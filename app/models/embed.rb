@@ -4,19 +4,16 @@
 class Embed < ApplicationRecord
   include ActionText::Attachable
 
-  # Every kind of thing an admin can embed. Adding one: an entry here and the
-  # component it names. `search` returns [label, id] pairs for the picker.
+  # Every kind of thing an admin can embed. Adding one: an entry here, the
+  # component it names, and a menu search: an object whose #options returns
+  # the picker's [label, id] pairs.
   KINDS = {
     "artifact" => {
       label: "Artifact",
       model: "Artifact",
       component: "Embeds::ArtifactComponent",
       options: %w[show_annotations show_transcription],
-      search: ->(query) {
-        Artifact.where("title ILIKE ?", "%#{Artifact.sanitize_sql_like(query)}%")
-          .order(:title).limit(20)
-          .map { |artifact| [ artifact.title.presence || artifact.type.untitled_label, artifact.id ] }
-      }
+      search: "Artifact::MenuSearch"
     }
   }.freeze
 
@@ -40,6 +37,10 @@ class Embed < ApplicationRecord
 
   def option?(name)
     options[name] == true
+  end
+
+  def self.menu_options(kind)
+    KINDS.fetch(kind)[:search].constantize.new.options
   end
 
   def component
