@@ -13,7 +13,7 @@ class FamilyTreeChartTest < ApplicationSystemTestCase
   end
 
   test "expanding a card loads its children into the frame without leaving the page" do
-    visit family_tree_chart_path
+    visit family_tree_path
     assert_selector ".tree-card", count: 3
     page.execute_script("window.marker = 1")
 
@@ -25,7 +25,7 @@ class FamilyTreeChartTest < ApplicationSystemTestCase
   end
 
   test "zoom buttons scale the stage and the view survives an expansion" do
-    visit family_tree_chart_path
+    visit family_tree_path
 
     find("button[aria-label='Zoom out']").click
     assert_selector "[data-tree-zoom-target='level']", text: "80%"
@@ -38,7 +38,7 @@ class FamilyTreeChartTest < ApplicationSystemTestCase
   end
 
   test "the wheel still zooms after a depth change swaps the canvas" do
-    visit family_tree_chart_path
+    visit family_tree_path
     within(".tree-toolbar") { click_on "2" }
     assert_selector "a.tree-control-active", text: "2"
 

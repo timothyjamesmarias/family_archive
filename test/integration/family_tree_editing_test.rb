@@ -11,26 +11,26 @@ class FamilyTreeEditingTest < ActionDispatch::IntegrationTest
       child_data: { givenName: "Peter", surname: "Marias", sex: "M" })
     @mary = Individual.find_by!(given_name: "Mary")
     @peter = Individual.find_by!(given_name: "Peter")
-    @chart = family_tree_chart_path(edit: 1, depth: 2)
+    @chart = family_tree_path(edit: 1, depth: 2)
   end
 
   def sign_in_user = sign_in(User.create!(email: "editor@example.com", password: "password123", name: "Editor"))
 
   test "the edit flag shows a menu on every card for a signed-in user and nothing for a visitor" do
-    get family_tree_chart_path(edit: 1)
+    get family_tree_path(edit: 1)
     assert_response :success
     assert_select ".tree-menu", count: 0
     assert_select ".tree-card", count: 3
 
     sign_in_user
-    get family_tree_chart_path(edit: 1)
+    get family_tree_path(edit: 1)
     assert_select ".tree-card", count: 3
     assert_select ".tree-menu", count: 3
-    assert_select "#person-#{@john.id} .tree-menu a[href=?]", edit_family_tree_person_path(@john, return_to: family_tree_chart_path(edit: 1))
+    assert_select "#person-#{@john.id} .tree-menu a[href=?]", edit_family_tree_person_path(@john, return_to: family_tree_path(edit: 1))
     assert_select "#person-#{@john.id} .tree-menu a[href*='kind=child']"
     assert_select "turbo-frame#tree_form"
 
-    get family_tree_chart_path
+    get family_tree_path
     assert_select ".tree-menu", count: 0
   end
 
@@ -79,7 +79,7 @@ class FamilyTreeEditingTest < ActionDispatch::IntegrationTest
     sign_in_user
     patch family_tree_person_path(@john), params: { return_to: "https://evil.example/", person: { given_name: "J" } }
 
-    assert_redirected_to family_tree_chart_path(edit: 1)
+    assert_redirected_to family_tree_path(edit: 1)
   end
 
   test "adding a child puts them in the chosen marriage" do

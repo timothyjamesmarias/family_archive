@@ -36,8 +36,11 @@ Each chunk is one PR. The island keeps working until the last one.
    tree URL; the controller replays that redirect as a replace visit, so the
    chart and flash update in place.
 4. **Cutover.** Route swap, delete the island, its Vitest suite, dagre and
-   d3, and the `/api/family-tree` JSON endpoints (the annotations API stays).
-   Update CLAUDE.md.
+   d3, and the `/api/family-tree` JSON endpoints. Update CLAUDE.md.
+
+Status: all four chunks landed (chunk 3 before chunk 4, so editing never
+left the public page). `docs/family-tree-architecture.md` describes the
+result; this document is the record of how it got there.
 
 ## Why not port dagre
 

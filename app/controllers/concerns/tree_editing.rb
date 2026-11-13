@@ -36,7 +36,7 @@ module TreeEditing
   end
 
   def return_to
-    url_from(params[:return_to]) || family_tree_chart_path(edit: 1)
+    url_from(params[:return_to]) || family_tree_path(edit: 1)
   end
 
   # What the form showed: the submitted values on a 422, else nothing.

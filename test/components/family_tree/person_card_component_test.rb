@@ -35,9 +35,9 @@ module FamilyTree
     end
 
     test "renders expand links only where given" do
-      render_inline(PersonCardComponent.new(card: card({ givenName: "Peter" }), down_href: "/family-tree/chart?down[]=7"))
+      render_inline(PersonCardComponent.new(card: card({ givenName: "Peter" }), down_href: "/family-tree?down[]=7"))
 
-      assert_selector "a.tree-expand-down[href='/family-tree/chart?down[]=7']", text: "+ ↓"
+      assert_selector "a.tree-expand-down[href='/family-tree?down[]=7']", text: "+ ↓"
       assert_no_selector "a.tree-expand-up"
     end
 

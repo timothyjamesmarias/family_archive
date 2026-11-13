@@ -42,26 +42,14 @@ flowchart TD
     N --> OUT["positions {id => (x, generation)}, width, height, sketch"]
 ```
 
-### Island (to be replaced)
-
-```mermaid
-flowchart LR
-    Page["/family-tree<br/>turbo-visit-control: reload"] --> Island["family_tree.ts island<br/>(web components, d3-zoom, dagre)"]
-    Island -->|"GET /api/family-tree/initial, /expand"| API["Api::FamilyTreeController"]
-    API --> Builder["FamilyTree::Builder<br/>loaded set → {individuals, families}"]
-    Builder --> Q["Individual::Queries (recursive CTEs)<br/>FamilyTree::Metadata"]
-    Island -->|"POST/PUT/DELETE /api/family-tree/…"| Edits["Api::FamilyTreeEditsController"]
-    Edits --> Mut["FamilyTree::Mutations"]
-```
-
-### Read-only chart (chunk 2, at `/family-tree/chart`)
+### The chart (`/family-tree`)
 
 The Builder and the queries are used as they are; `Chart` composes their
-responses the way the island's store did and decorates the order.
+responses the way the old island's store did and decorates the order.
 
 ```mermaid
 flowchart TD
-    URL["GET /family-tree/chart?depth=2&up[]=12&down[]=87#person-12"] --> C["FamilyTreeChartsController#show<br/>whitelists depth, keeps numeric ids"]
+    URL["GET /family-tree?depth=2&up[]=12&down[]=87#person-12"] --> C["FamilyTreeChartsController#show<br/>whitelists depth, keeps numeric ids"]
     C --> Chart
 
     subgraph Chart["FamilyTree::Chart"]
@@ -102,5 +90,8 @@ flowchart LR
 
 ## Planned
 
-Nothing drawn yet beyond chunk 4 (cutover): route the chart at
-`/family-tree`, delete the island and its JSON API.
+Nothing at the moment. The island, its JSON API under `/api/family-tree`
+and the dagre/d3 dependencies were removed at cutover (chunk 4). Ideas the
+design draws but no backend serves yet (hidden-relative counts on the expand
+tabs, the selected-person panel, person search, linked-artifact badges) start
+as new plan documents.

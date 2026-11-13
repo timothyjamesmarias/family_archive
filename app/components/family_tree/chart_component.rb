@@ -42,7 +42,7 @@ module FamilyTree
     private
 
     def chart_path(up: @up, down: @down, depth: @depth, mode: @mode, anchor: nil)
-      helpers.family_tree_chart_path(up: up.presence, down: down.presence, depth: DEPTH_PARAMS.fetch(depth),
+      helpers.family_tree_path(up: up.presence, down: down.presence, depth: DEPTH_PARAMS.fetch(depth),
         edit: (1 if mode == :edit), anchor:)
     end
   end

@@ -11,7 +11,7 @@ class FamilyTreeEditingTest < ApplicationSystemTestCase
   end
 
   test "adding a child from a card's menu shows the child on the chart and keeps the view" do
-    visit family_tree_chart_path(edit: 1)
+    visit family_tree_path(edit: 1)
     assert_selector ".tree-card", count: 2
     find("button[aria-label='Zoom out']").click
     assert_selector "[data-tree-zoom-target='level']", text: "80%"
@@ -34,7 +34,7 @@ class FamilyTreeEditingTest < ApplicationSystemTestCase
   end
 
   test "editing a person updates their card in place" do
-    visit family_tree_chart_path(edit: 1)
+    visit family_tree_path(edit: 1)
 
     within("#person-#{@john.id}") { find("summary").click }
     within("#person-#{@john.id}") { click_on "Edit" }
@@ -49,7 +49,7 @@ class FamilyTreeEditingTest < ApplicationSystemTestCase
   end
 
   test "a refused change stays in the dialog with its reason" do
-    visit family_tree_chart_path(edit: 1)
+    visit family_tree_path(edit: 1)
 
     within("#person-#{@john.id}") { find("summary").click }
     within("#person-#{@john.id}") { click_on "Add sibling" }

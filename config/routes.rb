@@ -25,9 +25,8 @@ Rails.application.routes.draw do
 
   resources :articles, only: [ :index, :show ], param: :slug
 
-  get "family-tree" => "family_tree_pages#show", as: :family_tree
-  # Server-rendered chart replacing the island; swaps into /family-tree at cutover.
-  get "family-tree/chart" => "family_tree_charts#show", as: :family_tree_chart
+  # The server-rendered chart; its state (depth, up[], down[], edit) is the URL.
+  get "family-tree" => "family_tree_charts#show", as: :family_tree
   # Edit mode on the chart: forms load into the page's dialog frame, a save
   # redirects back to the chart URL it came from.
   scope "family-tree", as: :family_tree do
@@ -35,27 +34,6 @@ Rails.application.routes.draw do
       get :delete, on: :member
       resources :relatives, only: %i[new create], controller: "family_tree_relatives"
     end
-  end
-
-  # JSON API consumed by the family-tree island. Paths and payloads mirror the
-  # AdonisJS app so the island ports over without changes.
-  namespace :api, defaults: { format: :json } do
-    scope "family-tree" do
-      get "initial", to: "family_tree#initial"
-      get "expand", to: "family_tree#expand"
-      get "individuals/:id/can-delete", to: "family_tree_edits#can_delete", id: /\d+/
-      post "individuals", to: "family_tree_edits#create_individual"
-      put "individuals/:id", to: "family_tree_edits#update_individual", id: /\d+/
-      delete "individuals/:id", to: "family_tree_edits#destroy_individual", id: /\d+/
-      post "relationships/child", to: "family_tree_edits#add_child"
-      post "relationships/spouse", to: "family_tree_edits#add_spouse"
-      post "relationships/parent", to: "family_tree_edits#add_parent"
-      post "relationships/link-existing-parent", to: "family_tree_edits#link_existing_parent"
-      post "relationships/sibling", to: "family_tree_edits#add_sibling"
-    end
-
-    get "individuals/root", to: "individuals#roots"
-    get "individuals/:id", to: "individuals#show", id: /\d+/
   end
 
   namespace :admin do
