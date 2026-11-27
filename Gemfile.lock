@@ -168,7 +168,7 @@ GEM
     herb (0.11.2-x86_64-linux-musl)
     i18n (1.15.2)
       concurrent-ruby (~> 1.0)
-    image_processing (2.2.0)
+    image_processing (2.2.2)
     importmap-rails (2.2.3)
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
@@ -467,7 +467,7 @@ DEPENDENCIES
   capybara
   debug
   devise
-  image_processing (~> 2.0)
+  image_processing (~> 2.2)
   letter_opener
   lexxy (~> 1.0)
   mission_control-jobs
